@@ -23,7 +23,10 @@
     ],
     "paths": {
       "~/*": ["src/*"],
-      "#components/*": ["src/components/*"]
+      "#components/*": ["src/components/*"],
+      "#assets/*": ["src/assets/*"],
+      "#composables/*": ["src/composables/*"],
+      "#store/*": ["src/store/*"],
     }
   },
   "exclude": ["dist", "node_modules", "cypress"]
