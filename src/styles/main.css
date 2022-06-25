@@ -1,0 +1,31 @@
+@import "./normalize.css";
+@import "./colors.css";
+@import "./fonts.css";
+
+/** { transition: color 120ms ease-in-out, background 120ms ease-in-out; }*/
+
+html {
+  background: var(--background);
+  color: var(--color);
+  font-family: "Helvetica Neue", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  transition: background 120ms ease-in-out, color 120ms ease-in-out;
+}
+
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  cursor: pointer;
+  box-shadow: none;
+  outline: none;
+  border: none;
+}
+
+h1, h2, h3, h4, ul, li, p, a, button { margin: 0; padding: 0; }
+
+a { text-decoration: transparent underline solid }
+
+.page-wrapper { padding: 15px 20px }

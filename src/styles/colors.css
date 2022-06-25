@@ -1,0 +1,19 @@
+html {
+  --background: #EEEEEE;
+  --background-accent: #4b4440;
+  --color: #262322;
+  --accent: #FF9F1C;
+  --light-accent: #69D1C5;
+
+  /* Notifications */
+  --danger-color: #C03221;
+  --information-color: #4EFFEF;
+  --success-color: #3F826D;
+  --warning-color: #FF9F1C;
+}
+
+html.dark {
+  --background: #262322;
+  --background-accent: #161413;
+  --color: #FDFDFD;
+}
