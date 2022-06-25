@@ -2,23 +2,27 @@
   <header>
     <div class="wrapper links">
       <RouterLink class="link" to="/">home</RouterLink>
+      <RouterLink class="link" to="/contact">contact</RouterLink>
     </div>
 
     <div class="wrapper actions">
-      <RouterLink class="link" to="/login">login</RouterLink>
+      <RouterLink v-if="!auth.loggedIn" class="link" to="/login">login</RouterLink>
+      <button v-else class="link" @click.prevent="auth.logout()">logout</button>
 
-      <button class="icons" @click.prevent="toggleDark()">
-        <MoonIcon v-if="isDark" class="icon" />
-        <SunIcon v-else class="icon" />
-      </button>
+      <MoonIcon v-if="isDark" class="icon" @click.prevent="toggleDark()" />
+      <SunIcon v-else class="icon" @click.prevent="toggleDark()" />
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-  import { toggleDark, isDark } from "~/composables/dark";
+  import useAuthStore from "#store/auth";
+  import { toggleDark, isDark } from "#composables/dark";
+
   import SunIcon from "#components/icons/SunIcon.vue";
   import MoonIcon from "#components/icons/MoonIcon.vue";
+
+  const auth = useAuthStore();
 </script>
 
 <style lang="scss" scoped>
@@ -46,25 +50,25 @@
     align-items: center;
     background: var(--color);
     color: var(--background);
-    padding: 8px 20px;
+    padding: 9px 20px;
     margin: 0 10px;
+    transition: background 100ms ease-in-out, color 100ms ease-in-out;
 
     &:hover {
       color: var(--accent);
     }
   }
 
-  .icons {
-    margin-left: 20px;
-    height: 70%;
-    max-height: 40px;
-    width: auto;
-    background: transparent;
+  .router-link-exact-active {
+    background: var(--accent);
+    &:hover { color: var(--color) }
   }
 
   .icon {
-    height: 100%;
-    width: auto;
+    cursor: pointer;
+    margin-left: 20px;
+    height: auto;
+    width: 10%;
     transition: fill 110ms ease-in-out;
   }
 </style>
