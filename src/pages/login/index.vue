@@ -56,7 +56,6 @@
   import { ref } from "vue";
   import useAuthStore from "#store/auth";
   import { validatePresence } from "#composables/validation";
-  import ButtonComponent from "#components/ButtonComponent.vue";
 
   const auth = useAuthStore();
 

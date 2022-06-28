@@ -24,7 +24,6 @@
 
 <script setup>
   import useNotificationStore from "#store/notification";
-  import PopUp from "#components/PopUp.vue";
 
   const notifications = useNotificationStore();
 </script>

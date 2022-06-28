@@ -4,6 +4,7 @@ import Vue from "@vitejs/plugin-vue";
 import Pages from "vite-plugin-pages";
 import generateSitemap from "vite-ssg-sitemap";
 import Layouts from "vite-plugin-vue-layouts";
+import Components from "unplugin-vue-components/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
@@ -33,6 +34,11 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg"]
+    }),
+    Components({
+      extensions: ["vue"],
+      include: [/\.vue$/, /\.vue\?vue/],
+      dts: "src/components.d.ts"
     })
   ],
   // https://github.com/antfu/vite-ssg

@@ -8,7 +8,6 @@
   import { onMounted } from "vue";
   import { useHead } from "@vueuse/head";
   import useAuthStore from "#store/auth";
-  import NotificationContainer from "#components/NotificationContainer.vue";
 
   const auth = useAuthStore();
 
