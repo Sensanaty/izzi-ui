@@ -14,6 +14,7 @@ export default defineConfig({
       "#assets/": `${path.resolve(__dirname, "src")}/assets/`,
       "#composables/": `${path.resolve(__dirname, "src")}/composables/`,
       "#store/": `${path.resolve(__dirname, "src")}/store/`,
+      "#types": `${path.resolve(__dirname, "")}/types/index.ts`,
     },
   },
 

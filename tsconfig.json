@@ -8,7 +8,7 @@
     "esModuleInterop": true,
     "jsx": "preserve",
     "skipLibCheck": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "noUnusedLocals": true,
     "strictNullChecks": true,
@@ -27,6 +27,7 @@
       "#assets/*": ["src/assets/*"],
       "#composables/*": ["src/composables/*"],
       "#store/*": ["src/store/*"],
+      "#types": ["types/index.ts"]
     }
   },
   "exclude": ["dist", "node_modules", "cypress"]
