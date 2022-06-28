@@ -3,7 +3,19 @@
 </template>
 
 <script setup lang="ts">
+  import { onMounted } from "vue";
   import { useHead } from "@vueuse/head";
+  import useAuthStore from "#store/auth";
+  import NotificationContainer from "#components/NotificationContainer.vue";
+
+  const auth = useAuthStore();
+
+  onMounted(() => {
+    if (!auth.loggedIn && (window.localStorage.getItem("token") || auth.token)) {
+      const token = window.localStorage.getItem("token") || auth.token;
+      auth.setToken(token);
+    }
+  });
 
   useHead({
     title: "Izzicup",

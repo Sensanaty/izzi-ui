@@ -47,7 +47,7 @@
         </label>
       </div>
 
-      <button @click.prevent="login">login</button>
+      <ButtonComponent text="login" @click.prevent="login" />
     </form>
   </div>
 </template>
@@ -56,20 +56,25 @@
   import { ref } from "vue";
   import useAuthStore from "#store/auth";
   import { validatePresence } from "#composables/validation";
+  import ButtonComponent from "#components/ButtonComponent.vue";
 
   const auth = useAuthStore();
 
   const password = ref("");
   const username = ref("");
   const remember = ref(false);
-
-  const login = () => {
-    auth.login(username.value, password.value, remember.value);
-  };
-
   const showPassword = ref(false);
   const passwordError = ref(false);
   const nameError = ref(false);
+
+  const login = () => {
+    nameError.value = validatePresence(username.value);
+    passwordError.value = validatePresence(password.value);
+
+    if (!nameError.value && !passwordError.value) {
+      auth.login(username.value, password.value, remember.value);
+    }
+  };
 </script>
 
 <style lang="scss" scoped>
@@ -114,16 +119,6 @@
   }
 
    .check { margin: 0 10px 15px 0 }
-
-   button {
-     padding: 8px 15px;
-     border-radius: 4px;
-     font-weight: bold;
-     transition: background 110ms ease-in-out;
-
-     &:hover { background: var(--accent) }
-     &:active { background: var(--dark-accent) }
-   }
 
   .error { outline: 2px solid red !important }
   .error-message {
