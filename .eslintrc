@@ -6,8 +6,8 @@
     "node": true
   },
   "extends": [
-    "plugin:@typescript-eslint/recommended",
     "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:vue/vue3-recommended"
   ],
   "parser": "vue-eslint-parser",
