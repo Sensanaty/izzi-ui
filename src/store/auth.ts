@@ -23,6 +23,13 @@ const useAuthStore = defineStore("auth", {
       this.loggedIn = false;
       this.token = "";
       window.localStorage.removeItem("token");
+    },
+    checkToken() {
+      if (window.localStorage.getItem("token") || this.token) {
+        this.setToken(window.localStorage.getItem("token") || this.token);
+
+        return true;
+      } else { return false; }
     }
   }
 });

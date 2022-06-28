@@ -11,7 +11,7 @@
   const auth = useAuthStore();
 
   onMounted(() => {
-    if (!auth.loggedIn && (window.localStorage.getItem("token") || auth.token)) {
+    if (!auth.loggedIn && (auth.checkToken())) {
       const token = window.localStorage.getItem("token") || auth.token;
       auth.setToken(token);
     }
