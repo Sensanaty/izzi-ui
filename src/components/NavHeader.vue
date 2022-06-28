@@ -21,7 +21,6 @@
   import useAuthStore from "#store/auth";
   import { toggleDark, isDark } from "#composables/dark";
 
-
   import ButtonComponent from "#components/ButtonComponent.vue";
   import ButtonLink from "#components/ButtonLink.vue";
   import SunIcon from "#components/icons/SunIcon.vue";

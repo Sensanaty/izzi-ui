@@ -1,15 +1,20 @@
 import { defineStore } from "pinia";
 import $axios from "~/lib/axios";
+import useNotificationStore from "#store/notification";
+import { NotificationType } from "#types";
 
 const useAuthStore = defineStore("auth", {
   state: () => { return { loggedIn: false, token: ""}; },
   actions: {
     async login(username: string, password: string, remember = false) {
+      const notification = useNotificationStore();
       const data = { username, password, remember };
 
       await $axios.post("auth/login", { data }).then((response) => {
         this.setToken(response.data.token);
-      }).catch((err) => { console.log(err.response.message); });
+
+        notification.createNotification("Successfuly logged in", NotificationType.succ);
+      });
     },
     logout() {
       this.removeToken();

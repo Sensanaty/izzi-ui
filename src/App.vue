@@ -1,5 +1,7 @@
 <template>
   <RouterView />
+
+  <NotificationContainer />
 </template>
 
 <script setup lang="ts">
