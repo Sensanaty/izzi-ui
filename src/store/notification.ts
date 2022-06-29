@@ -4,7 +4,12 @@ import { Notification, NotificationType } from "#types";
 const useNotificationStore = defineStore("notification", {
   state: () => { return { notifications: [] as Notification[] }; },
   actions: {
-    createNotification(message: Notification["message"], type: NotificationType = NotificationType.info, autoHide: Notification["autoHide"] = false, duration: Notification["duration"] = 1500) {
+    createNotification(
+      message: Notification["message"],
+      type: NotificationType = NotificationType.info,
+      autoHide: Notification["autoHide"] = true,
+      duration: Notification["duration"] = 1750
+    ) {
       if (this.notifications.length >= 9) {
         this.destroyNotification(0);
       }
@@ -14,7 +19,7 @@ const useNotificationStore = defineStore("notification", {
         type: type,
         message: message,
         autoHide: autoHide,
-        duration: duration || 1500
+        duration: duration
       };
 
       this.notifications.push(notification);
@@ -23,12 +28,10 @@ const useNotificationStore = defineStore("notification", {
       this.notifications.splice(index, 1);
     },
     clearAll() { this.notifications = []; },
-    assignId(notifications: Array<Notification>): number {
+    assignId(notifications: Notification[]): number {
       if (!notifications || notifications.length === 0) { return 0; }
 
-      const length = notifications.length;
-      const lastId = notifications[length - 1].id;
-
+      const lastId = notifications[notifications.length - 1].id;
       return lastId + 1;
     }
   }
