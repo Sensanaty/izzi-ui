@@ -41,9 +41,15 @@
         >
       </div>
 
-      <div class="remember-wrapper">
-        <label for="remember">
-          <input id="remember" v-model="remember" class="check" type="checkbox">Remember me?
+      <div>
+        <label for="show" class="check-wrapper">
+          <input id="show" v-model="showPassword" class="check" type="checkbox">Show Password
+        </label>
+      </div>
+
+      <div>
+        <label for="remember" class="check-wrapper">
+          <input id="remember" v-model="remember" class="check" type="checkbox">Remember Me
         </label>
       </div>
 
@@ -66,14 +72,14 @@
   const passwordError = ref(false);
   const nameError = ref(false);
 
-  const login = () => {
+  async function login() {
     nameError.value = validatePresence(username.value);
     passwordError.value = validatePresence(password.value);
 
     if (!nameError.value && !passwordError.value) {
-      auth.login(username.value, password.value, remember.value);
+      await auth.login(username.value, password.value, remember.value);
     }
-  };
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -117,7 +123,8 @@
     }
   }
 
-   .check { margin: 0 10px 15px 0 }
+   .check-wrapper { cursor: pointer; }
+   .check { margin: 0 10px 15px 0; }
 
   .error { outline: 2px solid red !important }
   .error-message {
