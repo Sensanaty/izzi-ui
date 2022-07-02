@@ -25,10 +25,10 @@
     "vue/no-multiple-template-root": "off",
     "vue/singleline-html-element-content-newline": "off",
     "space-before-function-paren": "off",
-    "prefer-promise-reject-errors": ["error", {"allowEmptyReject": true}],
+    "prefer-promise-reject-errors": ["error", { "allowEmptyReject": true }],
     "@typescript-eslint/ban-ts-comment": "off",
-    "vue/max-attributes-per-line": [ "warn", {"singleline": {"max": 6}}
-    ]
+    "vue/max-attributes-per-line": [ "warn", { "singleline": { "max": 6 } }],
+    "object-curly-spacing": ["warn", "always"]
   },
   "overrides": [
     {
