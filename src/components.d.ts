@@ -8,6 +8,7 @@ declare module '@vue/runtime-core' {
     AdminHeader: typeof import('./components/AdminHeader.vue')['default']
     ButtonComponent: typeof import('./components/ButtonComponent.vue')['default']
     ButtonLink: typeof import('./components/ButtonLink.vue')['default']
+    FormLabel: typeof import('./components/FormLabel.vue')['default']
     MoonIcon: typeof import('./components/icons/MoonIcon.vue')['default']
     NavHeader: typeof import('./components/NavHeader.vue')['default']
     NotificationContainer: typeof import('./components/NotificationContainer.vue')['default']

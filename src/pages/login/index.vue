@@ -4,13 +4,7 @@
 
     <form>
       <div class="input-wrapper username">
-        <label for="username">
-          Username
-          <Transition name="fade" mode="out-in">
-            <span v-if="nameError" class="error-message">can't be blank</span>
-          </Transition>
-        </label>
-
+        <FormLabel text="Username" label-for="name" :condition="nameError" />
         <input
           id="username"
           v-model="username"
@@ -18,18 +12,12 @@
           type="text"
           autocomplete="username"
           @blur="nameError = validatePresence(username)"
-          @keyup.enter.prevent="login"
+          @keydown.enter.prevent="login"
         >
       </div>
 
       <div class="input-wrapper password">
-        <label for="password">
-          Password
-          <Transition name="fade" mode="out-in">
-            <span v-if="passwordError" class="error-message">can't be blank</span>
-          </Transition>
-        </label>
-
+        <FormLabel text="Password" label-for="password" :condition="passwordError" />
         <input
           id="password"
           v-model="password"
@@ -37,7 +25,7 @@
           :type="showPassword ? 'text' : 'password'"
           autocomplete="current-password"
           @blur="passwordError = validatePresence(password)"
-          @keyup.enter.prevent="login"
+          @keydown.enter.prevent="login"
         >
       </div>
 
@@ -117,9 +105,12 @@
       margin-bottom: 30px;
       padding: 10px 15px;
       border-radius: 4px;
-      outline: none;
+      outline: 2px solid transparent;
       border: none;
       box-shadow: var(--subtle-shadow);
+      transition: outline-color 100ms ease-in-out;
+
+      &:focus { outline-color: var(--light-accent) }
     }
   }
 
@@ -127,11 +118,4 @@
    .check { margin: 0 10px 15px 0; }
 
   .error { outline: 2px solid red !important }
-  .error-message {
-    color: red;
-    font-size: 1.2rem;
-  }
-
-  .fade-enter-active, .fade-leave-active { transition: opacity 100ms ease-in-out }
-  .fade-enter-from, .fade-leave-to { opacity: 0 }
 </style>
