@@ -1,13 +1,7 @@
 <template>
   <Teleport to="body">
     <div class="popup">
-      <Transition name="fade" mode="out-in">
-        <div v-if="notifications.notifications.length > 2" class="clear">
-          <button @click="notifications.clearAll()">Clear All</button>
-        </div>
-      </Transition>
-
-      <TransitionGroup name="fade" mode="out-in">
+      <TransitionGroup name="slide" mode="out-in">
         <PopUp
           v-for="(notification, index) in notifications.notifications"
           :key="notification.id"
@@ -40,22 +34,6 @@
     flex: 0 1;
   }
 
-  .clear { align-self: flex-end }
-
-  .clear > button {
-    text-align: right;
-    background: black;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    border: 2px solid var(--information-color);
-    transition: color 110ms ease-in-out;
-
-    &:hover { color: var(--accent) }
-  }
-
-  .fade-move, .fade-enter-active, .fade-leave-active { transition: all 100ms ease-in-out }
-  .fade-enter-from, .fade-leave-to { opacity: 0 }
-
-  .fade-leave-active { position: absolute }
+  .slide-enter-active, .slide-leave-active { transition: all 100ms ease-in-out }
+  .slide-enter-from, .slide-leave-to { transform: translateX(100%); }
 </style>
