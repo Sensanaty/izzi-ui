@@ -4,7 +4,7 @@ import useNotificationStore from "#store/notification";
 import { NotificationType } from "#types";
 
 const useAuthStore = defineStore("auth", {
-  state: () => { return { loggedIn: false, token: ""}; },
+  state: () => { return { loggedIn: false, token: "" }; },
   actions: {
     async login(username: string, password: string, remember = false) {
       const notification = useNotificationStore();
@@ -14,10 +14,17 @@ const useAuthStore = defineStore("auth", {
         this.setToken(response.data.token);
 
         notification.createNotification("Successfuly logged in", NotificationType.succ);
+      }).catch((err) => {
+        const message = err.response.data.error;
+
+        notification.createNotification(message, NotificationType.dang, 2000);
       });
     },
     logout() {
+      const notification = useNotificationStore();
+
       this.removeToken();
+      notification.createNotification("Successfuly logged out", NotificationType.succ);
     },
     setToken(token: string) {
       this.loggedIn = true;

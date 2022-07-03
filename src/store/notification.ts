@@ -7,8 +7,8 @@ const useNotificationStore = defineStore("notification", {
     createNotification(
       message: Notification["message"],
       type: NotificationType = NotificationType.info,
+      duration: Notification["duration"] = 1750,
       autoHide: Notification["autoHide"] = true,
-      duration: Notification["duration"] = 1750
     ) {
       if (this.notifications.length >= 9) {
         this.destroyNotification(0);

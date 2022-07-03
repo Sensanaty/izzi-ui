@@ -2,7 +2,6 @@
   <header>
     <div class="wrapper links">
       <ButtonLink url="/" text="home" />
-      <ButtonLink url="/contact" text="contact" />
     </div>
 
     <div class="wrapper actions">
@@ -32,6 +31,7 @@
     padding: 10px 20px;
     min-height: 60px;
     width: 100%;
+    box-shadow: var(--subtle-shadow);
   }
 
   .wrapper {
