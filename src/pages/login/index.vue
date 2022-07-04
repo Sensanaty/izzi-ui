@@ -49,9 +49,11 @@
 <script setup lang="ts">
   import { ref } from "vue";
   import useAuthStore from "#store/auth";
+  import { useRouter } from "vue-router";
   import { validatePresence } from "#composables/validation";
 
   const auth = useAuthStore();
+  const router = useRouter();
 
   const password = ref("");
   const username = ref("");
@@ -65,7 +67,9 @@
     passwordError.value = validatePresence(password.value);
 
     if (!nameError.value && !passwordError.value) {
-      await auth.login(username.value, password.value, remember.value);
+      await auth.login(username.value, password.value, remember.value).then(() => {
+        router.push("/admin");
+      });
     }
   }
 </script>
