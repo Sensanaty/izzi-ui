@@ -23,7 +23,7 @@
   const auth = useAuthStore();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   header {
     display: grid;
     grid-template: 1fr / 1fr 0.25fr;
@@ -32,20 +32,20 @@
     min-height: 60px;
     width: 100%;
     box-shadow: var(--subtle-shadow);
-  }
 
-  .wrapper {
-    display: flex;
-    align-items: center;
+    .wrapper {
+      display: flex;
+      align-items: center;
 
-    &.actions { justify-content: flex-end; }
-  }
+      &.actions { justify-content: flex-end; }
+    }
 
-  .icon {
-    cursor: pointer;
-    margin-left: 20px;
-    height: auto;
-    width: 7%;
-    transition: fill 110ms ease-in-out;
+    .icon {
+      cursor: pointer;
+      margin-left: 20px;
+      height: auto;
+      width: 7%;
+      transition: fill 110ms ease-in-out;
+    }
   }
 </style>
