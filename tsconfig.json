@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "ESNext",
+    "module": "ESNext",
+    "useDefineForClassFields": true,
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "lib": ["ESNext", "DOM"],
+    "skipLibCheck": true,
+    "types": ["vite/client", "vue/ref-macros", "node"],
+    "allowJs": true,
+    "paths": {
+      "~/*": ["src/*"],
+      "~components/*": ["src/components/*"],
+      "~assets/*": ["src/assets/*"],
+      "~composables/*": ["src/composables/*"],
+      "~store/*": ["src/store/*"],
+      "~lib/*": ["src/lib/*"],
+      "~types": ["src/types/index.ts"]
+    }
+  },
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "exclude": ["dist", "node_modules", "cypress", "src/vite-env.d.ts"]
+}
