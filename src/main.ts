@@ -1,7 +1,8 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-import router from "~/modules/router";
 import PhosphorVue from "phosphor-vue";
+import router from "~/modules/router";
+import useAuthStore from "~/store/auth";
 import "./index.css";
 import App from "./App.vue";
 
@@ -13,3 +14,11 @@ app
   .use(pinia)
   .use(PhosphorVue)
   .mount("#app");
+
+router.beforeEach((to, from) => {
+  const auth = useAuthStore();
+
+  if (to.meta.auth && !auth.authenticated()) {
+    console.log("swag");
+  }
+});

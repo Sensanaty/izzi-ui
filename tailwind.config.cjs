@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: { },
     fontFamily: {
-      'mono': ["JetBrains Mono NL", "JetBrains Mono", "Roboto Mono", "monospace"]
+      'mono': ["Aeonik", "JetBrains Mono NL", "JetBrains Mono", "Roboto Mono", "monospace"]
     }
   },
   plugins: [],

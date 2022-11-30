@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "~/pages/index.vue";
+import Login from "~/pages/login/index.vue";
 
 const publicRoutes = [
-  { path: "/", name: "Home", component: Home }
+  { path: "/", name: "Home", component: Home },
+  { path: "/login", name: "Login", component: Login }
 ];
 
 const authRoutes = [
