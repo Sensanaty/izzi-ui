@@ -4,15 +4,23 @@
       <RouterLink class="p-0" :to="auth.loggedIn ? '/admin' : '/'">IZZICUP</RouterLink>
     </h1>
 
-    <BaseButton class="ml-auto">
+    <BaseButton v-if="!auth.loggedIn" class="ml-auto">
       <RouterLink to="/login">LOGIN</RouterLink>
     </BaseButton>
+
+    <BaseButton v-else class="ml-auto" @click="logout">LOGOUT</BaseButton>
   </header>
 </template>
 
 <script setup lang="ts">
   import useAuthStore from "~/store/auth";
   import BaseButton from "~components/base/BaseButton.vue";
+  import router from "~/modules/router";
 
   const auth = useAuthStore();
+
+  const logout = () => {
+    auth.logout();
+    router.push("/");
+  };
 </script>
