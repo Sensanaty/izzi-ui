@@ -3,6 +3,7 @@ import { api } from "~/modules/fetch";
 import { User } from "~/types/store/auth";
 import { LoginData } from "~/types/endpoints";
 import { AxiosError } from "axios";
+import useNotificationStore from "~/store/notification";
 
 const useAuthStore = defineStore("auth", {
   state: () => {
@@ -24,12 +25,14 @@ const useAuthStore = defineStore("auth", {
 
       try {
         const response = await api.get("auth/authenticate", { headers: { "Authorization": token } });
-        this.setToken(response.data.token || window.localStorage.getItem("token"));
+        this.setToken(response.data.token || token);
 
         return true;
       } catch (err: unknown) {
+        const { createNotification } = useNotificationStore();
+
         if (err instanceof AxiosError) {
-          console.log(err.message);
+          createNotification(err?.response?.data.error, "dang");
         } else {
           console.log(err);
         }
@@ -38,21 +41,27 @@ const useAuthStore = defineStore("auth", {
       }
     },
     async login(username: LoginData["username"], password: LoginData["password"], remember: LoginData["remember"] = false) {
+      const { createNotification } = useNotificationStore();
+
       try {
         const response = await api.post("auth/login", { username, password, remember });
         this.setUser(response.data.user);
         this.setToken(response.data.token);
+        createNotification("You have successfully logged in", "succ");
       } catch (err: unknown) {
         if (err instanceof AxiosError) {
-          console.log(err.message);
+          createNotification(err?.response?.data.error, "dang");
         } else {
-          console.log(err);
+          createNotification("Something went wrong, please try again", "warn");
         }
       }
     },
     logout() {
+      const { createNotification } = useNotificationStore();
+
       window.localStorage.removeItem("token");
       this.$reset();
+      createNotification("You have been logged out", "info");
     },
     setUser(user: User) {
       this.user.id = user.id;
@@ -61,7 +70,7 @@ const useAuthStore = defineStore("auth", {
     },
     setToken(token: string) {
       this.token = token;
-      window.localStorage.setItem("token", token);
+      window.localStorage.setItem("token", this.token);
       this.loggedIn = true;
     }
   }
