@@ -16,7 +16,9 @@ app
 router.beforeEach((to) => {
   const auth = useAuthStore();
 
-  if (to.meta.auth && !auth.authenticated()) {
-    console.log("swag");
+  if (to.meta.auth) {
+    if (!auth.authenticated()) {
+      router.push("/login");
+    }
   }
 });
