@@ -17,12 +17,7 @@
     "allowJs": true,
     "paths": {
       "~/*": ["src/*"],
-      "~components/*": ["src/components/*"],
-      "~assets/*": ["src/assets/*"],
-      "~composables/*": ["src/composables/*"],
-      "~store/*": ["src/store/*"],
-      "~lib/*": ["src/lib/*"],
-      "~types": ["src/types/index.ts"]
+      "~components/*": ["src/components/*"]
     }
   },
   "references": [{ "path": "./tsconfig.node.json" }],
