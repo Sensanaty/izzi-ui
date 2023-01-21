@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import { api } from "~/modules/fetch";
 import { User } from "~/types/store/auth";
-import { LoginData, LoginResponse } from "~/types/endpoints";
+import { LoginData } from "~/types/endpoints";
+import { AxiosError } from "axios";
 
 const useAuthStore = defineStore("auth", {
   state: () => {
@@ -16,28 +17,42 @@ const useAuthStore = defineStore("auth", {
     };
   },
   actions: {
-    authenticated(): boolean {
+    async authenticated(): Promise<boolean> {
       const token = window.localStorage.getItem("token") ?? this.token;
 
       if (!token) { return false; }
 
-      api.get("auth/authenticate", { headers: { "Authorization": token } }).then(response => {
-        if (response.data.token) { this.setToken(response.data.token); }
+      try {
+        const response = await api.get("auth/authenticate", { headers: { "Authorization": token } });
+        this.setToken(response.data.token || window.localStorage.getItem("token"));
 
         return true;
-      }).catch(err => {
-        console.log(err);
-      });
+      } catch (err: unknown) {
+        if (err instanceof AxiosError) {
+          console.log(err.message);
+        } else {
+          console.log(err);
+        }
 
-      return false;
+        return false;
+      }
     },
     async login(username: LoginData["username"], password: LoginData["password"], remember: LoginData["remember"] = false) {
-      await api.post("auth/login", { username, password, remember }).then((response) => {
+      try {
+        const response = await api.post("auth/login", { username, password, remember });
         this.setUser(response.data.user);
         this.setToken(response.data.token);
-      }).catch(err => {
-        console.log(err.message);
-      });
+      } catch (err: unknown) {
+        if (err instanceof AxiosError) {
+          console.log(err.message);
+        } else {
+          console.log(err);
+        }
+      }
+    },
+    logout() {
+      window.localStorage.removeItem("token");
+      this.$reset();
     },
     setUser(user: User) {
       this.user.id = user.id;
