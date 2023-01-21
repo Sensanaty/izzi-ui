@@ -1,5 +1,9 @@
 <template>
-  <div :class="type" @click.prevent="destroy">
+  <div
+    class="min-w-[350px] text-sm rounded mt-3 px-3 py-4 bg-neutral-900 text-white z-50 cursor-pointer border-2 border-transparent border-solid hover:bg-neutral-800"
+    :class="type"
+    @click.prevent="destroy"
+  >
     <p>{{ message }}</p>
   </div>
 </template>
@@ -28,10 +32,6 @@
 </script>
 
 <style scoped>
-  div {
-    @apply min-w-[350px] text-sm rounded mt-3 px-3 py-4 bg-neutral-900 text-white z-50 cursor-pointer border-2 border-transparent border-solid hover:bg-neutral-800;
-  }
-
   .warn { @apply border-amber-400 }
   .info { @apply border-blue-400 }
   .succ { @apply border-emerald-600 }
