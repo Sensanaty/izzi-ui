@@ -1,13 +1,14 @@
 <template>
-  <div :class="type" @click.prevent="$emit('destroyNotification', index)">
+  <div :class="type" @click.prevent="destroy">
     <p>{{ message }}</p>
   </div>
 </template>
 
 <script lang="ts" setup>
   import Notification from "~/types/store/notification";
+  import { onMounted } from "vue";
 
-  defineProps<{
+  const props = defineProps<{
     index: number,
     type: Notification["type"],
     message: Notification["message"],
@@ -15,7 +16,15 @@
     duration: Notification["duration"]
   }>();
 
-  defineEmits(["destroyNotification"]);
+  const emit = defineEmits(["destroyNotification"]);
+
+  onMounted(() => {
+    setTimeout(destroy, props.duration);
+  });
+
+  function destroy() {
+    emit("destroyNotification", props.index);
+  }
 </script>
 
 <style scoped>
