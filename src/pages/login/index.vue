@@ -18,6 +18,7 @@
   import { LoginData } from "~/types/endpoints";
   import { ref } from "vue";
   import useAuthStore from "~/store/auth";
+  import router from "~/modules/router";
 
   const auth = useAuthStore();
 
@@ -25,7 +26,9 @@
   const password = ref<LoginData["password"]>("");
   const remember = ref<LoginData["remember"]>(true);
 
-  const login = () => {
-    auth.login(username.value, password.value, remember.value);
-  };
+  async function login() {
+    await auth.login(username.value, password.value, remember.value).then(() => {
+      if (auth.loggedIn) { router.push("/admin"); }
+    });
+  }
 </script>
