@@ -7,7 +7,7 @@
         @click.prevent.once="emit('closeModal', false)"
       >
         <div class="bg-white rounded h-min m-auto px-4 py-2 min-w-[25%]">
-          <h1 class="text-black">hello</h1>
+          <slot />
         </div>
       </div>
     </Transition>
