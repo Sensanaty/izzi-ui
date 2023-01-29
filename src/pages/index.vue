@@ -5,7 +5,7 @@
     <AddressBox
       title="Main Office"
       address="Koste Cukića #14"
-      sub-address="11080 Zemun, Beograd, Serbia"
+      sub-address="11080 Zemun, Belgrade, Serbia"
     />
     <AddressBox
       title="Representative Office"
@@ -59,9 +59,9 @@
   const message = ref("");
 
   const clicked = () => {
-    console.log(name);
-    console.log(email);
-    console.log(message);
+    console.log(name.value);
+    console.log(email.value);
+    console.log(message.value);
   };
 </script>
 
