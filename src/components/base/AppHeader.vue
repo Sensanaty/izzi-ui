@@ -1,5 +1,5 @@
 <template>
-  <header class="flex items-center bg-neutral-800 w-full h-14 px-4">
+  <header class="flex items-center bg-neutral-800 w-full h-14 px-4 mb-4">
     <h1 class="font-bold text-center text-2xl hover:text-amber-400">
       <RouterLink class="p-0" :to="auth.loggedIn ? '/admin' : '/'">IZZICUP</RouterLink>
     </h1>
