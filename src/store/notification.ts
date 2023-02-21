@@ -16,7 +16,6 @@ const useNotificationStore = defineStore("notification", {
       if (this.notifications.length > 9) { this.destroyNotification(0); }
 
       const notification: Notification = {
-        id: crypto.randomUUID(),
         message: message,
         type: type,
         duration: duration,
