@@ -17,8 +17,10 @@ router.beforeEach((to) => {
   const auth = useAuthStore();
 
   if (to.meta.auth) {
-    if (!auth.authenticated()) {
-      router.push("/login");
-    }
+    auth.authenticated().then((isAuthenticated) => {
+      if (!isAuthenticated) {
+        router.push("/login");
+      }
+    });
   }
 });

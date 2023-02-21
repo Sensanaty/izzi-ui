@@ -21,23 +21,17 @@ const useAuthStore = defineStore("auth", {
     async authenticated(): Promise<boolean> {
       const token = window.localStorage.getItem("token") ?? this.token;
 
-      if (!token) { return false; }
+      if (!token) { return Promise.resolve(false); }
 
       try {
         const response = await api.get("auth/authenticate", { headers: { "Authorization": token } });
         this.setToken(response.data.token || token);
 
-        return true;
+        return Promise.resolve(true);
       } catch (err: unknown) {
         const { createNotification } = useNotificationStore();
 
-        if (err instanceof AxiosError) {
-          createNotification(err?.response?.data.error, "dang");
-        } else {
-          console.log(err);
-        }
-
-        return false;
+        return Promise.resolve(false);
       }
     },
     async login(username: LoginData["username"], password: LoginData["password"], remember: LoginData["remember"] = false) {
