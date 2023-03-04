@@ -2,14 +2,14 @@ import { defineStore } from "pinia";
 import { api } from "~/modules/fetch";
 import { User } from "~/types/store/auth";
 import { LoginData } from "~/types/endpoints";
-import { AxiosError } from "axios";
 import useNotificationStore from "~/store/notification";
+import catchResponse from "~/modules/catchResponse";
 
 const useAuthStore = defineStore("auth", {
   state: () => {
     return {
       loggedIn: false,
-      token: "",
+      token: null as string | null,
       user: {
         id: 0,
         username: "",
@@ -29,7 +29,7 @@ const useAuthStore = defineStore("auth", {
 
         return Promise.resolve(true);
       } catch (err: unknown) {
-        const { createNotification } = useNotificationStore();
+        catchResponse(err);
 
         return Promise.resolve(false);
       }
@@ -43,11 +43,7 @@ const useAuthStore = defineStore("auth", {
         this.setToken(response.data.token);
         createNotification("You have successfully logged in", "succ");
       } catch (err: unknown) {
-        if (err instanceof AxiosError) {
-          createNotification(err?.response?.data.error, "dang");
-        } else {
-          createNotification("Something went wrong, please try again", "warn");
-        }
+        catchResponse(err);
       }
     },
     logout() {
