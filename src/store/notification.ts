@@ -18,6 +18,7 @@ const useNotificationStore = defineStore("notification", {
       if (this.notifications.length > 9) { this.destroyNotification(0) }
 
       const notification: Notification = {
+        id: this.assignId(),
         message: message,
         type: type || "info",
         duration: duration,
@@ -29,6 +30,12 @@ const useNotificationStore = defineStore("notification", {
 
     destroyNotification(index: number) {
       this.notifications.splice(index, 1);
+    },
+
+    assignId(): number {
+      const lastNotificationId = this.notifications[this.notifications.length - 1]?.id || 0;
+
+      return lastNotificationId + 1;
     },
 
     clearAll() { this.$reset(); }
