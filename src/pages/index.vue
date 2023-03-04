@@ -43,7 +43,7 @@
         />
       </div>
 
-      <BaseButton class="w-fit h-fit self-center justify-self-center" @click.prevent="clicked">send</BaseButton>
+      <BaseButton class="w-fit h-fit self-center justify-self-center" @click.prevent="clicked">Send</BaseButton>
     </form>
   </div>
 </template>

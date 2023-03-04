@@ -11,7 +11,15 @@
     <label for="remember" class="my-2">Keep me logged in</label>
     <input id="remember" v-model="remember" type="checkbox" class="mb-3">
 
-    <BaseButton class="flex items-center justify-center font-bold uppercase p-4 bg-red-900 hover:bg-red-800 w-32" @click.prevent="login()">login</BaseButton>
+    <BaseButton
+      class="font-bold w-32"
+      background-color="bg-green-500"
+      background-hover="hover:bg-green-600"
+      background-active="active:bg-green-700"
+      @click.prevent="login()"
+    >
+      Login
+    </BaseButton>
   </form>
 </template>
 
