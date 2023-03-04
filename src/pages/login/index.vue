@@ -28,15 +28,24 @@
   import { LoginData } from "~/types/endpoints";
   import { ref } from "vue";
   import useAuthStore from "~/store/auth";
+  import useNotificationStore from "~/store/notification";
   import router from "~/modules/router";
 
   const auth = useAuthStore();
+  const notification = useNotificationStore();
 
   const username = ref<LoginData["username"]>("");
   const password = ref<LoginData["password"]>("");
   const remember = ref<LoginData["remember"]>(true);
 
   async function login() {
+    if (!username.value || !password.value) {
+      if (notification.notifications.length !== 0) { return; }
+
+      notification.createNotification("Username and Password fields can't be blank", "dang");
+      return;
+    }
+
     await auth.login(username.value, password.value, remember.value).then(() => {
       if (auth.loggedIn) { router.push("/admin"); }
     });

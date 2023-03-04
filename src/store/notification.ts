@@ -13,7 +13,9 @@ const useNotificationStore = defineStore("notification", {
       duration: Notification["duration"] = 2000,
       autoHide: Notification["autoHide"] = true
     ) {
-      if (!message || this.notifications.length > 0 ) { return; }
+      if (!message) { return; }
+
+      if (this.notifications.length > 9) { this.destroyNotification(0) }
 
       const notification: Notification = {
         message: message,
