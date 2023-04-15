@@ -903,20 +903,10 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0:
-  version "1.0.30001422"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001422.tgz"
-  integrity sha512-hSesn02u1QacQHhaxl/kNMZwqVG35Sz/8DgvmgedxSH8z9UUpcDYSPYgsj3x5dQNRcNp6BwpSfQfVzYUTm+fog==
-
-caniuse-lite@^1.0.30001400:
-  version "1.0.30001418"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001418.tgz"
-  integrity sha512-oIs7+JL3K9JRQ3jPZjlH6qyYDp+nBTCais7hjh0s+fuBwufc7uZ7hPYMXrDOJhV360KGMTcczMRObk0/iMqZRg==
-
-caniuse-lite@^1.0.30001426:
-  version "1.0.30001446"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001446.tgz"
-  integrity sha512-fEoga4PrImGcwUUGEol/PoFCSBnSkA9drgdkxXkJLsUBOnJ8rs3zDv6ApqYXGQFOyMPsjh79naWhF4DAxbF8rw==
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001400, caniuse-lite@^1.0.30001426:
+  version "1.0.30001478"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001478.tgz"
+  integrity sha512-gMhDyXGItTHipJj2ApIvR+iVB5hd0KP3svMWWXDvZOmjzJJassGLMfxRkQCSYgGd2gtdL/ReeiyvMSFD1Ss6Mw==
 
 chalk@^4.0.0:
   version "4.1.2"
