@@ -1,1 +1,0 @@
-# Trengo Take-home assignment
