@@ -16,8 +16,8 @@
     "types": ["unplugin-vue-macros/macros-global", "vite/client", "vue/ref-macros", "node"],
     "allowJs": true,
     "paths": {
-      "~/*": ["src/*"],
-      "~components/*": ["src/components/*"]
+      "~/*": ["./src/*"],
+      "~components/*": ["./src/components/*"]
     }
   },
   "references": [{ "path": "./tsconfig.node.json" }],
