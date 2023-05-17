@@ -16,7 +16,7 @@
     <button :disabled="!metadata.next" class="btn" @click.prevent="fetchParts(metadata.next, metadata.count)">next</button>
     <button :disabled="metadata.last === metadata.page" class="btn" @click.prevent="fetchParts(metadata.last, metadata.count)">last</button>
 
-    <select class="text-black" v-model.lazy.number="metadata.count" @change="setCount">
+    <select v-model.lazy.number="metadata.count" class="text-black" @change="setCount">
       <option value="5">5</option>
       <option value="10">10</option>
       <option value="25">25</option>
