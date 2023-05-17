@@ -1,3 +1,7 @@
 <template>
-  <h1>Admin page</h1>
+  <PartTable />
 </template>
+
+<script lang="ts" setup>
+  import PartTable from "~components/admin/PartTable.vue";
+</script>
