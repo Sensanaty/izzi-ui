@@ -31,16 +31,17 @@ const usePartStore = defineStore("part", {
 
       try {
         this.parts = response.data.data;
+
+        const metadataValues = response.data.metadata;
         this.metadata = {
           count,
           page,
-          from: response.data.metadata.from,
-          last: response.data.metadata.last,
-          next: response.data.metadata.next,
-          prev: response.data.metadata.prev,
-          to:   response.data.metadata.to,
+          from: metadataValues.from,
+          last: metadataValues.last,
+          next: metadataValues.next,
+          prev: metadataValues.prev,
+          to:   metadataValues.to,
         }
-        this.metadata = response.data.metadata;
       } catch (err: unknown) {
         catchResponse(err)
       }
