@@ -16,7 +16,7 @@
 
   <div class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-800 p-4 rounded">
     <h1 class="text-3xl font-bold text-center">Contact Us</h1>
-    <a href="mailto:izzicup@gmail.com" class="font-bold text-xl underline text-center">izzicup@gmail.com</a>
+    <a href="mailto:izzicup@gmail.com" class="font-bold text-xl underline text-center hover:decoration-blue-300">izzicup@gmail.com</a>
 
     <form class="w-full mt-4">
       <div class="flex flex-row justify-between">
