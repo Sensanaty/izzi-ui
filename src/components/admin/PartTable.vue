@@ -16,7 +16,7 @@
   const count = ref(25);
 
   if (localStorage.getItem("partCountParam")) {
-    count.value = parseInt(localStorage.getItem("partCountParam"));
+    count.value = parseInt(localStorage.getItem("partCountParam") as string);
   }
 
   partStore.fetchParts(1, count.value);
