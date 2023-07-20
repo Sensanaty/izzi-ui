@@ -18,6 +18,8 @@
   import { onMounted } from "vue";
   import { Motion } from "motion/vue";
 
+  import type { AnimationOptionsWithOverrides } from "motion";
+
   const props = defineProps<{
     index: number,
     type: Notification["type"],
@@ -27,7 +29,7 @@
   }>();
 
   const transformScale = { transform: ["scaleX(300)","scaleX(0)"] };
-  const animationDuration = { duration: props.duration / 1000, easing: "linear" };
+  const animationDuration = { duration: props.duration / 1000, easing: "linear" } as AnimationOptionsWithOverrides;
 
   const emit = defineEmits(["destroyNotification"]);
 
