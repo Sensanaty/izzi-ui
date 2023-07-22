@@ -6,4 +6,5 @@ export default interface RequestMetadata {
   from: null | number;
   to: number;
   count: number;
+  total: number;
 }
