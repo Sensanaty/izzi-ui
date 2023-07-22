@@ -3,6 +3,7 @@ import Company from "~/types/store/company";
 export default interface Part {
   id: number;
   part_number: string;
+  description: string;
   available: number;
   reserved: number;
   sold: number;
@@ -20,5 +21,6 @@ export default interface Part {
   quote_type?: string;
   tag: string;
   added?: Date;
+  company_name: Company["name"];
   company_id: Company["id"];
 }
