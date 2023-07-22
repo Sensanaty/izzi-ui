@@ -1,24 +1,32 @@
 <template>
-  <table class="flex flex-col">
+  <TableMetadata class="mx-auto" />
+
+  <table class="my-2 table-fixed">
+    <TableHeader />
     <TableRow v-for="part in parts" :key="part.id" :part="part" />
-    <TableMetadata class="mx-auto" />
   </table>
+
+  <TableMetadata class="mx-auto" />
 </template>
 
 <script async lang="ts" setup>
   import { storeToRefs } from "pinia";
   import { ref } from "vue";
   import usePartStore from "~/store/part";
+
   import TableRow from "~components/admin/table/TableRow.vue";
   import TableMetadata from "~components/admin/table/TableMetadata.vue";
+  import TableHeader from "~components/admin/table/TableHeader.vue";
 
   const partStore = usePartStore();
   const count = ref(25);
 
-  if (localStorage.getItem("partCountParam")) {
-    count.value = parseInt(localStorage.getItem("partCountParam") as string);
-  }
-
   partStore.fetchParts(1, count.value);
   const { parts } = storeToRefs(partStore);
 </script>
+
+<style>
+  table, tr, td {
+    @apply border border-gray-600 border-collapse;
+  }
+</style>
