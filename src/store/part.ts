@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
 import { api } from "~/modules/fetch";
 import useAuthStore from "~/store/auth";
-import Part from "~/types/store/part";
-import RequestMetadata from "~/types/requestMetadata";
 import catchResponse from "~/modules/catchResponse";
+
+import type Part from "~/types/store/part";
+import type RequestMetadata from "~/types/requestMetadata";
 
 const usePartStore = defineStore("part", {
   state: () => {
@@ -12,6 +13,7 @@ const usePartStore = defineStore("part", {
       metadata: {} as RequestMetadata
     };
   },
+
   actions: {
     async fetchParts(
       page: RequestMetadata["page"] = 1,
@@ -19,28 +21,29 @@ const usePartStore = defineStore("part", {
     ) {
       const { token } = useAuthStore();
 
-      const response = await api.get("parts", {
-        headers: {
-          "Authorization": token || window.localStorage.getItem("token")
-        },
-        params: {
-          count: count,
-          page: page
-        }
-      });
-
       try {
+        const response = await api.get("parts", {
+          headers: {
+            "Authorization": token || window.localStorage.getItem("token")
+          },
+          params: {
+            count: count,
+            page: page,
+          }
+        });
+
         this.parts = response.data.data;
 
         const metadataValues = response.data.metadata;
         this.metadata = {
           count,
           page,
-          from: metadataValues.from,
-          last: metadataValues.last,
-          next: metadataValues.next,
-          prev: metadataValues.prev,
-          to:   metadataValues.to,
+          from:  metadataValues.from,
+          last:  metadataValues.last,
+          next:  metadataValues.next,
+          prev:  metadataValues.prev,
+          to:    metadataValues.to,
+          total: metadataValues.total,
         }
       } catch (err: unknown) {
         catchResponse(err)
