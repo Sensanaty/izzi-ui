@@ -20,7 +20,7 @@ export default interface Part {
   lead_time?: string;
   quote_type?: string;
   tag: string;
-  added?: Date;
+  added?: Date | string;
   company_name: Company["name"];
   company_id: Company["id"];
   created_at: Date;

@@ -1,4 +1,6 @@
 import { defineStore } from "pinia";
+import dayjs from "dayjs";
+
 import { api } from "~/modules/fetch";
 import useAuthStore from "~/store/auth";
 import catchResponse from "~/modules/catchResponse";
@@ -33,6 +35,10 @@ const usePartStore = defineStore("part", {
         });
 
         this.parts = response.data.data;
+
+        this.parts.forEach(part => {
+          part.added = dayjs(part.added).format("DD/MM/YYYY");
+        })
 
         const metadataValues = response.data.metadata;
         this.metadata = {
