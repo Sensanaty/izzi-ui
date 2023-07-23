@@ -3,6 +3,14 @@
     <TableMetadata class="ml-4" :search="partSearchPassed" />
 
     <div class="inline-flex ml-auto items-center">
+      <button
+        class="h-1/2 mt-auto bg-sky-700 border-l-2 border-neutral-800 py-1 px-3 hover:bg-sky-800 disabled:bg-sky-900 disabled:cursor-not-allowed"
+        :disabled="!partSearchModel"
+        @click.prevent="clearSearch"
+      >
+        Clear
+      </button>
+
       <input
         ref="searchbar"
         v-model.trim="partSearchModel"
@@ -11,7 +19,13 @@
         class="h-1/2 w-[250px] mt-auto px-3 py-2 text-sm text-black font-mono"
         @keydown.enter.prevent="searchPartNumber"
       >
-      <button class="h-1/2 mt-auto mr-3 bg-sky-700 border-l-2 border-neutral-800 py-1 px-3 hover:bg-sky-800" @click.prevent="searchPartNumber">Search</button>
+
+      <button
+        class="h-1/2 mt-auto mr-3 bg-sky-700 border-l-2 border-neutral-800 py-1 px-3 hover:bg-sky-800"
+        @click.prevent="searchPartNumber"
+      >
+        Search
+      </button>
     </div>
   </div>
 
@@ -42,6 +56,11 @@
 
   const partSearchModel = ref("");
   const partSearchPassed = ref("");
+
+  async function clearSearch() {
+    partSearchModel.value = "";
+    await searchPartNumber();
+  }
 
   async function searchPartNumber() {
     partSearchPassed.value = partSearchModel.value;
