@@ -7,7 +7,7 @@
           <ph-pencil class="mx-auto cursor-pointer hover:text-green-500 active:text-green-600" :size="15" weight="duotone" />
         </div>
       </td>
-      <td class="px-1">{{ part.part_number }}</td>
+      <td class="px-1 font-mono">{{ part.part_number }}</td>
       <td>{{ part.company_name }}</td>
       <td class="text-center !text-xs font-mono">{{ part.added }}</td>
       <td class="px-1">{{ part.description }}</td>
