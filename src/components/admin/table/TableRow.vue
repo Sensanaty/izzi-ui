@@ -1,29 +1,29 @@
 <template class="flex flex-row">
   <tbody>
     <tr>
-      <td @click="copy" class="cursor-pointer active:text-green-600 transition-colors">
+      <td class="cursor-pointer active:text-green-600 transition-colors" @click="copy">
         <ph-clipboard-text class="mx-auto" :size="15" weight="fill" />
       </td>
-      <td v-if="headers.part_number" class="px-1">{{ part.part_number }}</td>
-      <td v-if="headers.company_name">{{ part.company_name }}</td>
-      <td v-if="headers.added" class="text-center">{{ part.added }}</td>
-      <td v-if="headers.description" class="px-1">{{ part.description }}</td>
-      <td v-if="headers.available" class="text-center">{{ part.available }}</td>
-      <td v-if="headers.reserved" class="text-center">{{ part.reserved }}</td>
-      <td v-if="headers.sold" class="text-center">{{ part.sold }}</td>
-      <td v-if="headers.condition" class="text-center">{{ part.condition }}</td>
-      <td v-if="headers.min_cost" class="text-center">{{ part.min_cost }}</td>
-      <td v-if="headers.min_price" class="text-center">{{ part.min_price }}</td>
-      <td v-if="headers.min_order" class="text-center">{{ part.min_order }}</td>
-      <td v-if="headers.med_cost" class="text-center">{{ part.med_cost }}</td>
-      <td v-if="headers.med_price" class="text-center">{{ part.med_price }}</td>
-      <td v-if="headers.med_order" class="text-center">{{ part.med_order }}</td>
-      <td v-if="headers.max_cost" class="text-center">{{ part.max_cost }}</td>
-      <td v-if="headers.max_price" class="text-center">{{ part.max_price }}</td>
-      <td v-if="headers.max_order" class="text-center">{{ part.max_order }}</td>
-      <td v-if="headers.lead_time">{{ part.lead_time }}</td>
-      <td v-if="headers.quote_type">{{ part.quote_type }}</td>
-      <td v-if="headers.tag">{{ part.tag }}</td>
+      <td class="px-1">{{ part.part_number }}</td>
+      <td>{{ part.company_name }}</td>
+      <td class="text-center">{{ part.added }}</td>
+      <td class="px-1">{{ part.description }}</td>
+      <td class="text-center">{{ part.available }}</td>
+      <td class="text-center">{{ part.reserved }}</td>
+      <td class="text-center">{{ part.sold }}</td>
+      <td class="text-center">{{ part.condition }}</td>
+      <td class="text-center">{{ part.min_cost }}</td>
+      <td class="text-center">{{ part.min_price }}</td>
+      <td class="text-center">{{ part.min_order }}</td>
+      <td class="text-center">{{ part.med_cost }}</td>
+      <td class="text-center">{{ part.med_price }}</td>
+      <td class="text-center">{{ part.med_order }}</td>
+      <td class="text-center">{{ part.max_cost }}</td>
+      <td class="text-center">{{ part.max_price }}</td>
+      <td class="text-center">{{ part.max_order }}</td>
+      <td>{{ part.lead_time }}</td>
+      <td>{{ part.quote_type }}</td>
+      <td>{{ part.tag }}</td>
     </tr>
   </tbody>
 </template>
@@ -33,11 +33,8 @@
 
   import { PhClipboardText } from "@phosphor-icons/vue";
 
-  import type { VisibleHeaders } from "~components/admin/types";
-
   const props = defineProps<{
     part: Part,
-    headers: VisibleHeaders,
   }>();
 
   async function copy() {
