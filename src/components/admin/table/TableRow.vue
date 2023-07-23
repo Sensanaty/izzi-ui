@@ -1,26 +1,29 @@
 <template class="flex flex-row">
   <tbody>
     <tr>
-      <td class="cursor-pointer active:text-green-600 transition-colors" @click="copy">
-        <ph-clipboard-text class="mx-auto" :size="15" weight="fill" />
+      <td>
+        <div class="flex flex-col items-center">
+          <ph-clipboard-text class="mx-auto cursor-pointer hover:text-green-500 active:text-green-600 mb-2" :size="15" weight="duotone" @click="copy" />
+          <ph-pencil class="mx-auto cursor-pointer hover:text-green-500 active:text-green-600" :size="15" weight="duotone" />
+        </div>
       </td>
       <td class="px-1">{{ part.part_number }}</td>
       <td>{{ part.company_name }}</td>
-      <td class="text-center">{{ part.added }}</td>
+      <td class="text-center !text-xs font-mono">{{ part.added }}</td>
       <td class="px-1">{{ part.description }}</td>
-      <td class="text-center">{{ part.available }}</td>
-      <td class="text-center">{{ part.reserved }}</td>
-      <td class="text-center">{{ part.sold }}</td>
-      <td class="text-center">{{ part.condition }}</td>
-      <td class="text-center">{{ part.min_cost }}</td>
-      <td class="text-center">{{ part.min_price }}</td>
-      <td class="text-center">{{ part.min_order }}</td>
-      <td class="text-center">{{ part.med_cost }}</td>
-      <td class="text-center">{{ part.med_price }}</td>
-      <td class="text-center">{{ part.med_order }}</td>
-      <td class="text-center">{{ part.max_cost }}</td>
-      <td class="text-center">{{ part.max_price }}</td>
-      <td class="text-center">{{ part.max_order }}</td>
+      <td class="text-center font-mono">{{ part.available }}</td>
+      <td class="text-center font-mono">{{ part.reserved }}</td>
+      <td class="text-center font-mono">{{ part.sold }}</td>
+      <td class="text-center font-mono">{{ part.condition }}</td>
+      <td class="text-center font-mono">{{ part.min_cost }}</td>
+      <td class="text-center font-mono">{{ part.min_price }}</td>
+      <td class="text-center font-mono">{{ part.min_order }}</td>
+      <td class="text-center font-mono">{{ part.med_cost }}</td>
+      <td class="text-center font-mono">{{ part.med_price }}</td>
+      <td class="text-center font-mono">{{ part.med_order }}</td>
+      <td class="text-center font-mono">{{ part.max_cost }}</td>
+      <td class="text-center font-mono">{{ part.max_price }}</td>
+      <td class="text-center font-mono">{{ part.max_order }}</td>
       <td>{{ part.lead_time }}</td>
       <td>{{ part.quote_type }}</td>
       <td>{{ part.tag }}</td>
@@ -29,13 +32,17 @@
 </template>
 
 <script lang="ts" setup>
-  import Part from "~/types/store/part";
+  import useNotificationStore from "~/store/notification";
 
-  import { PhClipboardText } from "@phosphor-icons/vue";
+  import { PhClipboardText, PhPencil } from "@phosphor-icons/vue";
+
+  import type Part from "~/types/store/part";
 
   const props = defineProps<{
     part: Part,
   }>();
+
+  const notifications = useNotificationStore();
 
   async function copy() {
     const keys = Object.keys(props.part) as Array<keyof Part>;
@@ -47,9 +54,13 @@
     try {
       await navigator.clipboard.writeText(text);
 
-      return Promise.resolve(true);
+      return Promise.resolve(true).then(() => {
+        notifications.createNotification(`Part ${props.part.part_number} copied to clipboard`, "succ");
+      });
     } catch (err) {
       console.error(err);
+
+      notifications.createNotification("Failed to copy part details, please try again", "dang");
 
       // eslint-disable-next-line prefer-promise-reject-errors
       return Promise.reject(false);
@@ -59,6 +70,6 @@
 
 <style scoped>
 td {
-  @apply break-words text-sm;
+  @apply break-words text-xs py-1;
 }
 </style>
