@@ -23,4 +23,6 @@ export default interface Part {
   added?: Date;
   company_name: Company["name"];
   company_id: Company["id"];
+  created_at: Date;
+  updated_at: Date;
 }

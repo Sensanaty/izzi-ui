@@ -47,8 +47,21 @@
   async function copy() {
     const keys = Object.keys(props.part) as Array<keyof Part>;
 
-    const text = keys.map((part) => {
-      return props.part[part];
+    const text = keys.flatMap((part) => {
+      if (
+        part === "id" ||
+        part === "company_id" ||
+        part  === "created_at" ||
+        part === "updated_at"
+      ) {
+        return [];
+      }
+
+      if (!props.part[part] || props.part[part] === "") {
+        return `${part}: N/A`;
+      } else {
+        return `${part}: ${props.part[part]}`;
+      }
     }).join("\n");
 
     try {
