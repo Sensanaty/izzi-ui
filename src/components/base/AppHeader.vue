@@ -4,23 +4,40 @@
       <RouterLink class="p-0" :to="auth.loggedIn ? '/admin' : '/'">IZZICUP</RouterLink>
     </h1>
 
-    <BaseButton v-if="!auth.loggedIn" class="ml-auto">
-      <RouterLink to="/login">LOGIN</RouterLink>
-    </BaseButton>
+    <div class="flex flex-row items-center ml-auto">
+      <ph-lightbulb-filament v-if="auth.loggedIn" :size="20" class="mr-5 cursor-pointer hover:text-yellow-400" @click="toggleShortcuts" />
 
-    <BaseButton v-else class="ml-auto" @click="logout">LOGOUT</BaseButton>
+      <BaseButton v-if="!auth.loggedIn" class="ml-auto">
+        <RouterLink to="/login">LOGIN</RouterLink>
+      </BaseButton>
+
+      <BaseButton v-else class="ml-auto" @click="logout">LOGOUT</BaseButton>
+    </div>
   </header>
+
+  <BaseModal :is-open="isModalOpen" title="Keyboard Shortcuts" @close="toggleShortcuts">
+    <p class="mb-4 font-mono font-bold"><code class="bg-stone-900 p-2 mr-3 rounded text-center">CTRL/⌘ + K</code> Focus on Searchbar</p>
+  </BaseModal>
 </template>
 
 <script setup lang="ts">
+  import { PhLightbulbFilament } from "@phosphor-icons/vue";
   import useAuthStore from "~/store/auth";
+  import useModal from "~/composables/useModal";
   import BaseButton from "~components/base/BaseButton.vue";
   import router from "~/modules/router";
+  import BaseModal from "~components/base/BaseModal.vue";
 
   const auth = useAuthStore();
 
   const logout = () => {
     auth.logout();
     router.push("/");
+  };
+
+  const { isModalOpen, toggleModal } = useModal();
+
+  const toggleShortcuts = () => {
+    toggleModal();
   };
 </script>

@@ -19,7 +19,8 @@ const usePartStore = defineStore("part", {
   actions: {
     async fetchParts(
       page: RequestMetadata["page"] = 1,
-      count: RequestMetadata["count"] = 25
+      count: RequestMetadata["count"] = 25,
+      query?: string
     ) {
       const { token } = useAuthStore();
 
@@ -31,6 +32,7 @@ const usePartStore = defineStore("part", {
           params: {
             count: count,
             page: page,
+            query: query
           }
         });
 

@@ -43,10 +43,14 @@
   const partStore = usePartStore();
   const { metadata } = storeToRefs(partStore);
 
+  const props = defineProps<{
+    search?: string
+  }>();
+
   async function fetchParts(page: RequestMetadata["page"] | null, count: RequestMetadata["count"], fetchType: FetchType) {
     if (!page || !shouldFetch(fetchType)) { return; }
 
-    await partStore.fetchParts(page, count);
+    await partStore.fetchParts(page, count, props.search);
   }
 
   function shouldFetch(fetchType: FetchType): boolean {
@@ -76,6 +80,6 @@
   }
 
   .btn {
-    @apply bg-amber-700 border-l-2 border-neutral-800 py-1 px-3 hover:bg-amber-800;
+    @apply bg-sky-700 border-l-2 border-neutral-800 py-1 px-3 hover:bg-sky-800;
   }
 </style>
