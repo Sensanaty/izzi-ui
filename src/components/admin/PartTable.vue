@@ -15,7 +15,7 @@
         ref="searchbar"
         v-model.trim="partSearchModel"
         type="text"
-        placeholder="Search Part Number"
+        placeholder="Part Number (CTRL/⌘ + K)"
         class="h-1/2 w-[250px] mt-auto px-3 py-2 text-sm text-black font-mono"
         @keydown.enter.prevent="searchPartNumber"
       >
