@@ -133,6 +133,18 @@
         type="text"
       />
     </div>
+
+    <div class="wrapper flex-wrap">
+      <div class="flex flex-row items-center">
+        <label for="created_at">Created At</label>
+        <p id="created_at" class="text-center">{{ dayjs(localPart.created_at).format('DD/MM/YYYY HH:MM:ss') }}</p>
+      </div>
+
+      <div class="flex flex-row items-center">
+        <label for="updated_at">Updated At</label>
+        <p id="updated_at" class="text-center">{{ dayjs(localPart.updated_at).format('DD/MM/YYYY HH:MM:ss') }}</p>
+      </div>
+    </div>
   </form>
 </template>
 
