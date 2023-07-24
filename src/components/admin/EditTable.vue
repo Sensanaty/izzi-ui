@@ -139,10 +139,9 @@
 <script lang="ts" setup>
   import { toRef } from "vue";
   import type Part from "~/types/store/part";
-  import BaseButton from "~components/base/BaseButton.vue";
 
   const props = defineProps<{
-    part: Part
+    part: Part | Partial<Part>
   }>();
 
   const localPart = toRef({ ...props.part });
