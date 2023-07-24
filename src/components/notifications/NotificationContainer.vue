@@ -16,8 +16,8 @@
 </template>
 
 <script lang="ts" setup>
-  import PopUp from "~components/notifications/PopUp.vue";
   import useNotificationStore from "~/store/notification.js";
+  import PopUp from "~components/notifications/PopUp.vue";
 
   const notifications = useNotificationStore();
 

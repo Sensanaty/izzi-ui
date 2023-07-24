@@ -34,8 +34,9 @@
 </template>
 
 <script lang="ts" setup>
-  import usePartStore from "~/store/part";
   import { storeToRefs } from "pinia";
+
+  import usePartStore from "~/store/part";
   import RequestMetadata from "~/types/requestMetadata";
 
   type FetchType = "prev" | "next" | "first" | "last" | "page";

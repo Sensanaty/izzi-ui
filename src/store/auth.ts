@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
-import { api } from "~/modules/fetch";
-import { User } from "~/types/store/auth";
-import { LoginData } from "~/types/endpoints";
-import useNotificationStore from "~/store/notification";
+
 import catchResponse from "~/modules/catchResponse";
+import { api } from "~/modules/fetch";
+import useNotificationStore from "~/store/notification";
+import { LoginData } from "~/types/endpoints";
+import { User } from "~/types/store/auth";
 
 const useAuthStore = defineStore("auth", {
   state: () => {

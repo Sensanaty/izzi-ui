@@ -33,11 +33,10 @@
 </template>
 
 <script lang="ts" setup>
-  import useNotificationStore from "~/store/notification";
+  import { PhClipboardText, PhPencil, PhQuotes } from "@phosphor-icons/vue";
   import { useRouter } from "vue-router";
 
-  import { PhClipboardText, PhPencil, PhQuotes } from "@phosphor-icons/vue";
-
+  import useNotificationStore from "~/store/notification";
   import type Part from "~/types/store/part";
   import { titleize } from "~/utils/stringUtils";
 

@@ -42,11 +42,11 @@
 <script async lang="ts" setup>
   import { storeToRefs } from "pinia";
   import { onMounted, ref } from "vue";
-  import usePartStore from "~/store/part";
 
-  import TableRow from "~components/admin/table/TableRow.vue";
-  import TableMetadata from "~components/admin/table/TableMetadata.vue";
+  import usePartStore from "~/store/part";
   import TableHeader from "~components/admin/table/TableHeader.vue";
+  import TableMetadata from "~components/admin/table/TableMetadata.vue";
+  import TableRow from "~components/admin/table/TableRow.vue";
 
   const partStore = usePartStore();
   const count = ref(25);

@@ -24,12 +24,13 @@
 </template>
 
 <script setup lang="ts">
-  import BaseButton from "~components/base/BaseButton.vue";
-  import { LoginData } from "~/types/endpoints";
   import { ref } from "vue";
+
+  import router from "~/modules/router";
   import useAuthStore from "~/store/auth";
   import useNotificationStore from "~/store/notification";
-  import router from "~/modules/router";
+  import { LoginData } from "~/types/endpoints";
+  import BaseButton from "~components/base/BaseButton.vue";
 
   const auth = useAuthStore();
   const notification = useNotificationStore();

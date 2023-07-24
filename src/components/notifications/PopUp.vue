@@ -14,11 +14,11 @@
 </template>
 
 <script lang="ts" setup>
-  import Notification from "~/types/store/notification";
-  import { onMounted } from "vue";
-  import { Motion } from "motion/vue";
-
   import type { AnimationOptionsWithOverrides } from "motion";
+  import { Motion } from "motion/vue";
+  import { onMounted } from "vue";
+
+  import Notification from "~/types/store/notification";
 
   const props = defineProps<{
     index: number,

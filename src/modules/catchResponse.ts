@@ -1,4 +1,5 @@
 import { AxiosError } from "axios";
+
 import useNotificationStore from "~/store/notification";
 
 // Generic function that will handle generic catches caused by exceptions in response attempts

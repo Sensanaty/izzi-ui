@@ -22,10 +22,11 @@
 
 <script setup lang="ts">
   import { PhLightbulbFilament } from "@phosphor-icons/vue";
-  import useAuthStore from "~/store/auth";
+
   import useModal from "~/composables/useModal";
-  import BaseButton from "~components/base/BaseButton.vue";
   import router from "~/modules/router";
+  import useAuthStore from "~/store/auth";
+  import BaseButton from "~components/base/BaseButton.vue";
   import BaseModal from "~components/base/BaseModal.vue";
 
   const auth = useAuthStore();

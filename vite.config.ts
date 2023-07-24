@@ -1,7 +1,7 @@
-import path from "path";
-import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import path from "path";
 import VueMacros from "unplugin-vue-macros/vite";
+import { defineConfig } from "vite";
 
 const resolvedPath = path.resolve(__dirname, "src");
 

@@ -9,11 +9,12 @@
 </template>
 
 <script lang="ts" async setup>
-  import { useRoute } from "vue-router";
-  import usePartStore from "~/store/part";
-  import { onBeforeMount, onBeforeUnmount, ref } from "vue";
+  import { PhArrowClockwise, PhArrowLeft } from "@phosphor-icons/vue";
   import { storeToRefs } from "pinia";
-  import { PhArrowLeft, PhArrowClockwise } from "@phosphor-icons/vue";
+  import { onBeforeMount, onBeforeUnmount, ref } from "vue";
+  import { useRoute } from "vue-router";
+
+  import usePartStore from "~/store/part";
   import EditTable from "~components/admin/EditTable.vue";
 
   const route = useRoute();
