@@ -7,7 +7,7 @@ export default interface Part {
   available: number;
   reserved: number;
   sold: number;
-  condition: boolean;
+  condition: string;
   min_cost: number;
   min_price: number;
   min_order: number;
