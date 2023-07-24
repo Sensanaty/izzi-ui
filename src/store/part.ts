@@ -55,8 +55,46 @@ const usePartStore = defineStore("part", {
           total: metadataValues.total,
         }
       } catch (err: unknown) {
-        catchResponse(err)
+        catchResponse(err);
       }
+    },
+
+    async fetchPart(id: Part["id"]) {
+      const { token } = useAuthStore();
+
+      try {
+        const response = await api.get(`parts/${id}`, {
+          headers: {
+            "Authorization": token || window.localStorage.getItem("token")
+          }
+        });
+
+        this.activePart = response.data.data;
+      } catch(err: unknown) {
+        catchResponse(err);
+      }
+    },
+
+    async updatePart(payload: Part) {
+      const { token } = useAuthStore();
+
+      try {
+        await api.post(`parts/${payload.id}`, payload,{
+          headers: {
+            "Authorization": token || window.localStorage.getItem("token")
+          }
+        }).then(() => {
+          return true;
+        })
+      } catch(err: unknown) {
+        catchResponse(err);
+
+        return false;
+      }
+    },
+
+    resetPart() {
+      this.activePart = {};
     }
   },
 });

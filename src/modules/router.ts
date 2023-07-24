@@ -8,7 +8,8 @@ const publicRoutes = [
 ];
 
 const authRoutes = [
-  { path: "/admin", name: "AdminHome", component: () => import("../pages/admin/index.vue"), meta: { auth: true } }
+  { path: "/admin", name: "AdminHome", component: () => import("../pages/admin/index.vue"), meta: { auth: true } },
+  { path: "/admin/:partId/edit", name: "PartEdit", component: () => import("../pages/admin/parts/Edit.vue"), meta: { auth: true } }
 ];
 
 const router = createRouter({
