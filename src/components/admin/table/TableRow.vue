@@ -1,10 +1,11 @@
 <template class="flex flex-row">
   <tbody>
-    <tr>
+    <tr class="hover:bg-stone-800">
       <td>
         <div class="flex flex-col items-center">
-          <ph-clipboard-text class="mx-auto cursor-pointer hover:text-green-500 active:text-green-600 mb-2" :size="15" weight="duotone" @click="copy" />
-          <ph-pencil class="mx-auto cursor-pointer hover:text-green-500 active:text-green-600" :size="15" weight="duotone" />
+          <ph-pencil class="icon mb-2" :size="15" weight="duotone" @click="editPart" />
+          <ph-clipboard-text class="icon mb-2" :size="15" weight="duotone" @click="copy" />
+          <ph-quotes class="icon" :size="15" weigth="duotone" @click="copyQuote" />
         </div>
       </td>
       <td class="px-1 font-mono">{{ part.part_number }}</td>
@@ -33,16 +34,24 @@
 
 <script lang="ts" setup>
   import useNotificationStore from "~/store/notification";
+  import { useRouter } from "vue-router";
 
-  import { PhClipboardText, PhPencil } from "@phosphor-icons/vue";
+  import { PhClipboardText, PhPencil, PhQuotes } from "@phosphor-icons/vue";
 
   import type Part from "~/types/store/part";
+  import { titleize } from "~/utils/stringUtils";
 
   const props = defineProps<{
     part: Part,
   }>();
 
   const notifications = useNotificationStore();
+
+  const router = useRouter();
+
+  function editPart() {
+    router.push({ path: `/admin/${props.part.id}/edit` });
+  }
 
   async function copy() {
     const keys = Object.keys(props.part) as Array<keyof Part>;
@@ -70,13 +79,38 @@
       return Promise.resolve(true).then(() => {
         notifications.createNotification(`Part ${props.part.part_number} copied to clipboard`, "succ");
       });
-    } catch (err) {
+    } catch (err: unknown) {
       console.error(err);
 
       notifications.createNotification("Failed to copy part details, please try again", "dang");
 
-      // eslint-disable-next-line prefer-promise-reject-errors
-      return Promise.reject(false);
+      return Promise.reject(err);
+    }
+  }
+
+  async function copyQuote() {
+    const keys = ["part_number", "description", "available", "condition", "min_cost", "min_order", "med_cost", "med_order", "max_cost", "max_order", "lead_time", "quote_type", "tag"] as Array<keyof Part>;
+
+    const text = keys.map((key) => {
+      if (/.*cost/.test(key)) {
+        return `${titleize(key)}: ${props.part[key]} | `;
+      } else {
+        return `${titleize(key)}: ${props.part[key]}\n`;
+      }
+    }).join("");
+
+    try {
+      await navigator.clipboard.writeText(text);
+
+      return Promise.resolve(true).then(() => {
+        notifications.createNotification(`Quote Details for ${props.part.part_number} copied`, "succ");
+      });
+    } catch (err: unknown) {
+      console.error(err);
+
+      notifications.createNotification("Failed to copy part details, please try again", "dang");
+
+      return Promise.reject(err);
     }
   }
 </script>
@@ -84,5 +118,9 @@
 <style scoped>
 td {
   @apply break-words text-xs py-1;
+}
+
+.icon {
+  @apply mx-auto cursor-pointer hover:text-green-500 active:text-green-600 mb-2
 }
 </style>
