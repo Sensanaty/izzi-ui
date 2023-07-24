@@ -12,7 +12,8 @@ const usePartStore = defineStore("part", {
   state: () => {
     return {
       parts: [] as Part[],
-      metadata: {} as RequestMetadata
+      metadata: {} as RequestMetadata,
+      activePart: {} as Part | Partial<Part>,
     };
   },
 
