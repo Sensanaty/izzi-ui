@@ -121,6 +121,6 @@ td {
 }
 
 .icon {
-  @apply mx-auto cursor-pointer hover:text-green-500 active:text-green-600 mb-2
+  @apply mx-auto cursor-pointer hover:text-green-500 active:text-green-600 mb-2;
 }
 </style>
