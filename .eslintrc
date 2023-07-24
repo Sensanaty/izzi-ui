@@ -16,7 +16,7 @@
     "parser": "@typescript-eslint/parser",
     "sourceType": "module"
   },
-  "plugins": ["vue", "@typescript-eslint"],
+  "plugins": ["vue", "@typescript-eslint", "simple-import-sort"],
   "rules": {
     "quotes": ["warn", "double"],
     "indent": ["warn", 2],
@@ -28,7 +28,9 @@
     "prefer-promise-reject-errors": ["error", { "allowEmptyReject": true }],
     "@typescript-eslint/ban-ts-comment": "off",
     "vue/max-attributes-per-line": [ "warn", { "singleline": { "max": 6 } }],
-    "object-curly-spacing": ["warn", "always"]
+    "object-curly-spacing": ["warn", "always"],
+    "simple-import-sort/imports": "warn",
+    "simple-import-sort/exports": "warn"
   },
   "ignorePatterns": ["**/*.svg"],
   "overrides": [
