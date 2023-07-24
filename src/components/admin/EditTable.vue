@@ -149,7 +149,9 @@
 </template>
 
 <script lang="ts" setup>
+  import dayjs from "dayjs";
   import { toRef } from "vue";
+
   import type Part from "~/types/store/part";
 
   const props = defineProps<{
