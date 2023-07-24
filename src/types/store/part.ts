@@ -1,7 +1,7 @@
 import Company from "~/types/store/company";
 
 export default interface Part {
-  id: number;
+  readonly id: number;
   part_number: string;
   description: string;
   available: number;
@@ -20,6 +20,7 @@ export default interface Part {
   lead_time?: string;
   quote_type?: string;
   tag: string;
+  internal_note: string;
   added?: Date | string;
   company_name: Company["name"];
   company_id: Company["id"];
