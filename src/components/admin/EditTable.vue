@@ -16,7 +16,7 @@
         v-model="localPart.part_number"
         type="text"
         class="w-[400px]"
-        :placeholder="part.part_number"
+        :placeholder="part.part_number ?? 'ABC'"
         :class="{ error: formErrors.part_number }"
         required
       >
@@ -58,7 +58,6 @@
         v-model="localPart.available"
         class="max-w-[90px]"
         type="number"
-        :placeholder="String(part.available)"
         :class="{ error: formErrors.available }"
         required
       >
@@ -66,12 +65,12 @@
 
     <div class="wrapper">
       <label for="reserved">Reserved</label>
-      <input id="reserved" v-model="localPart.reserved" class="max-w-[90px]" type="number" :placeholder="String(part.reserved)">
+      <input id="reserved" v-model="localPart.reserved" class="max-w-[90px]" type="number">
     </div>
 
     <div class="wrapper">
       <label for="sold">Sold</label>
-      <input id="sold" v-model="localPart.sold" class="max-w-[90px]" type="number" :placeholder="String(part.reserved)">
+      <input id="sold" v-model="localPart.sold" class="max-w-[90px]" type="number">
     </div>
 
     <div class="wrapper">
@@ -81,7 +80,6 @@
         v-model="localPart.condition"
         class="max-w-[110px]"
         type="text"
-        :placeholder="part.condition"
         :class="{ error: formErrors.condition }"
         required
       >
@@ -95,7 +93,6 @@
           v-model="localPart.min_cost"
           type="number"
           class="max-w-[130px] mr-4"
-          :placeholder="String(part.min_cost)"
           :class="{ error: formErrors.min_cost }"
           required
         >
@@ -108,7 +105,6 @@
           v-model="localPart.min_price"
           type="number"
           class="max-w-[130px] mr-4"
-          :placeholder="String(part.min_price)"
           :class="{ error: formErrors.min_price }"
           required
         >
@@ -121,7 +117,6 @@
           v-model="localPart.min_order"
           type="number"
           class="max-w-[130px] mr-4"
-          :placeholder="String(part.min_order)"
           :class="{ error: formErrors.min_order }"
           required
         >
@@ -136,7 +131,6 @@
           v-model="localPart.med_cost"
           type="number"
           class="max-w-[130px] mr-4"
-          :placeholder="String(part.med_cost)"
           :class="{ error: formErrors.med_cost }"
           required
         >
@@ -149,7 +143,6 @@
           v-model="localPart.med_price"
           type="number"
           class="max-w-[130px] mr-4"
-          :placeholder="String(part.med_price)"
           :class="{ error: formErrors.med_price }"
           required
         >
@@ -162,7 +155,6 @@
           v-model="localPart.med_order"
           type="number"
           class="max-w-[130px] mr-4"
-          :placeholder="String(part.med_order)"
           :class="{ error: formErrors.med_order }"
           required
         >
@@ -177,7 +169,6 @@
           v-model="localPart.max_cost"
           type="number"
           class="max-w-[130px] mr-4"
-          :placeholder="String(part.max_cost)"
           :class="{ error: formErrors.max_cost }"
           required
         >
@@ -190,7 +181,6 @@
           v-model="localPart.max_price"
           type="number"
           class="max-w-[130px] mr-4"
-          :placeholder="String(part.max_price)"
           :class="{ error: formErrors.max_price }"
           required
         >
@@ -203,7 +193,6 @@
           v-model="localPart.max_order"
           type="number"
           class="max-w-[130px] mr-4"
-          :placeholder="String(part.max_order)"
           :class="{ error: formErrors.max_order }"
           required
         >
@@ -216,7 +205,7 @@
         id="lead_time"
         v-model="localPart.lead_time"
         type="text"
-        :placeholder="part.lead_time"
+        :placeholder="part.lead_time ?? 'NE'"
         :class="{ error: formErrors.lead_time }"
         required
       >
@@ -228,7 +217,7 @@
         id="quote_type"
         v-model="localPart.quote_type"
         type="text"
-        :placeholder="part.quote_type"
+        :placeholder="part.quote_type ?? 'OUTRIGHT SALE'"
         :class="{ error: formErrors.quote_type }"
         required
       >
@@ -286,7 +275,8 @@
   const router = useRouter();
 
   const props = defineProps<{
-    part: Part | Partial<Part>
+    part: Partial<Part>,
+    isNew: boolean
   }>();
   const localPart = toRef({ ...props.part });
 
@@ -340,11 +330,13 @@
     isSaveDisabled.value = true;
     const payload = localPart.value;
 
+    if (props.isNew) { payload.company_id = 1; }
+
     delete payload.created_at;
     delete payload.updated_at;
     delete payload.company_name;
 
-    await partStore.updatePart(payload).then(() => {
+    await partStore.updatePart(payload, props.isNew).then(() => {
       notification.createNotification(`${localPart.value.part_number} Updated Successfuly`, "succ");
       isSaveDisabled.value = false;
 
@@ -393,7 +385,7 @@ label:has(+ input:required):after, label:has(+ textarea:required):after {
 }
 
 label {
-  @apply mr-3 min-w-[190px] bg-stone-700 px-2 py-1;
+  @apply mr-3 min-w-[215px] bg-stone-700 px-2 py-1;
 }
 
 input[type="number"]::-webkit-outer-spin-button,

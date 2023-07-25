@@ -12,7 +12,7 @@ const usePartStore = defineStore("part", {
     return {
       parts: [] as Part[],
       metadata: {} as RequestMetadata,
-      activePart: {} as Part | Partial<Part>,
+      activePart: {} as Partial<Part>,
     };
   },
 
@@ -74,15 +74,14 @@ const usePartStore = defineStore("part", {
       }
     },
 
-    async updatePart(payload: Part | Partial<Part>) {
+    async updatePart(payload: Part | Partial<Part>, create = false) {
       const { token } = useAuthStore();
+      const headers = { "Authorization": token || window.localStorage.getItem("token") }
 
       try {
-        const response = await api.patch(`parts/${payload.id}`, payload,{
-          headers: {
-            "Authorization": token || window.localStorage.getItem("token")
-          }
-        })
+        const response = create ?
+          await api.post("parts", payload, { headers }) :
+          await api.patch(`parts/${payload.id}`, payload,{ headers })
 
         this.activePart = response.data.data;
 

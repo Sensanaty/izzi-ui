@@ -1,7 +1,8 @@
 <template>
   <header class="flex items-center bg-neutral-800 w-full h-14 px-4 mb-4">
-    <h1 class="font-bold text-center text-2xl hover:text-amber-400">
-      <RouterLink class="p-0" :to="auth.loggedIn ? '/admin' : '/'">IZZICUP</RouterLink>
+    <h1 class="font-bold text-center">
+      <RouterLink class="mr-12 text-2xl hover:text-amber-400" :to="auth.loggedIn ? '/admin' : '/'">IZZICUP</RouterLink>
+      <RouterLink class="text-xl hover:text-amber-400" to="/admin/new">New Part</RouterLink>
     </h1>
 
     <div class="flex flex-row items-center ml-auto">

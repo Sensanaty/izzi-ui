@@ -5,7 +5,7 @@
   </div>
 
   <ph-arrow-clockwise v-if="isFetching" class="mx-auto animate-spin" :size="50" />
-  <EditTable v-else class="mx-auto mb-4" :part="activePart" />
+  <EditTable v-else class="mx-auto mb-4" :part="activePart" :is-new="false" />
 </template>
 
 <script lang="ts" async setup>
