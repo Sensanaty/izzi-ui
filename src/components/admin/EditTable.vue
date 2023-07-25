@@ -26,8 +26,19 @@
       <label for="company_name">Owner <span class="text-red-500">*</span></label>
 
       <Suspense>
-        <CompanySearch @set-company="setCompany" />
+        <CompanySearch class="mr-4" @set-company="setCompany" />
       </Suspense>
+
+      <BaseButton class="mr-3" @click.prevent="toggleCompanyEditModal">Edit Company</BaseButton>
+      <BaseButton @click.prevent="toggleCompanyModal">New Company</BaseButton>
+
+      <BaseModal :is-open="isCompanyEditModalOpen" title="Edit Company" large @close="toggleCompanyEditModal">
+        <CompanyEdit class="bg-stone-900 p-3" :is-new="false" />
+      </BaseModal>
+
+      <BaseModal :is-open="isCompanyModalOpen" title="Create new Company" large @close="toggleCompanyModal">
+        <CompanyEdit class="bg-stone-900 p-3" :is-new="true" />
+      </BaseModal>
     </div>
 
     <div class="wrapper">
@@ -268,9 +279,12 @@
   import CompanySearch from "~components/admin/table/CompanySearch.vue";
   import BaseButton from "~components/base/BaseButton.vue";
   import BaseModal from "~components/base/BaseModal.vue";
+  import CompanyEdit from "~components/Companies/CompanyEdit.vue";
+  import useCompanyStore from "~/store/company";
 
   const partStore = usePartStore();
   const notification = useNotificationStore();
+  const companyStore = useCompanyStore();
   const router = useRouter();
 
   const props = defineProps<{
@@ -345,7 +359,14 @@
     });
   }
 
-  const { toggleModal, isModalOpen } = useModal();
+  const { isModalOpen, toggleModal } = useModal();
+  const isCompanyModalOpen = ref(false);
+  const toggleCompanyModal = () => { isCompanyModalOpen.value = !isCompanyModalOpen.value; };
+  const isCompanyEditModalOpen = ref(false);
+  const toggleCompanyEditModal = () => {
+    companyStore.activeCompany = companyStore.companies.find((company) => company.id === localPart.value.company_id) as Partial<Company>;
+    isCompanyEditModalOpen.value = !isCompanyEditModalOpen.value;
+  };
 
   type EditOptions = { redirectAfterSaving: boolean }
 

@@ -9,7 +9,7 @@ const useCompanyStore = defineStore("company", {
   state: () => {
     return {
       companies: [] as Company[],
-      activePart: {} as Partial<Company>,
+      activeCompany: {} as Partial<Company>,
       fetched: false
     }
   },
