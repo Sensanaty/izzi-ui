@@ -1,5 +1,5 @@
 <template>
-  <form class="flex flex-col w-[70%] p-2 bg-stone-800 border border-gray-600 font-mono font-bold">
+  <div class="flex flex-col w-[70%] p-2 bg-stone-800 border border-gray-600 font-mono font-bold">
     <div class="wrapper">
       <label>ID</label>
       <input v-model="localPart.id" type="text" class="bg-transparent !text-white" disabled>
@@ -263,7 +263,7 @@
         <input id="redirectAfterSaving" class="my-auto align-middle" type="checkbox" :checked="editOptions.redirectAfterSaving" @change="setEditOption('redirectAfterSaving', (<HTMLInputElement>$event.target).checked)">
       </div>
     </BaseModal>
-  </form>
+  </div>
 </template>
 
 <script lang="ts" setup>
