@@ -8,6 +8,6 @@
 
 <script setup lang="ts">
   import { PhArrowLeft } from "@phosphor-icons/vue";
-  import { ref } from "vue/dist/vue";
+
   import EditTable from "~components/admin/EditTable.vue";
 </script>

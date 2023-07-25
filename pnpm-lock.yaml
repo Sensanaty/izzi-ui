@@ -23,6 +23,9 @@ dependencies:
   pinia:
     specifier: ^2.1.4
     version: 2.1.4(typescript@5.1.6)(vue@3.3.4)
+  primevue:
+    specifier: ^3.31.0
+    version: 3.31.0(vue@3.3.4)
   vue:
     specifier: ^3.3.4
     version: 3.3.4
@@ -2808,6 +2811,14 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
     dev: true
+
+  /primevue@3.31.0(vue@3.3.4):
+    resolution: {integrity: sha512-4+NHYJ7enPDK/tcZAmVxWfSD3ciGK0NDtw68maFnBnWsXrWnQeiQfD6pOqyguesuIu4fOfO5JHZTGsqHuAL81A==}
+    peerDependencies:
+      vue: ^3.0.0
+    dependencies:
+      vue: 3.3.4
+    dev: false
 
   /proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}

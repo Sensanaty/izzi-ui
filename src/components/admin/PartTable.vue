@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<script async lang="ts" setup>
+<script lang="ts" setup>
   import { storeToRefs } from "pinia";
   import { onMounted, ref } from "vue";
 

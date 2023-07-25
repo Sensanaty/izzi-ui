@@ -23,14 +23,11 @@
     </div>
 
     <div class="wrapper">
-      <label for="company_name">Owner</label>
-      <input
-        id="company_name"
-        :value="part.company_name"
-        type="text"
-        class="w-[400px]"
-        disabled
-      >
+      <label for="company_name">Owner <span class="text-red-500">*</span></label>
+
+      <Suspense>
+        <CompanySearch @set-company="setCompany" />
+      </Suspense>
     </div>
 
     <div class="wrapper">
@@ -266,7 +263,9 @@
   import useModal from "~/composables/useModal";
   import useNotificationStore from "~/store/notification";
   import usePartStore from "~/store/part";
+  import type Company from "~/types/store/company";
   import type Part from "~/types/store/part";
+  import CompanySearch from "~components/admin/table/CompanySearch.vue";
   import BaseButton from "~components/base/BaseButton.vue";
   import BaseModal from "~components/base/BaseModal.vue";
 
@@ -359,6 +358,10 @@
 
     editOptions.value[option] = save;
   };
+
+  function setCompany(id: Company["id"]) {
+    localPart.value.company_id = id;
+  }
 </script>
 
 <style scoped>

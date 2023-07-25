@@ -6,6 +6,7 @@ import useAuthStore from "~/store/auth";
 import "./index.css";
 import App from "./App.vue";
 import { createHead } from "@vueuse/head";
+import PrimeVue from "primevue/config";
 
 const pinia = createPinia();
 const app = createApp(App);
@@ -15,6 +16,7 @@ app
   .use(router)
   .use(pinia)
   .use(head)
+  .use(PrimeVue)
   .mount("#app");
 
 router.beforeEach((to) => {
