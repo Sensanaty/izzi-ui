@@ -7,12 +7,12 @@
 
     <div class="wrapper">
       <label for="part_number">Part Number</label>
-      <input id="part_number" v-model="localPart.part_number" type="text" :placeholder="part.part_number">
+      <input id="part_number" v-model="localPart.part_number" type="text" :placeholder="part.part_number" required>
     </div>
 
     <div class="wrapper">
       <label for="company_name">Owner</label>
-      <input id="company_name" v-model="localPart.company_name" type="text" :placeholder="part.company_name">
+      <input id="company_name" v-model="localPart.company_name" type="text" :placeholder="part.company_name" required>
     </div>
 
     <div class="wrapper">
@@ -28,12 +28,13 @@
         cols="40"
         rows="4"
         type="text"
+        required
       />
     </div>
 
     <div class="wrapper">
       <label for="available">Available Quantity</label>
-      <input id="available" v-model="localPart.available" class="max-w-[90px]" type="number" :placeholder="String(part.available)">
+      <input id="available" v-model="localPart.available" class="max-w-[90px]" type="number" :placeholder="String(part.available)" required>
     </div>
 
     <div class="wrapper">
@@ -48,68 +49,68 @@
 
     <div class="wrapper">
       <label for="condition">Condition</label>
-      <input id="condition" v-model="localPart.condition" class="max-w-[110px]" type="text" :placeholder="part.condition">
+      <input id="condition" v-model="localPart.condition" class="max-w-[110px]" type="text" :placeholder="part.condition" required>
     </div>
 
     <div class="wrapper flex-wrap border-t border-gray-600 pt-3">
       <div class="flex flex-row items-center">
         <label for="min_cost">Cost of Goods 1</label>
-        <input id="min_cost" v-model="localPart.min_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.min_cost)">
+        <input id="min_cost" v-model="localPart.min_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.min_cost)" required>
       </div>
 
       <div class="flex flex-row items-center">
         <label for="min_price">Sales Price 1</label>
-        <input id="min_price" v-model="localPart.min_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.min_price)">
+        <input id="min_price" v-model="localPart.min_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.min_price)" required>
       </div>
 
       <div class="flex flex-row items-center">
         <label for="min_order">Minimum Order 1</label>
-        <input id="min_order" v-model="localPart.min_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.min_order)">
+        <input id="min_order" v-model="localPart.min_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.min_order)" required>
       </div>
     </div>
 
     <div class="wrapper flex-wrap">
       <div class="flex flex-row items-center">
         <label for="med_cost">Cost of Goods 2</label>
-        <input id="med_cost" v-model="localPart.med_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_cost)">
+        <input id="med_cost" v-model="localPart.med_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_cost)" required>
       </div>
 
       <div class="flex flex-row items-center">
         <label for="med_price">Sales Price 2</label>
-        <input id="med_price" v-model="localPart.med_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_price)">
+        <input id="med_price" v-model="localPart.med_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_price)" required>
       </div>
 
       <div class="flex flex-row items-center">
         <label for="med_order">Minimum Order 2</label>
-        <input id="med_order" v-model="localPart.med_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_order)">
+        <input id="med_order" v-model="localPart.med_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_order)" required>
       </div>
     </div>
 
     <div class="wrapper flex-wrap border-b border-gray-600 pb-3">
       <div class="flex flex-row items-center">
         <label for="max_cost">Cost of Goods 3</label>
-        <input id="max_cost" v-model="localPart.max_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_cost)">
+        <input id="max_cost" v-model="localPart.max_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_cost)" required>
       </div>
 
       <div class="flex flex-row items-center">
         <label for="max_price">Sales Price 3</label>
-        <input id="max_price" v-model="localPart.max_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_price)">
+        <input id="max_price" v-model="localPart.max_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_price)" required>
       </div>
 
       <div class="flex flex-row items-center">
         <label for="max_order">Minimum Order 3</label>
-        <input id="max_order" v-model="localPart.max_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_order)">
+        <input id="max_order" v-model="localPart.max_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_order)" required>
       </div>
     </div>
 
     <div class="wrapper">
       <label for="lead_time">Lead Time</label>
-      <input id="lead_time" v-model="localPart.lead_time" type="text" :placeholder="part.lead_time">
+      <input id="lead_time" v-model="localPart.lead_time" type="text" :placeholder="part.lead_time" required>
     </div>
 
     <div class="wrapper">
       <label for="quote_type">Quote Type</label>
-      <input id="quote_type" v-model="localPart.quote_type" type="text" :placeholder="part.quote_type">
+      <input id="quote_type" v-model="localPart.quote_type" type="text" :placeholder="part.quote_type" required>
     </div>
 
     <div class="wrapper">
@@ -120,6 +121,7 @@
         cols="40"
         rows="4"
         type="text"
+        required
       />
     </div>
 
@@ -140,7 +142,7 @@
         <p id="created_at" class="text-center">{{ dayjs(localPart.created_at).format('DD/MM/YYYY HH:MM:ss') }}</p>
       </div>
 
-      <div class="flex flex-row items-center">
+      <div class="flex flex-row items-center ml-3">
         <label for="updated_at">Updated At</label>
         <p id="updated_at" class="text-center">{{ dayjs(localPart.updated_at).format('DD/MM/YYYY HH:MM:ss') }}</p>
       </div>
