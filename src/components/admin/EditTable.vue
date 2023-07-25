@@ -70,35 +70,35 @@
 
     <div class="wrapper flex-wrap">
       <div class="flex flex-row items-center">
-        <label for="min_cost">Cost of Goods 2</label>
-        <input id="min_cost" v-model="localPart.med_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_cost)">
+        <label for="med_cost">Cost of Goods 2</label>
+        <input id="med_cost" v-model="localPart.med_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_cost)">
       </div>
 
       <div class="flex flex-row items-center">
-        <label for="min_price">Sales Price 2</label>
-        <input id="min_price" v-model="localPart.med_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_price)">
+        <label for="med_price">Sales Price 2</label>
+        <input id="med_price" v-model="localPart.med_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_price)">
       </div>
 
       <div class="flex flex-row items-center">
-        <label for="min_order">Minimum Order 2</label>
-        <input id="min_order" v-model="localPart.med_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_order)">
+        <label for="med_order">Minimum Order 2</label>
+        <input id="med_order" v-model="localPart.med_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_order)">
       </div>
     </div>
 
     <div class="wrapper flex-wrap border-b border-gray-600 pb-3">
       <div class="flex flex-row items-center">
-        <label for="min_cost">Cost of Goods 3</label>
-        <input id="min_cost" v-model="localPart.max_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_cost)">
+        <label for="max_cost">Cost of Goods 3</label>
+        <input id="max_cost" v-model="localPart.max_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_cost)">
       </div>
 
       <div class="flex flex-row items-center">
-        <label for="min_price">Sales Price 3</label>
-        <input id="min_price" v-model="localPart.max_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_price)">
+        <label for="max_price">Sales Price 3</label>
+        <input id="max_price" v-model="localPart.max_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_price)">
       </div>
 
       <div class="flex flex-row items-center">
-        <label for="min_order">Minimum Order 3</label>
-        <input id="min_order" v-model="localPart.max_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_order)">
+        <label for="max_order">Minimum Order 3</label>
+        <input id="max_order" v-model="localPart.max_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_order)">
       </div>
     </div>
 
