@@ -1,7 +1,7 @@
 <template>
   <button
-    class="flex items-center justify-center leading-tight py-1.5 px-3 rounded uppercase"
-    :class="[`${backgroundColor}`, `${backgroundHover}`, `${backgroundActive}`, hasDarkText ? 'text-black' : 'text-white']"
+    class="flex items-center justify-center leading-tight py-1.5 px-3 rounded uppercase disabled:cursor-not-allowed"
+    :class="[`${backgroundColor}`, `${backgroundHover}`, `${backgroundActive}`, `${backgroundDisabled}`, hasDarkText ? 'text-black' : 'text-white']"
   >
     <slot />
   </button>
@@ -26,6 +26,12 @@
         return /^active:bg-[a-z].+-[1-9]00$/.test(value);
       },
       default: "active:bg-cyan-800"
+    },
+    backgroundDisabled: {
+      validator(value: string): boolean {
+        return /^disabled:bg-[a-z].+-[1-9]00$/.test(value);
+      },
+      default: "disabled:bg-cyan-900"
     },
     hasDarkText: {
       type: Boolean,
