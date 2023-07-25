@@ -5,13 +5,16 @@ import router from "~/modules/router";
 import useAuthStore from "~/store/auth";
 import "./index.css";
 import App from "./App.vue";
+import { createHead } from "@vueuse/head";
 
 const pinia = createPinia();
 const app = createApp(App);
+const head = createHead();
 
 app
   .use(router)
   .use(pinia)
+  .use(head)
   .mount("#app");
 
 router.beforeEach((to) => {
