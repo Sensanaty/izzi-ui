@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center">
+  <div class="flex flex-col items-center w-[600px]">
     <div class="container">
       <div class="flex flex-row items-center justify-end">
         <button class="btn" @click.prevent="fetchParts(1, metadata.count, 'first')">first</button>
@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <div class="flex flex-row items-center">
+    <div class="flex flex-row items-center mr-auto">
       <select v-model.lazy.number="metadata.count" class="text-black mr-3 px-1 w-12 text-center" @change="setCount">
         <option value="5">5</option>
         <option value="10">10</option>
@@ -28,7 +28,7 @@
         <option value="100">100</option>
       </select>
 
-      <p>Showing {{ metadata.from }} to {{ metadata.to }} of {{ metadata.total }} total, page {{ metadata.page }} of {{ metadata.last }}</p>
+      <p class="font-mono">Showing {{ metadata.from }} to {{ metadata.to }} of {{ metadata.total }} total, page {{ metadata.page }} of {{ metadata.last }}</p>
     </div>
   </div>
 </template>
@@ -76,7 +76,7 @@
 
 <style scoped>
   .container {
-    @apply grid mb-4 w-fit;
+    @apply grid mb-4 w-fit mr-auto;
     grid-template: 1fr / 2fr 0.5fr 2fr ;
   }
 
