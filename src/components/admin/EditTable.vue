@@ -3,6 +3,10 @@
     <div class="wrapper">
       <label>ID</label>
       <input v-model="localPart.id" type="text" class="bg-transparent !text-white" disabled>
+
+      <div class="flex flex-row ml-auto items-center justify-center">
+        <ph-gear-six class="ml-auto cursor-pointer hover:text-green-500 active:text-green-600 mb-2" :size="32" @click="toggleModal" />
+      </div>
     </div>
 
     <div class="wrapper">
@@ -136,31 +140,79 @@
       />
     </div>
 
-    <div class="wrapper flex-wrap">
-      <div class="flex flex-row items-center">
-        <label for="created_at">Created At</label>
-        <p id="created_at" class="text-center">{{ dayjs(localPart.created_at).format('DD/MM/YYYY HH:MM:ss') }}</p>
-      </div>
+    <BaseButton class="mx-auto my-3 text-2xl" :disabled="isSaveDisabled" @click.prevent="savePart">Save</BaseButton>
 
-      <div class="flex flex-row items-center ml-3">
-        <label for="updated_at">Updated At</label>
-        <p id="updated_at" class="text-center">{{ dayjs(localPart.updated_at).format('DD/MM/YYYY HH:MM:ss') }}</p>
+    <BaseModal :is-open="isModalOpen" title="Editing Options" @close="toggleModal">
+      <div class="flex flex-row items-center">
+        <label for="redirectAfterSaving" class="!bg-transparent mr-4 text-xl cursor-pointer">Redirect after saving</label>
+        <input id="redirectAfterSaving" class="my-auto align-middle" type="checkbox" :checked="editOptions.redirectAfterSaving" @change="setEditOption('redirectAfterSaving', (<HTMLInputElement>$event.target).checked)">
       </div>
-    </div>
+    </BaseModal>
   </form>
 </template>
 
 <script lang="ts" setup>
-  import dayjs from "dayjs";
-  import { toRef } from "vue";
+  import { PhGearSix } from "@phosphor-icons/vue";
+  import { ref, toRef } from "vue";
+  import { useRouter } from "vue-router";
 
+  import useModal from "~/composables/useModal";
+  import useNotificationStore from "~/store/notification";
+  import usePartStore from "~/store/part";
   import type Part from "~/types/store/part";
+  import BaseButton from "~components/base/BaseButton.vue";
+  import BaseModal from "~components/base/BaseModal.vue";
+
+  const partStore = usePartStore();
+  const notification = useNotificationStore();
+  const router = useRouter();
 
   const props = defineProps<{
     part: Part | Partial<Part>
   }>();
-
   const localPart = toRef({ ...props.part });
+
+  const isSaveDisabled = ref(false);
+
+  const shouldSave = (): boolean => {
+    return true;
+  };
+
+  async function savePart() {
+    if (isSaveDisabled.value || !shouldSave()) {
+      return;
+    }
+
+    isSaveDisabled.value = true;
+    const payload = localPart.value;
+
+    delete payload.created_at;
+    delete payload.updated_at;
+    delete payload.company_name;
+
+    await partStore.updatePart(payload).then(() => {
+      notification.createNotification(`${localPart.value.part_number} Updated Successfuly`, "succ");
+      isSaveDisabled.value = false;
+
+      if (editOptions.value.redirectAfterSaving) {
+        router.push("/admin");
+      }
+    });
+  }
+
+  const { toggleModal, isModalOpen } = useModal();
+
+  type EditOptions = { redirectAfterSaving: boolean }
+
+  const editOptions = ref({
+    redirectAfterSaving: !!localStorage.getItem("editOptions/redirectAfterSaving"),
+  });
+
+  const setEditOption = (option: keyof EditOptions, save: boolean) => {
+    save ? localStorage.setItem(`editOptions/${option}`, String(true)) : localStorage.removeItem(`editOptions/${option}`);
+
+    editOptions.value[option] = save;
+  };
 </script>
 
 <style scoped>

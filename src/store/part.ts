@@ -74,21 +74,23 @@ const usePartStore = defineStore("part", {
       }
     },
 
-    async updatePart(payload: Part) {
+    async updatePart(payload: Part | Partial<Part>) {
       const { token } = useAuthStore();
 
       try {
-        await api.post(`parts/${payload.id}`, payload,{
+        const response = await api.patch(`parts/${payload.id}`, payload,{
           headers: {
             "Authorization": token || window.localStorage.getItem("token")
           }
-        }).then(() => {
-          return true;
         })
+
+        this.activePart = response.data.data;
+
+        return Promise.resolve(true)
       } catch(err: unknown) {
         catchResponse(err);
 
-        return false;
+        return Promise.reject(err);
       }
     },
 
