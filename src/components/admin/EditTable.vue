@@ -11,12 +11,26 @@
 
     <div class="wrapper">
       <label for="part_number">Part Number</label>
-      <input id="part_number" v-model="localPart.part_number" type="text" :placeholder="part.part_number" required>
+      <input
+        id="part_number"
+        v-model="localPart.part_number"
+        type="text"
+        class="w-[400px]"
+        :placeholder="part.part_number"
+        :class="{ error: formErrors.part_number }"
+        required
+      >
     </div>
 
     <div class="wrapper">
       <label for="company_name">Owner</label>
-      <input id="company_name" v-model="localPart.company_name" type="text" :placeholder="part.company_name" required>
+      <input
+        id="company_name"
+        :value="part.company_name"
+        type="text"
+        class="w-[400px]"
+        disabled
+      >
     </div>
 
     <div class="wrapper">
@@ -32,13 +46,22 @@
         cols="40"
         rows="4"
         type="text"
+        :class="{ error: formErrors.description }"
         required
       />
     </div>
 
     <div class="wrapper">
       <label for="available">Available Quantity</label>
-      <input id="available" v-model="localPart.available" class="max-w-[90px]" type="number" :placeholder="String(part.available)" required>
+      <input
+        id="available"
+        v-model="localPart.available"
+        class="max-w-[90px]"
+        type="number"
+        :placeholder="String(part.available)"
+        :class="{ error: formErrors.available }"
+        required
+      >
     </div>
 
     <div class="wrapper">
@@ -53,68 +76,162 @@
 
     <div class="wrapper">
       <label for="condition">Condition</label>
-      <input id="condition" v-model="localPart.condition" class="max-w-[110px]" type="text" :placeholder="part.condition" required>
+      <input
+        id="condition"
+        v-model="localPart.condition"
+        class="max-w-[110px]"
+        type="text"
+        :placeholder="part.condition"
+        :class="{ error: formErrors.condition }"
+        required
+      >
     </div>
 
     <div class="wrapper flex-wrap border-t border-gray-600 pt-3">
       <div class="flex flex-row items-center">
         <label for="min_cost">Cost of Goods 1</label>
-        <input id="min_cost" v-model="localPart.min_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.min_cost)" required>
+        <input
+          id="min_cost"
+          v-model="localPart.min_cost"
+          type="number"
+          class="max-w-[130px] mr-4"
+          :placeholder="String(part.min_cost)"
+          :class="{ error: formErrors.min_cost }"
+          required
+        >
       </div>
 
       <div class="flex flex-row items-center">
         <label for="min_price">Sales Price 1</label>
-        <input id="min_price" v-model="localPart.min_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.min_price)" required>
+        <input
+          id="min_price"
+          v-model="localPart.min_price"
+          type="number"
+          class="max-w-[130px] mr-4"
+          :placeholder="String(part.min_price)"
+          :class="{ error: formErrors.min_price }"
+          required
+        >
       </div>
 
       <div class="flex flex-row items-center">
         <label for="min_order">Minimum Order 1</label>
-        <input id="min_order" v-model="localPart.min_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.min_order)" required>
+        <input
+          id="min_order"
+          v-model="localPart.min_order"
+          type="number"
+          class="max-w-[130px] mr-4"
+          :placeholder="String(part.min_order)"
+          :class="{ error: formErrors.min_order }"
+          required
+        >
       </div>
     </div>
 
     <div class="wrapper flex-wrap">
       <div class="flex flex-row items-center">
         <label for="med_cost">Cost of Goods 2</label>
-        <input id="med_cost" v-model="localPart.med_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_cost)" required>
+        <input
+          id="med_cost"
+          v-model="localPart.med_cost"
+          type="number"
+          class="max-w-[130px] mr-4"
+          :placeholder="String(part.med_cost)"
+          :class="{ error: formErrors.med_cost }"
+          required
+        >
       </div>
 
       <div class="flex flex-row items-center">
         <label for="med_price">Sales Price 2</label>
-        <input id="med_price" v-model="localPart.med_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_price)" required>
+        <input
+          id="med_price"
+          v-model="localPart.med_price"
+          type="number"
+          class="max-w-[130px] mr-4"
+          :placeholder="String(part.med_price)"
+          :class="{ error: formErrors.med_price }"
+          required
+        >
       </div>
 
       <div class="flex flex-row items-center">
         <label for="med_order">Minimum Order 2</label>
-        <input id="med_order" v-model="localPart.med_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.med_order)" required>
+        <input
+          id="med_order"
+          v-model="localPart.med_order"
+          type="number"
+          class="max-w-[130px] mr-4"
+          :placeholder="String(part.med_order)"
+          :class="{ error: formErrors.med_order }"
+          required
+        >
       </div>
     </div>
 
     <div class="wrapper flex-wrap border-b border-gray-600 pb-3">
       <div class="flex flex-row items-center">
         <label for="max_cost">Cost of Goods 3</label>
-        <input id="max_cost" v-model="localPart.max_cost" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_cost)" required>
+        <input
+          id="max_cost"
+          v-model="localPart.max_cost"
+          type="number"
+          class="max-w-[130px] mr-4"
+          :placeholder="String(part.max_cost)"
+          :class="{ error: formErrors.max_cost }"
+          required
+        >
       </div>
 
       <div class="flex flex-row items-center">
         <label for="max_price">Sales Price 3</label>
-        <input id="max_price" v-model="localPart.max_price" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_price)" required>
+        <input
+          id="max_price"
+          v-model="localPart.max_price"
+          type="number"
+          class="max-w-[130px] mr-4"
+          :placeholder="String(part.max_price)"
+          :class="{ error: formErrors.max_price }"
+          required
+        >
       </div>
 
       <div class="flex flex-row items-center">
         <label for="max_order">Minimum Order 3</label>
-        <input id="max_order" v-model="localPart.max_order" type="number" class="max-w-[130px] mr-4" :placeholder="String(part.max_order)" required>
+        <input
+          id="max_order"
+          v-model="localPart.max_order"
+          type="number"
+          class="max-w-[130px] mr-4"
+          :placeholder="String(part.max_order)"
+          :class="{ error: formErrors.max_order }"
+          required
+        >
       </div>
     </div>
 
     <div class="wrapper">
       <label for="lead_time">Lead Time</label>
-      <input id="lead_time" v-model="localPart.lead_time" type="text" :placeholder="part.lead_time" required>
+      <input
+        id="lead_time"
+        v-model="localPart.lead_time"
+        type="text"
+        :placeholder="part.lead_time"
+        :class="{ error: formErrors.lead_time }"
+        required
+      >
     </div>
 
     <div class="wrapper">
       <label for="quote_type">Quote Type</label>
-      <input id="quote_type" v-model="localPart.quote_type" type="text" :placeholder="part.quote_type" required>
+      <input
+        id="quote_type"
+        v-model="localPart.quote_type"
+        type="text"
+        :placeholder="part.quote_type"
+        :class="{ error: formErrors.quote_type }"
+        required
+      >
     </div>
 
     <div class="wrapper">
@@ -125,6 +242,7 @@
         cols="40"
         rows="4"
         type="text"
+        :class="{ error: formErrors.tag }"
         required
       />
     </div>
@@ -174,8 +292,44 @@
 
   const isSaveDisabled = ref(false);
 
+  const formErrors = ref({
+    part_number: false,
+    available: false,
+    description: false,
+    condition: false,
+    min_cost: false,
+    min_price: false,
+    min_order: false,
+    med_cost: false,
+    med_price: false,
+    med_order: false,
+    max_cost: false,
+    max_price: false,
+    max_order: false,
+    lead_time: false,
+    quote_type: false,
+    tag: false,
+  });
+
   const shouldSave = (): boolean => {
-    return true;
+    const required = Object.keys(formErrors.value);
+    let canSave = true;
+
+    required.forEach((field) => {
+      // @ts-ignore
+      formErrors.value[field] = !localPart.value[field];
+    });
+
+    required.forEach((field) => {
+      // @ts-ignore
+      if (formErrors.value[field]) { canSave = false; }
+    });
+
+    if (!canSave) {
+      notification.createNotification("Please make sure all required fields are filled in", "dang", 4000);
+    }
+
+    return canSave;
   };
 
   async function savePart() {
@@ -221,14 +375,19 @@
 }
 
 input, textarea {
-  @apply text-black px-3 py-0.5;
+  @apply text-black px-3 py-0.5 border-4 border-transparent;
 }
 
 input {
   @apply max-h-[30px];
+  transition: border-color;
 }
 
-label:has(+ input:required):after {
+.error {
+  @apply border-red-500 border-4;
+}
+
+label:has(+ input:required):after, label:has(+ textarea:required):after {
   @apply text-red-500;
   content: " *";
 }
