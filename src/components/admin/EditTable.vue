@@ -5,7 +5,7 @@
       <input v-model="localPart.id" type="text" class="bg-transparent !text-white" disabled>
 
       <div class="flex flex-row ml-auto items-center justify-center">
-        <ph-gear-six class="ml-auto cursor-pointer hover:text-green-500 active:text-green-600 mb-2" :size="32" @click="toggleModal" />
+        <ph-gear-six class="ml-auto cursor-pointer hover:text-green-500 active:text-green-600 mb-2" :size="24" @click="toggleModal" />
       </div>
     </div>
 
