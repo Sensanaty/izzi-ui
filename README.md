@@ -2,3 +2,4 @@ A rework of izzicup.com, my parent's site running on an ancient version of PHP, 
 
 Also a nice excuse for me to play around with Vue 3 and the CompAPI.
 
+The Rails backend for it can be seen here: [Sensanaty/izzi-api](https://github.com/Sensanaty/izzi-api)
