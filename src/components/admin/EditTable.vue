@@ -272,6 +272,7 @@
   import { useRouter } from "vue-router";
 
   import useModal from "~/composables/useModal";
+  import useCompanyStore from "~/store/company";
   import useNotificationStore from "~/store/notification";
   import usePartStore from "~/store/part";
   import type Company from "~/types/store/company";
@@ -280,7 +281,6 @@
   import BaseButton from "~components/base/BaseButton.vue";
   import BaseModal from "~components/base/BaseModal.vue";
   import CompanyEdit from "~components/Companies/CompanyEdit.vue";
-  import useCompanyStore from "~/store/company";
 
   const partStore = usePartStore();
   const notification = useNotificationStore();
@@ -329,7 +329,7 @@
     });
 
     if (!canSave) {
-      notification.createNotification("Please make sure all required fields are filled in", "dang", 4000);
+      notification.createNotification("Please make sure all required fields are filled in properly", "dang", 4000);
     }
 
     return canSave;
@@ -342,8 +342,6 @@
 
     isSaveDisabled.value = true;
     const payload = localPart.value;
-
-    if (props.isNew) { payload.company_id = 1; }
 
     delete payload.created_at;
     delete payload.updated_at;
