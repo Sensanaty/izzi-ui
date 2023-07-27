@@ -356,6 +356,8 @@
       if (editOptions.value.redirectAfterSaving) {
         router.push("/admin");
       }
+    }).catch(() => {
+      isSaveDisabled.value = false;
     });
   }
 
