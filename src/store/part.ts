@@ -81,7 +81,7 @@ const usePartStore = defineStore("part", {
       try {
         const response = create ?
           await api.post("parts", payload, { headers }) :
-          await api.patch(`parts/${payload.id}`, payload,{ headers })
+          await api.patch(`parts/${payload.id}`, payload,{ headers });
 
         this.activePart = response.data.data;
 
