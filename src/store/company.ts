@@ -30,6 +30,25 @@ const useCompanyStore = defineStore("company", {
         this.fetched = false;
         catchResponse(err);
       }
+    },
+
+    async updateCompany(payload: Company | Partial<Company>, create = false) {
+      const { token } = useAuthStore();
+      const headers = { "Authorization": token || window.localStorage.getItem("token") };
+
+      try {
+        const response = create ?
+          await api.post("companies", payload, { headers }) :
+          await api.patch(`companies/${payload.id}`, payload, { headers });
+
+        this.activeCompany = response.data.data;
+
+        return Promise.resolve(true);
+      } catch (err: unknown) {
+        catchResponse(err);
+
+        return Promise.reject(err);
+      }
     }
   }
 })

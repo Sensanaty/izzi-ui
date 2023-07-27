@@ -33,11 +33,11 @@
       <BaseButton @click.prevent="toggleCompanyModal">New Company</BaseButton>
 
       <BaseModal :is-open="isCompanyEditModalOpen" title="Edit Company" large @close="toggleCompanyEditModal">
-        <CompanyEdit class="bg-stone-900 p-3" :is-new="false" />
+        <CompanyEdit class="bg-stone-900 p-3" :is-new="false" @close-modal="toggleCompanyEditModal" />
       </BaseModal>
 
       <BaseModal :is-open="isCompanyModalOpen" title="Create new Company" large @close="toggleCompanyModal">
-        <CompanyEdit class="bg-stone-900 p-3" :is-new="true" />
+        <CompanyEdit class="bg-stone-900 p-3" :is-new="true" @close-modal="toggleCompanyModal" />
       </BaseModal>
     </div>
 

@@ -6,18 +6,8 @@
     </div>
 
     <div class="flex flex-row mb-3">
-      <label for="email">Email</label>
-      <input id="email" v-model="localCompany.email" type="text">
-    </div>
-
-    <div class="flex flex-row mb-3">
       <label for="address">Address</label>
       <input id="address" v-model="localCompany.address" type="text">
-    </div>
-
-    <div class="flex flex-row mb-3">
-      <label for="number">Number</label>
-      <input id="number" v-model="localCompany.number" type="text">
     </div>
 
     <div class="flex flex-row mb-3">
@@ -35,12 +25,7 @@
       <input id="website" v-model="localCompany.website" type="text">
     </div>
 
-    <div class="flex flex-row mb-3">
-      <label for="type">Type</label>
-      <input id="type" v-model="localCompany.type" type="text">
-    </div>
-
-    <BaseButton class="w-fit mx-auto">Save</BaseButton>
+    <BaseButton class="w-fit mx-auto" @click.prevent="saveCompany">Save</BaseButton>
   </div>
 </template>
 
@@ -48,10 +33,15 @@
   import { onBeforeUnmount, toRef } from "vue";
 
   import useCompanyStore from "~/store/company";
+  import useNotificationStore from "~/store/notification";
   import BaseButton from "~components/base/BaseButton.vue";
+
+  const notification = useNotificationStore();
 
   const company = useCompanyStore().activeCompany;
   const localCompany = toRef({ ...company });
+
+  const emits = defineEmits(['closeModal']);
 
   const props = defineProps<{
     isNew: boolean
@@ -60,6 +50,18 @@
   onBeforeUnmount(() => {
     useCompanyStore().activeCompany = {};
   });
+
+  async function saveCompany() {
+    await useCompanyStore().updateCompany(localCompany.value, props.isNew).then(() => {
+      notification.createNotification("Company successfuly saved", "succ");
+    }).then(() => {
+      if (props.isNew) {
+        useCompanyStore().fetchCompanies();
+      }
+
+      emits("closeModal");
+    });
+  }
 </script>
 
 <style scoped>
