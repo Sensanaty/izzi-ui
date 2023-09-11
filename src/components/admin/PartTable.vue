@@ -8,7 +8,7 @@
         :disabled="!partSearchModel"
         @click.prevent="clearSearch"
       >
-        Clear
+        clear
       </button>
 
       <input
@@ -24,7 +24,7 @@
         class="h-1/2 mt-auto mr-3 bg-sky-700 border-l-2 border-neutral-800 py-1 px-3 hover:bg-sky-800"
         @click.prevent="searchPartNumber"
       >
-        Search
+        search
       </button>
     </div>
   </div>
