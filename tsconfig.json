@@ -13,7 +13,7 @@
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
-    "types": ["unplugin-vue-macros/macros-global", "vite/client", "vue/ref-macros", "node"],
+    "types": ["unplugin-vue-macros/macros-global", "vite/client", "node"],
     "allowJs": true,
     "paths": {
       "~/*": ["./src/*"],

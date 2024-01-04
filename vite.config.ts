@@ -12,7 +12,6 @@ export default defineConfig({
       plugins: {
         vue: vue({
           include: [/\.vue$/],
-          reactivityTransform: true
         }),
       }
     })
