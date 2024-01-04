@@ -30,10 +30,15 @@
       </Suspense>
 
       <BaseButton class="mr-3" @click.prevent="toggleCompanyEditModal">Edit Company</BaseButton>
-      <BaseButton @click.prevent="toggleCompanyModal">New Company</BaseButton>
+      <BaseButton class="mr-3" @click.prevent="toggleQuickAddModal">Quick Add</BaseButton>
+      <BaseButton class="mr-3" @click.prevent="toggleCompanyModal">New Company</BaseButton>
 
       <BaseModal :is-open="isCompanyEditModalOpen" title="Edit Company" large @close="toggleCompanyEditModal">
         <CompanyEdit class="bg-stone-900 p-3" :is-new="false" @close-modal="toggleCompanyEditModal" />
+      </BaseModal>
+
+      <BaseModal :is-open="isQuickAddModalOpen" title="Quick Add" @close="toggleQuickAddModal">
+        <CompanyEdit :quick="true" :is-new="true" @close-modal="toggleQuickAddModal" />
       </BaseModal>
 
       <BaseModal :is-open="isCompanyModalOpen" title="Create new Company" large @close="toggleCompanyModal">
@@ -360,8 +365,16 @@
   }
 
   const { isModalOpen, toggleModal } = useModal();
+
   const isCompanyModalOpen = ref(false);
   const toggleCompanyModal = () => { isCompanyModalOpen.value = !isCompanyModalOpen.value; };
+
+  const isQuickAddModalOpen = ref(false);
+  const toggleQuickAddModal = () => {
+    companyStore.activeCompany = companyStore.companies.find((company) => company.id === localPart.value.company_id) as Partial<Company>;
+    isQuickAddModalOpen.value  = !isQuickAddModalOpen.value;
+  };
+
   const isCompanyEditModalOpen = ref(false);
   const toggleCompanyEditModal = () => {
     companyStore.activeCompany = companyStore.companies.find((company) => company.id === localPart.value.company_id) as Partial<Company>;

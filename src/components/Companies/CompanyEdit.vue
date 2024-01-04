@@ -5,24 +5,26 @@
       <input id="name" v-model="localCompany.name">
     </div>
 
-    <div class="flex flex-row mb-3">
-      <label for="address">Address</label>
-      <input id="address" v-model="localCompany.address" type="text">
-    </div>
+    <div v-if="!quick" class="flex flex-col">
+      <div class="flex flex-row mb-3">
+        <label for="address">Address</label>
+        <input id="address" v-model="localCompany.address" type="text">
+      </div>
 
-    <div class="flex flex-row mb-3">
-      <label for="city">City</label>
-      <input id="city" v-model="localCompany.city" type="text">
-    </div>
+      <div class="flex flex-row mb-3">
+        <label for="city">City</label>
+        <input id="city" v-model="localCompany.city" type="text">
+      </div>
 
-    <div class="flex flex-row mb-3">
-      <label for="country">Country</label>
-      <input id="country" v-model="localCompany.country" type="text">
-    </div>
+      <div class="flex flex-row mb-3">
+        <label for="country">Country</label>
+        <input id="country" v-model="localCompany.country" type="text">
+      </div>
 
-    <div class="flex flex-row mb-3">
-      <label for="website">Website</label>
-      <input id="website" v-model="localCompany.website" type="text">
+      <div class="flex flex-row mb-3">
+        <label for="website">Website</label>
+        <input id="website" v-model="localCompany.website" type="text">
+      </div>
     </div>
 
     <BaseButton class="w-fit mx-auto" @click.prevent="saveCompany">Save</BaseButton>
@@ -41,10 +43,11 @@
   const company = useCompanyStore().activeCompany;
   const localCompany = toRef({ ...company });
 
-  const emits = defineEmits(['closeModal']);
+  const emits = defineEmits(["closeModal"]);
 
   const props = defineProps<{
-    isNew: boolean
+    isNew: boolean;
+    quick?: boolean;
   }>();
 
   onBeforeUnmount(() => {
