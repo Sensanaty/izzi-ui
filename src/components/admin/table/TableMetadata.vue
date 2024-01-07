@@ -34,7 +34,9 @@
 </template>
 
 <script lang="ts" setup>
+  import { useEventListener } from "@vueuse/core";
   import { storeToRefs } from "pinia";
+  import { ref, onBeforeUnmount } from "vue";
 
   import usePartStore from "~/store/part";
   import RequestMetadata from "~/types/requestMetadata";
@@ -51,10 +53,14 @@
   async function fetchParts(page: RequestMetadata["page"] | null, count: RequestMetadata["count"], fetchType: FetchType) {
     if (!page || !shouldFetch(fetchType)) { return; }
 
-    await partStore.fetchParts(page, count, props.search);
+    isFetching.value = true;
+
+    await partStore.fetchParts(page, count, props.search).then(() => isFetching.value = false);
   }
 
   function shouldFetch(fetchType: FetchType): boolean {
+    if (isFetching.value) { return false; }
+
     switch (fetchType) {
     case "first":
       return metadata.value.page !== 1;
@@ -72,6 +78,24 @@
   async function setCount() {
     await fetchParts(metadata.value.page, metadata.value.count, "page");
   }
+
+  const isFetching = ref(false);
+
+  async function setNavigationListeners(event: KeyboardEvent) {
+    if (!document.activeElement?.matches("input") && event.shiftKey) {
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        await fetchParts(metadata.value.next, metadata.value.count, "next");
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        await fetchParts(metadata.value.prev, metadata.value.count, "prev");
+      }
+    }
+  }
+
+  const unregisterListener = useEventListener(document, "keydown", (e: KeyboardEvent) => setNavigationListeners(e));
+
+  onBeforeUnmount(() => unregisterListener());
 </script>
 
 <style scoped>

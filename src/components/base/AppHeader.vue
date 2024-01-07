@@ -18,6 +18,8 @@
 
   <BaseModal :is-open="isModalOpen" title="Keyboard Shortcuts" @close="toggleShortcuts">
     <p class="mb-4 font-mono font-bold"><code class="bg-stone-900 p-2 mr-3 rounded text-center">CTRL/⌘ + K</code> Focus on Searchbar</p>
+    <p class="mb-4 font-mono font-bold"><code class="bg-stone-900 p-2 mr-3 rounded text-center">Shift + -&gt;</code> Fetch next page</p>
+    <p class="mb-4 font-mono font-bold"><code class="bg-stone-900 p-2 mr-3 rounded text-center">Shift + &lt;-</code> Fetch previous page</p>
   </BaseModal>
 </template>
 
