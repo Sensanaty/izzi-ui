@@ -31,7 +31,7 @@
 
   <table class="my-2 table-fixed w-[100%]">
     <TableHeader />
-    <TableRow v-for="part in parts" :key="part.id" :part="part" />
+    <TableRow v-for="(part, index) in parts" :key="part.id" :part="part" :tabindex="index + 1" />
   </table>
 
   <div class="flex flex-row mb-8">

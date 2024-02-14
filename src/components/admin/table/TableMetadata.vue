@@ -2,25 +2,26 @@
   <div class="flex flex-col items-center w-[600px]">
     <div class="container">
       <div class="flex flex-row items-center justify-end">
-        <button class="btn" @click.prevent="fetchParts(1, metadata.count, 'first')">first</button>
-        <button class="btn" @click.prevent="fetchParts(metadata.prev, metadata.count, 'prev')">previous</button>
+        <button tabindex="-1" class="btn" @click.prevent="fetchParts(1, metadata.count, 'first')">first</button>
+        <button tabindex="-1" class="btn" @click.prevent="fetchParts(metadata.prev, metadata.count, 'prev')">previous</button>
       </div>
 
       <input
         v-model="metadata.page"
+        tabindex="-1"
         class="flex text-black p-0 mx-1 text-center w-[60px] h-full"
         @blur="fetchParts(metadata.page, metadata.count, 'page')"
         @keydown.enter.prevent="fetchParts(metadata.page, metadata.count, 'page')"
       >
 
       <div class="flex flex-row items-center">
-        <button class="btn" @click.prevent="fetchParts(metadata.next, metadata.count, 'next')">next</button>
-        <button class="btn" @click.prevent="fetchParts(metadata.last, metadata.count, 'last')">last</button>
+        <button tabindex="-1" class="btn" @click.prevent="fetchParts(metadata.next, metadata.count, 'next')">next</button>
+        <button tabindex="-1" class="btn" @click.prevent="fetchParts(metadata.last, metadata.count, 'last')">last</button>
       </div>
     </div>
 
     <div class="flex flex-row items-center mr-auto">
-      <select v-model.lazy.number="metadata.count" class="text-black mr-3 px-1 w-12 text-center" @change="setCount">
+      <select v-model.lazy.number="metadata.count" tabindex="-1" class="text-black mr-3 px-1 w-12 text-center" @change="setCount">
         <option value="5">5</option>
         <option value="10">10</option>
         <option value="25">25</option>
@@ -36,7 +37,7 @@
 <script lang="ts" setup>
   import { useEventListener } from "@vueuse/core";
   import { storeToRefs } from "pinia";
-  import { ref, onBeforeUnmount } from "vue";
+  import { onBeforeUnmount,ref } from "vue";
 
   import usePartStore from "~/store/part";
   import RequestMetadata from "~/types/requestMetadata";

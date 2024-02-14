@@ -273,7 +273,8 @@
 
 <script lang="ts" setup>
   import { PhGearSix } from "@phosphor-icons/vue";
-  import { ref, toRef } from "vue";
+  import { useEventListener } from "@vueuse/core";
+  import { onBeforeUnmount, ref, toRef } from "vue";
   import { useRouter } from "vue-router";
 
   import useModal from "~/composables/useModal";
@@ -396,6 +397,14 @@
   function setCompany(id: Company["id"]) {
     localPart.value.company_id = id;
   }
+
+  const navigateBackListener = useEventListener("keyup", (e: KeyboardEvent) => {
+    if (e.key === "b")  {
+      router.push("/admin");
+    }
+  });
+
+  onBeforeUnmount(() => navigateBackListener());
 </script>
 
 <style scoped>
