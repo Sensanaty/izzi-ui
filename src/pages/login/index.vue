@@ -16,6 +16,8 @@
       background-color="bg-green-500"
       background-hover="hover:bg-green-600"
       background-active="active:bg-green-700"
+      background-disabled="disabled:bg-green-950"
+      :disabled="isLoggingIn"
       @click.prevent="login()"
     >
       Login
@@ -39,6 +41,8 @@
   const password = ref<LoginData["password"]>("");
   const remember = ref<LoginData["remember"]>(true);
 
+  const isLoggingIn = ref(false);
+
   async function login() {
     if (!username.value || !password.value) {
       if (notification.notifications.length !== 0) { return; }
@@ -47,8 +51,14 @@
       return;
     }
 
+    if (isLoggingIn.value) {
+      return;
+    }
+
+    isLoggingIn.value = true;
+
     await auth.login(username.value, password.value, remember.value).then(() => {
       if (auth.loggedIn) { router.push("/admin"); }
-    });
+    }).finally(() => isLoggingIn.value = false);
   }
 </script>
