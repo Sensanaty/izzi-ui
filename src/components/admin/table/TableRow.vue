@@ -1,5 +1,5 @@
 <template class="flex flex-row">
-  <tbody ref="row" class="focus:bg-stone-800">
+  <tbody class="focus:bg-stone-800">
     <tr class="hover:bg-stone-800 focus:bg-stone-800">
       <td>
         <div class="flex flex-col items-center">
@@ -34,8 +34,6 @@
 
 <script lang="ts" setup>
   import { PhClipboardText, PhPencil, PhQuotes } from "@phosphor-icons/vue";
-  import { Fn, useEventListener } from "@vueuse/core";
-  import { onBeforeUnmount, ref } from "vue";
   import { useRouter } from "vue-router";
 
   import useNotificationStore from "~/store/notification";
@@ -114,43 +112,6 @@
       return Promise.reject(err);
     }
   }
-
-  const row = ref<HTMLElement | null>(null);
-  /**
-   * To prevent events from firing when the row isn't focused, we have to call the method to unsubscribe the event listener.
-   * The scope of the inner method inside the onFocus() function won't allow us to define an event listener inside of it
-   * while calling the unsubscription from the onUnfocus() function, we have to give it a temporary null value and assign it
-   * from within onFocus.
-  */
-  let onKeypress: Fn | null = null;
-
-  const onFocus = useEventListener(row, "focusin", () => {
-    onKeypress = useEventListener("keyup", (e: KeyboardEvent) => {
-      switch (e.key) {
-      case "c":
-        copy();
-        break;
-      case "q":
-        copyQuote();
-        break;
-      case "e":
-        editPart();
-        break;
-      default:
-        return;
-      }
-    });
-  });
-
-  const onUnfocus = useEventListener(row, "focusout", () => {
-    if (onKeypress !== null) { onKeypress(); }
-    onFocus();
-  });
-
-  onBeforeUnmount(() => {
-    onFocus();
-    onUnfocus();
-  });
 </script>
 
 <style scoped>
