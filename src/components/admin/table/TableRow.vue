@@ -8,7 +8,7 @@
           <ph-quotes class="icon" :size="15" weigth="duotone" @click="copyQuote" />
         </div>
       </td>
-      <td class="px-1 font-mono">{{ part.part_number }}</td>
+      <td class="px-1 font-mono select-all">{{ part.part_number }}</td>
       <td>{{ part.company_name }}</td>
       <td class="text-center !text-xs font-mono">{{ part.added }}</td>
       <td class="px-1">{{ part.description }}</td>
