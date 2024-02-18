@@ -19,7 +19,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { onMounted } from "vue";
+  import { useEventListener } from "@vueuse/core";
+  import { onBeforeUnmount } from "vue";
 
   const emit = defineEmits(["close"]);
 
@@ -29,13 +30,13 @@
     large: boolean
   }>(), { isOpen: false, title: "Title", large: false });
 
-  onMounted(() => {
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && props.isOpen) {
-        emit("close");
-      }
-    });
+  const exitOnEscape = useEventListener("keydown", (event: KeyboardEvent) => {
+    if (event.key === "Escape" && props.isOpen) {
+      emit("close");
+    }
   });
+
+  onBeforeUnmount(() => exitOnEscape());
 </script>
 
 <style scoped>
