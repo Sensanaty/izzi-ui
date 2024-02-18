@@ -14,35 +14,6 @@
       <code>Shift + &lt;-</code>
       Fetch previous page
     </p>
-
-    <p class="mx-auto mt-4">
-      <code>Row navigation</code>
-    </p>
-
-    <p>
-      <code>Tab</code>
-      Focus on first/next row
-    </p>
-
-    <p>
-      <code>Shift + Tab</code>
-      Focus on previous row
-    </p>
-
-    <p>
-      <code>E</code>
-      Edit focused row
-    </p>
-
-    <p>
-      <code>Q</code>
-      Copy quote details of focused row
-    </p>
-
-    <p>
-      <code>C</code>
-      Copy details of focused row
-    </p>
   </BaseModal>
 </template>
 
