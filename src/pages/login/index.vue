@@ -18,7 +18,7 @@
       background-active="active:bg-green-700"
       background-disabled="disabled:bg-green-950"
       :disabled="isLoggingIn"
-      @click.prevent="login()"
+      @click.prevent="login"
     >
       Login
     </BaseButton>
