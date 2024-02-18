@@ -18,6 +18,7 @@
         placeholder="Part Number (CTRL/⌘ + K)"
         class="h-1/2 w-[230px] mt-auto px-3 py-2 text-sm text-black font-mono"
         @keydown.enter.prevent="searchPartNumber"
+        @keydown.esc.prevent="clearSearch"
       >
 
       <button
@@ -40,8 +41,9 @@
 </template>
 
 <script lang="ts" setup>
+  import { useEventListener } from "@vueuse/core";
   import { storeToRefs } from "pinia";
-  import { onMounted, ref } from "vue";
+  import { onBeforeUnmount, ref } from "vue";
 
   import usePartStore from "~/store/part";
   import TableHeader from "~components/admin/table/TableHeader.vue";
@@ -69,13 +71,15 @@
 
   const searchbar = ref<HTMLElement | null>(null);
 
-  onMounted(() => {
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "k" && (event.ctrlKey || event.metaKey)) {
-        event.preventDefault();
-        searchbar?.value?.focus();
-      }
-    });
+  const onKeyPress = useEventListener("keydown", (event) => {
+    if (event.key === "k" && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      searchbar?.value?.focus();
+    }
+  });
+
+  onBeforeUnmount(() => {
+    onKeyPress();
   });
 </script>
 
