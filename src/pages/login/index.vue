@@ -1,5 +1,5 @@
 <template>
-  <img src="/logo.svg" aria-hidden="true" alt="Izzicup logo" class="w-60 m-auto">
+  <img src="/logo.svg" height="15rem" width="15rem" aria-hidden="true" alt="Izzicup logo" class="w-60 m-auto">
 
   <form class="flex items-center justify-center flex-col bg-neutral-800 mx-auto py-5 my-4 w-1/2">
     <label for="username" class="mb-1.5 text-xl">Username</label>
