@@ -1,18 +1,17 @@
 <template>
-  <h1 class="mx-1000 font-bold text-4xl text-center mb-5">PT Dharma Angkasa Putra
+  <h1 class="mx-1000 font-bold text-4xl text-center mb-5 text-neutral-800">PT Dharma Angkasa Putra
   </h1>
-
-  <div class="mx-auto flex justify-between w-1/2 mb-3">
-    <AddressBox title="Main Office" address="Jl. Tukad Buana Gunung Sari, Gg. Baja No.1 Batukandik"
-      sub-address="80117, Denpasar, Bali, Indonesia" />
+  <div class="mx-auto flex justify-between w-1/2 mb-3 bg-neutral-100">
+    <AddressBox class="bg-neutral-100 text-neutral-800" title="Main Office"
+      address="Jl. Tukad Buana Gunung Sari, Gg. Baja No.1 Batukandik" sub-address="80117, Denpasar, Bali, Indonesia" />
   </div>
 
-  <div class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-800 p-4 rounded">
-    <h1 class="text-3xl font-bold text-center">Contact Us</h1>
+  <div class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-100 text-neutral-800 p-4 rounded">
+    <h1 class="text-3xl font-bold text-center text-neutral-800">Contact Us</h1>
     <a href="mailto:dharmaangkasaputra@gmail.com"
       class="font-bold text-xl underline text-center hover:decoration-blue-300">dharmaangkasaputra@gmail.com</a>
 
-    <form class="w-full mt-4">
+    <form class="w-full mt-4 ">
       <div class="flex flex-row justify-between">
         <div class="flex flex-col min-w-[45%]">
           <label for="name">Name</label>
