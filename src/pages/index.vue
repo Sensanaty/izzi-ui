@@ -1,15 +1,22 @@
 <template>
-  <h1 class="mx-1000 font-bold text-4xl text-center mb-5 text-neutral-800">PT Dharma Angkasa Putra
-  </h1>
-  <div class="mx-auto flex justify-between w-1/2 mb-3 bg-neutral-100">
-    <AddressBox class="bg-neutral-100 text-neutral-800" title="Main Office"
+  <div class="flex flex-row justify-center space-x-4 items-center mx-auto my-6">
+    <img src="/DAP-logo-yellow.png" height="70px" width="70px" px-2 alt="DAP Logo">
+    <h1 class="mx-1000 pt-3 font-bold text-4xl text-center text-yellow-500">
+      PT Dharma Angkasa Putra
+    </h1>
+  </div>
+
+  <div class="mx-auto w-1/2 m-4 rounded bg-neutral-800 shadow-lg shadow-neutral-700/40">
+    <AddressBox class="bg-neutral-800 text-yellow-600 font-normal" title="Main Office"
       address="Jl. Tukad Buana Gunung Sari, Gg. Baja No.1 Batukandik" sub-address="80117, Denpasar, Bali, Indonesia" />
   </div>
 
-  <div class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-100 text-neutral-800 p-4 rounded">
-    <h1 class="text-3xl font-bold text-center text-neutral-800">Contact Us</h1>
+  <div
+    class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-800 shadow-lg shadow-neutral-700/40 text-yellow-600 p-4 rounded">
+    <h1 class="text-3xl font-bold text-center text-yellow-600">Contact Us</h1>
     <a href="mailto:dharmaangkasaputra@gmail.com"
-      class="font-bold text-xl underline text-center hover:decoration-blue-300">dharmaangkasaputra@gmail.com</a>
+      class="font-bold text-xl underline text-center hover:decoration-blue-300">
+      dharmaangkasaputra@gmail.com</a>
 
     <form class="w-full mt-4 ">
       <div class="flex flex-row justify-between">
@@ -59,6 +66,6 @@ form {
 }
 
 input {
-  @apply rounded h-fit text-lg text-black p-1 mt-1
+  @apply rounded h-fit text-lg text-neutral-800 p-1 mt-1
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <header class="flex items-center bg-neutral-100 text-neutral-800 w-full h-14 px-4 mb-4">
-    <img class=" " src="/dapLogo.svg" alt="DAP logo">
+  <header class="flex items-center bg-neutral-800 text-neutral-100 w-full h-14 px-4 mb-4">
+    <!-- <img class=" " src="/dapLogo.svg" alt="DAP logo"> -->
     <h1 class="font-bold text-center">
       <RouterLink class="mr-12 text-2xl hover:text-amber-400" :to="auth.loggedIn ? '/admin' : '/'">
         DHARMA ANGKASA PUTRA
