@@ -1,3 +1,4 @@
+import type { AxiosResponse } from "axios";
 import { defineStore } from "pinia";
 
 import catchResponse from "~/modules/catchResponse";
@@ -5,6 +6,11 @@ import { api } from "~/modules/fetch";
 import useNotificationStore from "~/store/notification";
 import { LoginData } from "~/types/endpoints";
 import { User } from "~/types/store/auth";
+
+type LoginResponse = AxiosResponse<{
+  user: User;
+  token: string;
+}>
 
 const useAuthStore = defineStore("auth", {
   state: () => {
@@ -38,14 +44,13 @@ const useAuthStore = defineStore("auth", {
     async login(username: LoginData["username"], password: LoginData["password"], remember: LoginData["remember"] = false) {
       const { createNotification } = useNotificationStore();
 
-      try {
-        const response = await api.post("auth/login", { username, password, remember });
+      await api.post("auth/login", { username, password, remember }).then((response: LoginResponse) => {
         this.setUser(response.data.user);
         this.setToken(response.data.token);
         createNotification("You have successfully logged in", "succ");
-      } catch (err: unknown) {
+      }).catch((err: unknown) => {
         catchResponse(err);
-      }
+      })
     },
     logout() {
       const { createNotification } = useNotificationStore();
