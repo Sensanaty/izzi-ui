@@ -72,7 +72,7 @@
 
             await getUserDetails();
           } else {
-            // localStorage.removeItem("token");
+            localStorage.removeItem("token");
           }
         });
     }
