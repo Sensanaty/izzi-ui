@@ -32,7 +32,7 @@ const useAuthStore = defineStore("auth", () => {
 
     let isAuthed = false;
 
-    await api.get("auth/authenticate", { headers: { "Authorization": token.value } })
+    await api.get("auth/authenticate", { headers: { "Authorization": authToken } })
       .then((res) => {
         setToken(res?.data?.token || authToken);
 
@@ -67,6 +67,8 @@ const useAuthStore = defineStore("auth", () => {
 
     localStorage.removeItem("token")
     user.value = { id: 0, username: "", email: "" };
+    loggedIn.value = false;
+    token.value = "";
 
     createNotification("You have been logged out successsfuly", "info");
   }
