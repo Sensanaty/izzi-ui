@@ -1,75 +1,96 @@
-import type { AxiosResponse } from "axios";
 import { defineStore } from "pinia";
+import { ref } from "vue";
 
 import catchResponse from "~/modules/catchResponse";
 import { api } from "~/modules/fetch";
 import useNotificationStore from "~/store/notification";
-import { LoginData } from "~/types/endpoints";
-import { User } from "~/types/store/auth";
+
+import type { AxiosResponse } from "axios";
+import type { LoginData } from "~/types/endpoints";
+import type { User } from "~/types/store/auth";
 
 type LoginResponse = AxiosResponse<{
   user: User;
   token: string;
 }>
 
-const useAuthStore = defineStore("auth", {
-  state: () => {
-    return {
-      loggedIn: false,
-      token: null as string | null,
-      user: {
-        id: 0,
-        username: "",
-        email: ""
-      } as User
-    };
-  },
-  actions: {
-    async authenticated(): Promise<boolean> {
-      const token = window.localStorage.getItem("token") ?? this.token;
+const useAuthStore = defineStore("auth", () => {
+  const loggedIn = ref(false);
+  const token = ref<string | null>(null);
+  const user = ref<User>({ id: 0, username: "", email: "" });
 
-      if (!token) { return Promise.resolve(false); }
-
-      try {
-        const response = await api.get("auth/authenticate", { headers: { "Authorization": token } });
-        this.setToken(response.data.token || token);
-
-        return Promise.resolve(true);
-      } catch (err: unknown) {
-        catchResponse(err);
-
-        return Promise.resolve(false);
-      }
-    },
-    async login(username: LoginData["username"], password: LoginData["password"], remember: LoginData["remember"] = false) {
-      const { createNotification } = useNotificationStore();
-
-      await api.post("auth/login", { username, password, remember }).then((response: LoginResponse) => {
-        this.setUser(response.data.user);
-        this.setToken(response.data.token);
-        createNotification("You have successfully logged in", "succ");
-      }).catch((err: unknown) => {
-        catchResponse(err);
-      })
-    },
-    logout() {
-      const { createNotification } = useNotificationStore();
-
-      window.localStorage.removeItem("token");
-      this.$reset();
-      createNotification("You have been logged out", "info");
-    },
-    setUser(user: User) {
-      this.user.id = user.id;
-      this.user.username = user.username;
-      this.user.email = user.email;
-    },
-    setToken(token: string) {
-      this.token = token;
-      window.localStorage.setItem("token", this.token);
-      this.loggedIn = true;
-    }
+  function setToken(authToken: string) {
+    token.value = authToken;
+    localStorage.setItem("token", token.value);
+    loggedIn.value = true;
   }
-});
+
+  async function checkAuthenticatedStatus(swallowErrors = false) {
+    const authToken = localStorage?.getItem("token") ?? token.value;
+
+    if (!authToken) { return Promise.resolve(false) }
+
+    let isAuthed = false;
+
+    await api.get("auth/authenticate", { headers: { "Authorization": token.value } })
+      .then((res) => {
+        setToken(res?.data?.token || authToken);
+
+        isAuthed = true;
+      }).catch((err: unknown) => {
+        if (swallowErrors) {
+          return Promise.resolve(false);
+        }
+
+        catchResponse(err);
+        isAuthed = false;
+      });
+
+    return Promise.resolve(isAuthed);
+  }
+
+  async function login(username: LoginData["username"], password: LoginData["password"], remember: LoginData["remember"] = false) {
+    const { createNotification } = useNotificationStore();
+
+    await api.post("auth/login", { username, password, remember }).then((response: LoginResponse) => {
+      user.value = response.data.user;
+      setToken(response.data.token);
+
+      createNotification("You have successfully logged in", "succ");
+    }).catch((err: unknown) => {
+      catchResponse(err);
+    })
+  }
+
+  function logout() {
+    const { createNotification } = useNotificationStore();
+
+    localStorage.removeItem("token")
+    user.value = { id: 0, username: "", email: "" };
+
+    createNotification("You have been logged out successsfuly", "info");
+  }
+
+  async function getUserDetails() {
+    await api.get("auth/user", { headers: { "Authorization": token.value } })
+      .then((response: AxiosResponse<User>) => {
+        user.value = response.data;
+      }).catch((err) => {
+        console.error(err);
+      })
+  }
+
+  return {
+    loggedIn,
+    token,
+    user,
+
+    checkAuthenticatedStatus,
+    login,
+    logout,
+    setToken,
+    getUserDetails
+  }
+})
 
 export default useAuthStore;

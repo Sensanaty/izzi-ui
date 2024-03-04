@@ -22,7 +22,7 @@ router.beforeEach((to) => {
   const auth = useAuthStore();
 
   if (to.meta.auth) {
-    auth.authenticated().then((isAuthenticated) => {
+    auth.checkAuthenticatedStatus().then((isAuthenticated) => {
       if (!isAuthenticated) {
         router.push("/login");
       }
