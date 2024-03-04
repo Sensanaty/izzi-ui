@@ -6,13 +6,13 @@
     </h1>
   </div>
 
-  <div class="mx-auto w-1/2 m-4 rounded bg-neutral-800 shadow-lg shadow-neutral-700/40">
+  <div class="mx-auto w-1/2 m-4 rounded bg-neutral-800 shadow-lg shadow-black/90">
     <AddressBox class="bg-neutral-800 text-yellow-600 font-normal" title="Main Office"
       address="Jl. Tukad Buana Gunung Sari, Gg. Baja No.1 Batukandik" sub-address="80117, Denpasar, Bali, Indonesia" />
   </div>
 
   <div
-    class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-800 shadow-lg shadow-neutral-700/40 text-yellow-600 p-4 rounded">
+    class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-800 shadow-lg shadow-black/90 text-yellow-600 p-4 rounded">
     <h1 class="text-3xl font-bold text-center text-yellow-600">Contact Us</h1>
     <a href="mailto:dharmaangkasaputra@gmail.com"
       class="font-bold text-xl underline text-center hover:decoration-blue-300">
@@ -34,7 +34,7 @@
       <div class="flex flex-col mt-3">
         <label for="message">Message</label>
         <textarea id="message" v-model="message" name="message" cols="40" rows="10"
-          class="rounded text-black p-2 mt-1 resize-none" />
+          class="rounded text-black p-2 mt-1 resize-none bg-gray-300" />
       </div>
 
       <BaseButton class="w-fit h-fit self-center justify-self-center" @click.prevent="clicked">Send</BaseButton>
@@ -66,6 +66,6 @@ form {
 }
 
 input {
-  @apply rounded h-fit text-lg text-neutral-800 p-1 mt-1
+  @apply rounded h-fit text-lg text-neutral-800 bg-gray-300 p-1 mt-1
 }
 </style>

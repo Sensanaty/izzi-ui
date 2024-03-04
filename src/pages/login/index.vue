@@ -2,12 +2,14 @@
   <img src="/DAP-logo-yellow.png" height="20rem" width="20rem" aria-hidden="true" alt="DAP Logo" class="w-60 m-auto py-8">
 
   <form
-    class="flex items-center justify-center flex-col rounded bg-neutral-800 shadow-lg shadow-neutral-700/60 mx-auto my-4 py-3 w-1/4">
+    class="flex items-center justify-center flex-col rounded bg-neutral-800 shadow-lg shadow-black/60 mx-auto my-4 py-3 w-1/4">
     <label for="username" class="mb-1.5 text-xl text-yellow-500">Username</label>
-    <input id="username" v-model="username" class="w-80 px-3 py-1 my-1 text-black" autocomplete="on">
+    <input id="username" v-model="username" class="w-auto px-3 py-1 my-1 text-black bg-neutral-300 rounded"
+      autocomplete="on">
 
     <label for="password" class="mb-1.5 text-xl text-yellow-500">Password</label>
-    <input id="password" v-model="password" type="password" class="w-80 px-3 py-1 my-1 text-black" autocomplete="on">
+    <input id="password" v-model="password" type="password"
+      class="w-auto px-3 py-1 my-1 text-black bg-neutral-300 rounded" autocomplete="on">
 
     <label for="remember" class="my-2 text-yellow-500">Keep me logged in</label>
     <input id="remember" v-model="remember" type="checkbox" class="mb-3">
