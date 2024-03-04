@@ -1,4 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import router from "~/modules/router";
