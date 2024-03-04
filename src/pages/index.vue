@@ -49,7 +49,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from "vue";
+  import { onMounted, ref } from "vue";
+  import useAuthStore from "~/store/auth";
 
   import AddressBox from "~/pages/AddressBox.vue";
   import BaseButton from "~components/base/BaseButton.vue";
@@ -57,6 +58,25 @@
   const name = ref("");
   const email = ref("");
   const message = ref("");
+
+  // Fetch user details if token is present in localStorage upon index page mount
+  const { token, loggedIn, checkAuthenticatedStatus, setToken, getUserDetails } = useAuthStore();
+  onMounted(async () => {
+    const localToken = localStorage.getItem("token");
+
+    if (!loggedIn && localToken) {
+      await checkAuthenticatedStatus(true)
+        .then(async (isAuthed) => {
+          if (isAuthed) {
+            if (!token) { setToken(localToken); }
+
+            await getUserDetails();
+          } else {
+            localStorage.removeItem("token");
+          }
+        });
+    }
+  });
 
   const clicked = () => {
     console.log(name.value);
