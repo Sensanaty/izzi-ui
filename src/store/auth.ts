@@ -17,7 +17,7 @@ type LoginResponse = AxiosResponse<{
 const useAuthStore = defineStore("auth", () => {
   const loggedIn = ref(false);
   const token = ref<string | null>(null);
-  const user = ref<User>({ id: 0, username: "", email: "" });
+  const user = ref<User>({ id: 0, username: "", email: "", admin: false });
 
   function setToken(authToken: string) {
     token.value = authToken;
@@ -66,7 +66,7 @@ const useAuthStore = defineStore("auth", () => {
     const { createNotification } = useNotificationStore();
 
     localStorage.removeItem("token")
-    user.value = { id: 0, username: "", email: "" };
+    user.value = { id: 0, username: "", email: "", admin: false };
     loggedIn.value = false;
     token.value = "";
 
@@ -75,8 +75,8 @@ const useAuthStore = defineStore("auth", () => {
 
   async function getUserDetails() {
     await api.get("auth/user", { headers: { "Authorization": token.value } })
-      .then((response: AxiosResponse<User>) => {
-        user.value = response.data;
+      .then((response: AxiosResponse<{ user: User }>) => {
+        user.value = response.data.user;
       }).catch((err) => {
         console.error(err);
       })

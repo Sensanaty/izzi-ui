@@ -4,4 +4,5 @@ export interface User {
   id: number;
   username: LoginData["username"];
   email: LoginData["password"];
+  admin: boolean;
 }
