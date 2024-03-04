@@ -3,7 +3,7 @@
 
   <form
     class="flex items-center justify-center flex-col rounded bg-neutral-800 shadow-lg shadow-black/60 mx-auto my-4 py-3 w-1/4">
-    <label for="username" class="mb-1.5 text-xl text-yellow-500">Username</label>
+    <label for="username" class="mb-1.5 text-xl text-yellow-300">Username</label>
     <input id="username" v-model="username" class="w-auto px-3 py-1 my-1 text-black bg-neutral-300 rounded"
       autocomplete="on">
 
