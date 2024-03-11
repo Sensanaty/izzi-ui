@@ -1,20 +1,20 @@
 <template>
   <div class="flex flex-col justify-center space-x-4 items-center mx-auto my-6">
-    <h1 class="mx-1000 pt-3 font-normal text-4xl text-center text-yellow-500">CONTACT US</h1>
-    <p class="text-md text-center font-extralight text-yellow-500 mx-auto px-4">Feel free to contact us and we will get back to you as soon as we can.</p>
+    <h1 class="mx-1000 pt-3 font-medium text-4xl text-center text-yellow-500">CONTACT US</h1>
+    <p class="text-lg font-light text-center text-yellow-500 mx-auto px-4">Feel free to contact us and we will get back to you as soon as we can.</p>
   </div>
 
 
-  <div class="mx-auto w-1/2 m-4 rounded bg-neutral-800 shadow-lg shadow-black/90">
-    <AddressBox class="bg-neutral-800 text-yellow-500 font-extralight" title="MAIN OFFICE"
+  <div class="mx-auto w-1/2 m-4 rounded text-xl font-light bg-neutral-800 shadow-lg shadow-black/90">
+    <AddressBox class="bg-neutral-800 text-yellow-500" title="MAIN OFFICE"
       address="Jl. Tukad Buana Gunung Sari, Gg. Baja No.1 Batukandik" sub-address="80117, Denpasar, Bali, Indonesia" />
   </div>
 
   <div
     class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-800 shadow-lg shadow-black/90 text-yellow-600 p-4 rounded">
-    <h1 class="text-3xl font-bold text-center text-yellow-600">E-MAIL</h1>
+    <h1 class="text-2xl font-semibold text-center text-yellow-600">E-MAIL</h1>
     <a href="mailto:dharmaangkasaputra@gmail.com"
-      class="font-bold text-xl underline text-center hover:decoration-blue-300">
+      class="font-normal text-xl text-center hover:underline hover:decoration-blue-300 hover:text-blue-300 hover:font-semibold">
       dharmaangkasaputra@gmail.com</a>
 
     <form class="w-full mt-4 ">
