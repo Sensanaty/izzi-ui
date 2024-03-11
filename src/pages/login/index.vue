@@ -1,6 +1,4 @@
 <template>
-  <img src="/DAP-logo-yellow.png" height="20rem" width="20rem" aria-hidden="true" alt="DAP Logo" class="w-60 m-auto py-8">
-
   <form
     class="flex items-center justify-center flex-col rounded bg-neutral-800 shadow-md shadow-black/60 mx-auto my-4 py-3 w-1/4"
   >
