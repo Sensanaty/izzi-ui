@@ -5,7 +5,7 @@
   </div>
 
 
-  <div class="mx-auto w-1/2 m-4 rounded text-xl font-light bg-neutral-800 shadow-lg shadow-black/90">
+  <div class="mx-auto w-1/2 m-4 rounded text-xl font-light bg-neutral-800 shadow-md shadow-black/90">
     <AddressBox
       class="bg-neutral-800 text-yellow-500"
       title="MAIN OFFICE"
@@ -15,7 +15,7 @@
   </div>
 
   <div
-    class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-800 shadow-lg shadow-black/90 text-yellow-500 p-4 rounded"
+    class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-800 shadow-md shadow-black/90 text-yellow-500 p-4 rounded"
   >
     <h1 class="text-2xl font-semibold text-center text-yellow-500">E-MAIL</h1>
     <a

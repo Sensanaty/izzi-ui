@@ -2,9 +2,9 @@
   <img src="/DAP-logo-yellow.png" height="20rem" width="20rem" aria-hidden="true" alt="DAP Logo" class="w-60 m-auto py-8">
 
   <form
-    class="flex items-center justify-center flex-col rounded bg-neutral-800 shadow-lg shadow-black/60 mx-auto my-4 py-3 w-1/4"
+    class="flex items-center justify-center flex-col rounded bg-neutral-800 shadow-md shadow-black/60 mx-auto my-4 py-3 w-1/4"
   >
-    <label for="username" class="mb-1.5 text-xl text-yellow-300">Username</label>
+    <label for="username" class="mb-1.5 text-xl text-yellow-500">Username</label>
     <input
       id="username"
       v-model="username"
