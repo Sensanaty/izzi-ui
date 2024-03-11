@@ -1,6 +1,5 @@
 <template>
-  <div class="container  mx-auto px-4">
-    <img class="py-6" src="/public/DAP-logo-yellow.png" alt="DAP logo">
+  <div class="container mx-auto px-4">
     <h1 class="pt-2 text-3xl text-yellow-300">WELCOME TO PT DHARMA ANGKASA PUTRA</h1>
     <h2 class="text-2xl font-medium text-yellow-300 py-4">WHAT WE DO</h2>
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 m-auto py-6">
