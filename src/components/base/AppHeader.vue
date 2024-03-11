@@ -21,7 +21,7 @@
         </BaseButton>
       </RouterLink>
 
-      <BaseButton v-else class="ml-auto" @click="logout">LOGOUT</BaseButton>
+      <BaseButton v-else has-dark-text class="ml-auto" @click="logout">LOGOUT</BaseButton>
     </div>
 
     <ShortcutModal :is-open="isModalOpen" @close="toggleModal" />
