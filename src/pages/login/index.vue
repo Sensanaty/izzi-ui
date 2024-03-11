@@ -1,7 +1,9 @@
 <template>
-  <form
-    class="flex items-center justify-center flex-col rounded bg-neutral-800 shadow-md shadow-black/60 mx-auto my-4 py-3 w-1/4"
-  >
+  <div class="flex items-center min-h-[256px] mb-8">
+    <img src="/assets/images/logo_full.svg" class="mx-auto" width="256" alt="DAP Logo">
+  </div>
+
+  <form class="flex items-center justify-center flex-col rounded bg-neutral-800 shadow-md shadow-black/60 mx-auto my-4 py-3 w-1/4">
     <label for="username" class="mb-1.5 text-xl text-yellow-500">Username</label>
     <input
       id="username"
