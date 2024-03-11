@@ -1,7 +1,10 @@
 <template>
   <div class="container mx-auto px-4">
+    <div class="px-4 py-9 flex items-center justify-center gap-8">
+    <img width="256" src="/public/assets/images/logo_full.svg" alt="DAP logo">
     <h1 class="pt-2 text-3xl text-yellow-500">WELCOME TO PT DHARMA ANGKASA PUTRA</h1>
-    <h2 class="text-2xl font-medium text-yellow-500 py-4">WHAT WE DO</h2>
+    </div>
+     <h2 class="text-2xl font-medium text-yellow-500 py-8">WHAT WE DO</h2>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 m-auto py-6">
       <div>
