@@ -5,7 +5,7 @@ import Home from "~/pages/index.vue";
 const publicRoutes = [
   { path: "/", name: "Home", component: Home },
   { path: "/login", name: "Login", component: () => import("~/pages/login/index.vue") },
-  { path: "/contact", name: "About", component: () => import("~/pages/contact/index.vue") }
+  { path: "/contact", name: "Contact", component: () => import("~/pages/contact/index.vue") }
 ];
 
 const authRoutes = [
