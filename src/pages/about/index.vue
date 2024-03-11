@@ -19,7 +19,8 @@
       <div>
         <h1 class="text-xl font-medium text-yellow-300 py-2">MARKET RESEARCH</h1>
         <p class="text-md font-medium text-neutral-200">We do market research and provide pricing & delivery times for lists of material. We charge $5.00 per line item, with a $100 minimum, payable in advance.</p>
-      </div><div><h1 class="text-xl font-medium text-yellow-300 py-2">WORK OUTSOURCING</h1>
+      </div><div>
+        <h1 class="text-xl font-medium text-yellow-300 py-2">WORK OUTSOURCING</h1>
         <p class="text-md font-medium text-neutral-200">We do market research and provide pricing & delivery times for lists of material. We charge $5.00 per line item, with a $100 minimum, payable in advance.</p>
       </div>
       <div class="grid grid-cols-subgrid gap-4 col-span-2">

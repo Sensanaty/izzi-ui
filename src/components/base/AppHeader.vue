@@ -9,8 +9,12 @@
     </h1>
 
     <div class="flex flex-row items-center ml-auto">
-      <ph-lightbulb-filament v-if="auth.loggedIn" :size="20" class="mr-5 cursor-pointer hover:text-yellow-400"
-        @click="toggleModal" />
+      <ph-lightbulb-filament
+        v-if="auth.loggedIn"
+        :size="20"
+        class="mr-5 cursor-pointer hover:text-yellow-400"
+        @click="toggleModal"
+      />
 
       <RouterLink v-if="!auth.loggedIn" :to="{ name: 'Login' }">
         <BaseButton class="ml-auto">
@@ -26,20 +30,20 @@
 </template>
 
 <script setup lang="ts">
-import { PhLightbulbFilament } from "@phosphor-icons/vue";
+  import { PhLightbulbFilament } from "@phosphor-icons/vue";
 
-import useModal from "~/composables/useModal";
-import router from "~/modules/router";
-import useAuthStore from "~/store/auth";
-import BaseButton from "~components/base/BaseButton.vue";
-import ShortcutModal from "~components/base/ShortcutModal.vue";
+  import useModal from "~/composables/useModal";
+  import router from "~/modules/router";
+  import useAuthStore from "~/store/auth";
+  import BaseButton from "~components/base/BaseButton.vue";
+  import ShortcutModal from "~components/base/ShortcutModal.vue";
 
-const auth = useAuthStore();
+  const auth = useAuthStore();
 
-const logout = () => {
-  auth.logout();
-  router.push("/");
-};
+  const logout = () => {
+    auth.logout();
+    router.push("/");
+  };
 
-const { isModalOpen, toggleModal } = useModal();
+  const { isModalOpen, toggleModal } = useModal();
 </script>
