@@ -1,4 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import router from "~/modules/router";
@@ -23,7 +22,7 @@ router.beforeEach((to) => {
   const auth = useAuthStore();
 
   if (to.meta.auth) {
-    auth.authenticated().then((isAuthenticated) => {
+    auth.checkAuthenticatedStatus().then((isAuthenticated) => {
       if (!isAuthenticated) {
         router.push("/login");
       }

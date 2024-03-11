@@ -4,18 +4,11 @@
     :class="type"
     @click.prevent="destroy"
   >
-    <div v-if="autoHide" class="timer relative mb-3 -ml-4">
-      <div class="absolute bg-green-500 w-[1px] min-h-[3px]" />
-      <Motion :animate="transformScale" :transition="animationDuration" :initial="true" class="middle absolute left-[1px] bg-green-500 w-[1px] min-h-[3px]" />
-    </div>
-
     <p>{{ message }}</p>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import type { AnimationOptionsWithOverrides } from "motion";
-  import { Motion } from "motion/vue";
   import { onMounted } from "vue";
 
   import Notification from "~/types/store/notification";
@@ -27,9 +20,6 @@
     autoHide: Notification["autoHide"],
     duration: Notification["duration"]
   }>();
-
-  const transformScale = { transform: ["scaleX(300)","scaleX(0)"] };
-  const animationDuration = { duration: props.duration / 1000, easing: "linear" } as AnimationOptionsWithOverrides;
 
   const emit = defineEmits(["destroyNotification"]);
 
@@ -51,9 +41,4 @@
   .info { @apply border-b-blue-400 }
   .succ { @apply border-b-emerald-600 }
   .dang { @apply border-b-orange-700 }
-
-  .warn .timer > div { @apply bg-amber-400 }
-  .info .timer > div { @apply bg-blue-400 }
-  .succ .timer > div { @apply bg-emerald-600 }
-  .dang .timer > div { @apply bg-orange-700 }
 </style>

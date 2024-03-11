@@ -12,9 +12,11 @@
       <ph-lightbulb-filament v-if="auth.loggedIn" :size="20" class="mr-5 cursor-pointer hover:text-yellow-400"
         @click="toggleModal" />
 
-      <BaseButton v-if="!auth.loggedIn" class="ml-auto">
-        <RouterLink to="/login">LOGIN</RouterLink>
-      </BaseButton>
+      <RouterLink v-if="!auth.loggedIn" :to="{ name: 'Login' }">
+        <BaseButton class="ml-auto">
+          LOGIN
+        </BaseButton>
+      </RouterLink>
 
       <BaseButton v-else class="ml-auto" @click="logout">LOGOUT</BaseButton>
     </div>
