@@ -15,14 +15,15 @@
   </div>
 
   <div
-    class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-800 shadow-lg shadow-black/90 text-yellow-600 p-4 rounded"
+    class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-800 shadow-lg shadow-black/90 text-yellow-500 p-4 rounded"
   >
-    <h1 class="text-2xl font-semibold text-center text-yellow-600">E-MAIL</h1>
+    <h1 class="text-2xl font-semibold text-center text-yellow-500">E-MAIL</h1>
     <a
       href="mailto:dharmaangkasaputra@gmail.com"
-      class="font-normal text-xl text-center hover:underline hover:decoration-blue-300 hover:text-blue-300 hover:font-semibold"
+      class="text-xl text-center decoration-transparent underline hover:decoration-yellow-400 transition-colors duration-70"
     >
-      dharmaangkasaputra@gmail.com</a>
+      dharmaangkasaputra@gmail.com
+    </a>
 
     <form class="w-full mt-4 ">
       <div class="flex flex-row justify-between">
@@ -49,7 +50,7 @@
         />
       </div>
 
-      <BaseButton class="w-fit h-fit self-center justify-self-center" @click.prevent="clicked">Send</BaseButton>
+      <BaseButton has-dark-text class="w-fit h-fit self-center justify-self-center" @click.prevent="clicked">Send</BaseButton>
     </form>
   </div>
 </template>
