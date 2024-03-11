@@ -16,7 +16,7 @@
       />
 
       <RouterLink v-if="!auth.loggedIn" :to="{ name: 'Login' }">
-        <BaseButton class="ml-auto">
+        <BaseButton has-dark-text class="ml-auto">
           LOGIN
         </BaseButton>
       </RouterLink>

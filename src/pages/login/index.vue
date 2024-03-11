@@ -26,10 +26,7 @@
 
     <BaseButton
       class="font-bold w-32"
-      background-color="bg-yellow-500"
-      background-hover="hover:bg-yellow-600"
-      background-active="active:bg-yellow-700"
-      background-disabled="disabled:bg-yellow-950"
+      has-dark-text
       :disabled="isLoggingIn"
       @click.prevent="login"
     >

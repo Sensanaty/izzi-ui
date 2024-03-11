@@ -1,7 +1,7 @@
 <template>
   <button
-    class="flex items-center justify-center leading-tight py-1.5 px-6 rounded uppercase disabled:cursor-not-allowed"
-    :class="[`${backgroundColor}`, `${backgroundHover}`, `${backgroundActive}`, `${backgroundDisabled}`, hasDarkText ? 'text-black' : 'text-white']"
+    class="flex items-center justify-center leading-tight py-1.5 px-3 rounded uppercase disabled:cursor-not-allowed"
+    :class="[`${backgroundColor}`, `${backgroundHover}`, `${backgroundActive}`, `${backgroundDisabled}`, hasDarkText ? 'text-black font-bold' : 'text-white']"
     :disabled="disabled"
   >
     <slot />
