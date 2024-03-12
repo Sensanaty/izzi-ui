@@ -1,63 +1,47 @@
 <template>
-  <h1 class="mx-auto font-bold text-4xl text-center mb-5">IZZICUP D.O.O. is a limited liability company established December 18th, 2003.</h1>
+  <div class="container mx-auto px-4">
+    <div class="mb-4 mt-2 flex items-center justify-center gap-8">
+      <img width="256" src="/assets/images/logo_full.svg" alt="DAP logo">
+      <h1 class="pt-2 text-3xl text-yellow-500">WELCOME TO PT DHARMA ANGKASA PUTRA</h1>
+    </div>
 
-  <div class="mx-auto flex justify-between w-1/2 mb-3">
-    <AddressBox
-      title="Main Office"
-      address="Koste Cukića #14"
-      sub-address="11080 Zemun, Belgrade, Serbia"
-    />
-    <AddressBox
-      title="Representative Office"
-      address="Jalan Sekuta #23"
-      sub-address="80228 Sanur, Bali, Indonesia"
-    />
-  </div>
-
-  <div class="flex flex-col justify-center items-center mx-auto w-1/2 bg-neutral-800 p-4 rounded">
-    <h1 class="text-3xl font-bold text-center">Contact Us</h1>
-    <a href="mailto:izzicup@gmail.com" class="font-bold text-xl underline text-center hover:decoration-blue-300">izzicup@gmail.com</a>
-
-    <form class="w-full mt-4">
-      <div class="flex flex-row justify-between">
-        <div class="flex flex-col min-w-[45%]">
-          <label for="name">name</label>
-          <input id="name" v-model="name" type="text">
-        </div>
-
-        <div class="flex flex-col min-w-[45%]">
-          <label for="email">email</label>
-          <input id="email" v-model="email" type="email">
-        </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 m-auto py-6">
+      <div>
+        <h3>PURCHASING</h3>
+        <p>Send us your material requirements - individual items or lists. We will check market availability and submit our quotations to your email inbox in 1-3 days.</p>
       </div>
 
-      <div class="flex flex-col mt-3">
-        <label for="message">message</label>
-        <textarea
-          id="message"
-          v-model="message"
-          name="message"
-          cols="40"
-          rows="10"
-          class="rounded text-black p-2 mt-1 resize-none"
-        />
+      <div>
+        <h3>SALES</h3>
+        <p>Send us your surplus list and we will try to find it a new home, either through individual parts sales, or as a package deal.</p>
       </div>
 
-      <BaseButton class="w-fit h-fit self-center justify-self-center" @click.prevent="clicked">Send</BaseButton>
-    </form>
+      <div>
+        <h3>REPAIRS AND OVERHAULS MANAGEMENT </h3>
+        <p>We can handle parts maintenance on your behalf, including MRO selection, repair quote approval, and the return of the re-certified part back to your stock.</p>
+      </div>
+
+      <div>
+        <h3>MARKET RESEARCH</h3>
+        <p>We do market research and provide pricing & delivery times for lists of material. We charge $5.00 per line item, with a $100 minimum, payable in advance.</p>
+      </div>
+
+      <div>
+        <h3>WORK OUTSOURCING</h3>
+        <p>We do market research and provide pricing & delivery times for lists of material. We charge $5.00 per line item, with a $100 minimum, payable in advance.</p>
+      </div>
+
+      <div>
+        <h3>QUALITY AND CERTIFICATION</h3>
+        <p>We are strictly brokers. We purchase parts for a known customer from an approved source and have the parts drop-shipped directly from our approved suppliers to end users. We never come in contact with parts at any stage of the process. We do not perform receiving inspection, or store, or ship, or manipulate the parts in any way. For this reason we do not have and we do not need any manuals, tools & equipment, facilities, training or personnel to manipulate the parts, nor do we require any sort of certification.</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, ref } from "vue";
   import useAuthStore from "~/store/auth";
-
-  import AddressBox from "~/pages/AddressBox.vue";
-  import BaseButton from "~components/base/BaseButton.vue";
-
-  const name = ref("");
-  const email = ref("");
-  const message = ref("");
+  import { onMounted } from "vue";
 
   // Fetch user details if token is present in localStorage upon index page mount
   const { token, loggedIn, checkAuthenticatedStatus, setToken, getUserDetails } = useAuthStore();
@@ -77,19 +61,14 @@
         });
     }
   });
-
-  const clicked = () => {
-    console.log(name.value);
-    console.log(email.value);
-    console.log(message.value);
-  };
 </script>
 
 <style scoped>
-  form {
-    display: grid;
-    grid-template: 1fr 4fr 1fr / 1fr;
-  }
+h3 {
+  @apply text-xl font-medium text-yellow-500 py-2;
+}
 
-  input { @apply rounded h-fit text-lg text-black p-1 mt-1 }
+p {
+  @apply text-base font-medium text-neutral-200;
+}
 </style>

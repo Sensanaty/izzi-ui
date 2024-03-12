@@ -1,22 +1,32 @@
 <template>
-  <img src="/logo.svg" height="15rem" width="15rem" aria-hidden="true" alt="Izzicup logo" class="w-60 m-auto">
+  <div class="flex items-center min-h-[256px] mb-8">
+    <img src="/assets/images/logo_full.svg" class="mx-auto" width="256" alt="DAP Logo">
+  </div>
 
-  <form class="flex items-center justify-center flex-col bg-neutral-800 mx-auto py-5 my-4 w-1/2">
-    <label for="username" class="mb-1.5 text-xl">Username</label>
-    <input id="username" v-model="username" class="w-80 px-3 py-1 my-1 text-black" autocomplete="on">
+  <form class="flex items-center justify-center flex-col rounded bg-neutral-800 shadow-md shadow-black/60 mx-auto my-4 py-3 w-1/4">
+    <label for="username" class="mb-1.5 text-xl text-yellow-500">Username</label>
+    <input
+      id="username"
+      v-model="username"
+      class="w-auto px-3 py-1 my-1 text-black bg-neutral-300 rounded"
+      autocomplete="on"
+    >
 
-    <label for="password" class="mb-1.5 text-xl">Password</label>
-    <input id="password" v-model="password" type="password" class="w-80 px-3 py-1 my-1 text-black" autocomplete="on">
+    <label for="password" class="mb-1.5 text-xl text-yellow-500">Password</label>
+    <input
+      id="password"
+      v-model="password"
+      type="password"
+      class="w-auto px-3 py-1 my-1 text-black bg-neutral-300 rounded"
+      autocomplete="on"
+    >
 
-    <label for="remember" class="my-2">Keep me logged in</label>
+    <label for="remember" class="my-2 text-yellow-500">Keep me logged in</label>
     <input id="remember" v-model="remember" type="checkbox" class="mb-3">
 
     <BaseButton
       class="font-bold w-32"
-      background-color="bg-green-500"
-      background-hover="hover:bg-green-600"
-      background-active="active:bg-green-700"
-      background-disabled="disabled:bg-green-950"
+      has-dark-text
       :disabled="isLoggingIn"
       @click.prevent="login"
     >

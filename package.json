@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --noEmit && VITE_CURRENT_COMPANY=izzi vite build",
+    "build:dap": "vue-tsc --noEmit && VITE_CURRENT_COMPANY=dap vite build",
     "preview": "vite preview",
     "test": "jest"
   },
