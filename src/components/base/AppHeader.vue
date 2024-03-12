@@ -1,9 +1,10 @@
 <template>
   <header class="flex items-center bg-neutral-800 text-neutral-100 w-full h-14 px-4 mb-4">
     <h1 class="font-bold text-center">
-      <RouterLink class="mr-12 text-2xl hover:text-amber-400" :to="auth.loggedIn ? '/admin' : '/'">
+      <RouterLink class="mr-12 text-2xl hover:text-amber-400 transition-colors duration-70" :to="auth.loggedIn ? '/admin' : '/'">
         DHARMA ANGKASA PUTRA
       </RouterLink>
+      <RouterLink v-if="!auth.loggedIn" class="text-xl hover:text-amber-400 transition-colors duration-70" to="/contact">Contact Us</RouterLink>
       <RouterLink v-if="auth.loggedIn" class="text-xl hover:text-amber-400" to="/admin/new">New Part</RouterLink>
     </h1>
 
@@ -46,3 +47,10 @@
 
   const { isModalOpen, toggleModal } = useModal();
 </script>
+
+
+<style scoped>
+.router-link-active {
+  @apply text-amber-500;
+}
+</style>
