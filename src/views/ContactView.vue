@@ -1,3 +1,3 @@
 <template>
-  <h1>Homepage</h1>
+  <h1>Contact us</h1>
 </template>
