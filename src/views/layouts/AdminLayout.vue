@@ -7,7 +7,9 @@
         :to="route.route"
         class="font-bold underline decoration-2 decoration-transparent text-lg mr-4 last:mr-0 hover:decoration-emerald-500"
         exact-active-class="decoration-emerald-700"
-      />
+      >
+        {{ route.text }}
+      </RouterLink>
     </nav>
   </header>
 
