@@ -5,6 +5,7 @@ import type { RouteRecordRaw } from "vue-router";
 export const ROUTE = {
   HOME: "home",
   CONTACT: "contact",
+  LOGIN: "login",
   ADMIN: "admin",
 } as const;
 
@@ -14,6 +15,7 @@ type ValidPathKey = { [k in keyof typeof ROUTE]: string };
 export const ROUTE_PATH: ValidPathKey = {
   HOME: "/",
   CONTACT: "/contact",
+  LOGIN: "/login",
   ADMIN: "/admin",
 } as const;
 
@@ -27,6 +29,11 @@ const publicRoutes: RouteRecordRaw[] = [
     path: ROUTE_PATH.CONTACT,
     name: ROUTE.CONTACT,
     component: () => import("@/views/ContactView.vue"),
+  },
+  {
+    path: ROUTE_PATH.LOGIN,
+    name: ROUTE.LOGIN,
+    component: () => import("@/views/LoginView.vue"),
   },
 ];
 
