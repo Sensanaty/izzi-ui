@@ -29,6 +29,7 @@ export default [
           requireLast: false,
         },
       }],
+      "@typescript-eslint/no-unused-vars": "off",
       "vue/max-attributes-per-line": ["warn", { singleline: 5, multiline: 1 }],
     },
   },
