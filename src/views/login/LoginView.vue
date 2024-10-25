@@ -11,7 +11,7 @@
       label="Username"
       :error-message="errors.username"
       :invalid="!!errors.username"
-      :disabled="isSending"
+      :disabled="isFetchingLogin"
       autofocus
       @blur="validateField('username')"
       @input="validateField('username')"
@@ -28,7 +28,7 @@
       label="Password"
       :error-message="errors.password"
       :invalid="!!errors.password"
-      :disabled="isSending"
+      :disabled="isFetchingLogin"
       @blur="validateField('password')"
       @input="validateField('password')"
       @keydown.enter.prevent="onSubmit"
@@ -36,7 +36,7 @@
 
     <BaseButton
       class="mx-auto"
-      :disabled="isSending"
+      :disabled="isFetchingLogin"
       @click.prevent="onSubmit"
     >
       Login
@@ -47,7 +47,8 @@
 <script setup lang="ts">
 import useForm from "@/composables/useForm";
 import { object, string } from "zod";
-import { ref } from "vue";
+import useAuthStore from "@/stores/auth";
+import useAuthApi from "@/api/auth";
 
 const loginSchema = object({
   username: string().min(1, "Username is required"),
@@ -56,19 +57,19 @@ const loginSchema = object({
 
 const { values, errors, validateAll, validateField } = useForm(loginSchema);
 
-const isSending = ref(false);
+const { login, isFetchingLogin } = useAuthApi();
+const authStore = useAuthStore();
 
-function onSubmit() {
-  if (isSending.value || !validateAll()) {
+async function onSubmit() {
+  if (isFetchingLogin.value || !validateAll()) {
     return;
   }
 
-  isSending.value = true;
+  const response = await login({
+    username: values.value.username,
+    password: values.value.password,
+  });
 
-  console.log("success");
-
-  setTimeout(() => {
-    isSending.value = false;
-  }, 1000);
+  authStore.setAuthStore(response);
 }
 </script>
