@@ -78,13 +78,13 @@ const useFetch = (needsAuth = true) => {
     });
   }, 1000);
 
-  async function handleAxiosError(error: AxiosError<{ message: string }>) {
-    if (!error?.response?.status || !error.response?.data?.message) {
+  async function handleAxiosError(error: AxiosError<{ error: string }>) {
+    if (!error?.response?.status || !error.response?.data?.error) {
       createNotification("An unknown error occurred", { kind: "w" });
       return;
     }
 
-    const errorMessage = error.response.data.message;
+    const errorMessage = error.response.data.error;
 
     switch (error.response.status) {
       default:

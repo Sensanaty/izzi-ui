@@ -49,6 +49,8 @@ import useForm from "@/composables/useForm";
 import { object, string } from "zod";
 import useAuthStore from "@/stores/auth";
 import useAuthApi from "@/api/auth";
+import { useRouter } from "vue-router";
+import { ROUTE } from "@/router/routes";
 
 const loginSchema = object({
   username: string().min(1, "Username is required"),
@@ -60,16 +62,19 @@ const { values, errors, validateAll, validateField } = useForm(loginSchema);
 const { login, isFetchingLogin } = useAuthApi();
 const authStore = useAuthStore();
 
+const router = useRouter();
+
 async function onSubmit() {
   if (isFetchingLogin.value || !validateAll()) {
     return;
   }
 
-  const response = await login({
+  login({
     username: values.value.username,
     password: values.value.password,
+  }).then((response) => {
+    router.push({ name: ROUTE.HOME });
+    authStore.setAuthStore(response);
   });
-
-  authStore.setAuthStore(response);
 }
 </script>

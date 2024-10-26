@@ -4,6 +4,8 @@ import { z } from "zod";
 
 import type { LoginResponse } from "@/api/auth";
 import extractDefaults from "@/utils/zodUtils";
+import { useRouter } from "vue-router";
+import { ROUTE } from "@/router/routes";
 
 export const userSchema = z.object({
   id: z.number(),
@@ -15,6 +17,8 @@ export const userSchema = z.object({
 type User = z.infer<typeof userSchema>;
 
 const useAuthStore = defineStore("auth", () => {
+  const router = useRouter();
+
   const token = ref(localStorage.getItem("token") || "");
   const user = ref<User>(getUserFromLocalStorage());
   const hasCalledAuthOrLogin = ref(false);
@@ -48,17 +52,21 @@ const useAuthStore = defineStore("auth", () => {
   };
 
   function setAuthFromLocal() {
-    user.value = getUserFromLocalStorage();
+    if (!user.value.username) {
+      user.value = getUserFromLocalStorage();
+    }
 
     hasCalledAuthOrLogin.value = true;
   }
 
-  function logout() {
+  async function logout() {
     token.value = "";
     user.value = extractDefaults(userSchema);
 
     localStorage.removeItem("token");
     hasCalledAuthOrLogin.value = false;
+
+    await router.push(ROUTE.LOGIN);
   }
 
   return {

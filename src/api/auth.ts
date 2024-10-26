@@ -21,7 +21,7 @@ export type AuthenticateResponse = z.infer<typeof authenticateResponseScheme>;
 const useAuthApi = () => {
   const { isFetching: isFetchingLogin, fetch } = useFetch(false);
   async function login(payload: LoginPayload) {
-    return fetch<LoginResponse>("/auth/login", "POST", { data: payload });
+    return fetch<LoginResponse>("/auth/login", "POST", { data: payload, successMessage: "Logged in" });
   }
 
   const { fetch: fetchAuthenticate } = useFetch();
