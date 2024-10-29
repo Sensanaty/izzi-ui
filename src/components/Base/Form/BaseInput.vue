@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineModel, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 
 type InputType = "button"
   | "checkbox"
