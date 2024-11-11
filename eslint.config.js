@@ -19,6 +19,7 @@ export default [
       "@stylistic/semi": ["warn", "always"],
       "@stylistic/brace-style": ["warn", "1tbs"],
       "@stylistic/comma-dangle": ["warn", "always-multiline"],
+      "@stylistic/object-curly-spacing": ["error", "always"],
       "@stylistic/member-delimiter-style": ["warn", {
         multiline: {
           delimiter: "semi",
