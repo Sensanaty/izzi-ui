@@ -1,4 +1,4 @@
-import type { RawAxiosRequestConfig } from "axios";
+import type { AxiosRequestConfig, RawAxiosRequestConfig } from "axios";
 import useNotificationStore from "@/stores/notification";
 import { computed, ref } from "vue";
 import axios, { AxiosError } from "axios";
@@ -12,6 +12,7 @@ type FetchConfig = Partial<{
   data: unknown;
   successMessage: string;
   skipError: boolean;
+  params: RawAxiosRequestConfig["params"];
   axiosConfig: RawAxiosRequestConfig;
 }>;
 
@@ -41,11 +42,15 @@ const useFetch = (needsAuth = true) => {
     status.value = "fetching";
 
     try {
-      const response = await api<T>(url, {
+      const queryConfig: AxiosRequestConfig = {
         ...config?.axiosConfig,
         method,
-        data: config?.data ?? null,
-      });
+      };
+
+      if (config?.data) queryConfig["data"] = config.data;
+      if (config?.params) queryConfig["params"] = config.params;
+
+      const response = await api<T>(url, queryConfig);
 
       status.value = "success";
 
