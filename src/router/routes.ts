@@ -20,6 +20,7 @@ const publicRoutes: RouteRecordRaw[] = [
     path: ROUTE_PATH.LOGIN,
     name: ROUTE.LOGIN,
     component: () => import("@/views/login/LoginView.vue"),
+    meta: { title: "Login" },
   },
 ];
 
@@ -28,7 +29,7 @@ const privateRoutes: RouteRecordRaw[] = [
     path: ROUTE_PATH.HOME,
     name: ROUTE.HOME,
     component: HomeView,
-    meta: { auth: true },
+    meta: { auth: true, title: "Parts" },
   },
 ];
 

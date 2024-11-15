@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import routes from "@/router/routes";
-import { authMiddleware } from "@/middleware/authMiddleware";
+import { authMiddleware, metaMiddleware } from "@/middleware/routerMiddleware";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,6 +8,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  metaMiddleware(to, from, next);
   authMiddleware(to, from, next);
 });
 

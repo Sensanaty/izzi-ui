@@ -3,6 +3,7 @@ import useAuthApi from "@/api/auth";
 import useAuthStore from "@/stores/auth";
 import { ROUTE_PATH } from "@/router/routes";
 import useNotificationStore from "@/stores/notification";
+import { useHead } from "@unhead/vue";
 
 export const authMiddleware: NavigationGuard = async (to, _from, next) => {
   const authStore = useAuthStore();
@@ -34,5 +35,11 @@ export const authMiddleware: NavigationGuard = async (to, _from, next) => {
     }
   } else {
     next();
+  }
+};
+
+export const metaMiddleware: NavigationGuard = async (to, _from, _next) => {
+  if (to.meta?.title) {
+    useHead({ title: to.meta.title });
   }
 };
