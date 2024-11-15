@@ -1,7 +1,7 @@
 import type { NavigationGuard } from "vue-router";
 import useAuthApi from "@/api/auth";
 import useAuthStore from "@/stores/auth";
-import { ROUTE, ROUTE_PATH } from "@/router/routes";
+import { ROUTE_PATH } from "@/router/routes";
 import useNotificationStore from "@/stores/notification";
 
 export const authMiddleware: NavigationGuard = async (to, _from, next) => {
@@ -9,7 +9,7 @@ export const authMiddleware: NavigationGuard = async (to, _from, next) => {
   const { createNotification } = useNotificationStore();
 
   if (to.meta.auth) {
-    if (!authStore.token) {
+    if (!authStore.token && !localStorage.getItem("token")) {
       authStore.logout();
       next(ROUTE_PATH.LOGIN);
 
