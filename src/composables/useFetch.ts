@@ -1,10 +1,11 @@
-import type { AxiosRequestConfig, RawAxiosRequestConfig } from "axios";
 import useNotificationStore from "@/stores/notification";
 import { computed, ref } from "vue";
 import axios, { AxiosError } from "axios";
 import { storeToRefs } from "pinia";
 import useAuthStore from "@/stores/auth";
 import { useThrottleFn } from "@vueuse/core";
+
+import type { AxiosRequestConfig, RawAxiosRequestConfig } from "axios";
 
 type FetchMethod = "GET" | "POST" | "DELETE" | "PUT";
 
