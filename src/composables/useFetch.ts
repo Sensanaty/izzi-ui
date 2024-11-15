@@ -51,7 +51,11 @@ const useFetch = (needsAuth = true) => {
       if (config?.data) queryConfig["data"] = config.data;
       if (config?.params) queryConfig["params"] = config.params;
 
-      const response = await api<T>(url, queryConfig);
+      const response = await api<T & { token?: string }>(url, queryConfig);
+
+      if (response?.data?.token) {
+        useAuthStore().setToken(response.data.token);
+      }
 
       status.value = "success";
 
