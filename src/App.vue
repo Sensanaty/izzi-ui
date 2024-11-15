@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent, onMounted } from "vue";
+import { defineAsyncComponent } from "vue";
 import MainLayout from "@/views/layouts/MainLayout.vue";
 
 const NotificationContainer = defineAsyncComponent(() => import("@/components/Notifications/NotificationContainer.vue"));
