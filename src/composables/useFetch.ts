@@ -17,6 +17,28 @@ type FetchConfig = Partial<{
   axiosConfig: RawAxiosRequestConfig;
 }>;
 
+export type PaginationMetadata = {
+  page: number;
+  prev: number | null;
+  next: number | null;
+  last: number;
+  from: number;
+  to: number;
+  count: number;
+  total: number;
+};
+
+export type PaginatedResponse<T> = {
+  data: T;
+  metadata: PaginationMetadata;
+  token?: string;
+};
+
+export interface CommonPaginationParams {
+  page?: number;
+  count?: number;
+};
+
 const useFetch = (needsAuth = true) => {
   const { createNotification } = useNotificationStore();
   const { token } = storeToRefs(useAuthStore());
