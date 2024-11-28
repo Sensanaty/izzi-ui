@@ -37,7 +37,7 @@
     </nav>
   </header>
 
-  <main class="flex flex-col mx-4 mt-2">
+  <main class="flex flex-col mx-2.5 mt-2">
     <slot />
   </main>
 </template>
