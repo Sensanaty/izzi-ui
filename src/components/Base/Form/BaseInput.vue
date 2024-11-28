@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center" :class="{ 'flex-col': column }">
-    <label v-if="label" :for="id" class="cursor-pointer mr-auto" :class="{ 'font-mono': mono }">
+    <label v-if="label" :for="id" class="cursor-pointer" :class="{ 'font-mono': mono, 'mr-auto': column, 'mr-3': !column }">
       {{ label }}<sup v-if="required" aria-hidden="true" class="text-red-600">*</sup>
     </label>
 
