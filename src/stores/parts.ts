@@ -22,7 +22,7 @@ export const usePartsStore = defineStore("parts", () => {
 
   const parts = ref<Part[]>([]);
   const currentPart = ref<Part>(extractDefaults(PartSchema));
-  const currentParams = ref<PartsQueryParams>({ page: 1, count: 20 });
+  const currentParams = ref<PartsQueryParams>({ page: 1, count: 20, query: "" });
 
   async function getAllParts(params: PartsQueryParams) {
     currentParams.value = params;
@@ -87,7 +87,7 @@ export const usePartsStore = defineStore("parts", () => {
     parts.value = [];
     currentPart.value = extractDefaults(PartSchema);
     clearMetadata();
-    currentParams.value = { page:1, count: 20 };
+    currentParams.value = { page:1, count: 20, query: "" };
   }
 
   return {
