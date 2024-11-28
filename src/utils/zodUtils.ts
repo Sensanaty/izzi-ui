@@ -1,4 +1,5 @@
-import { z } from "zod";
+import { z, type ZodRawShape } from "zod";
+import { labelize } from "@/utils/stringUtils.ts";
 
 type ZodArrayDef = z.ZodArray<z.ZodTypeAny>;
 type ZodObjectDef = z.ZodObject<z.ZodRawShape>;
@@ -67,4 +68,53 @@ export default function extractDefaults<T extends z.ZodTypeAny>(schema: T): z.in
 
   // Handle all other types
   return getDefaultForType(unwrapped as ZodTypeDef) as z.infer<T>;
+}
+
+interface FieldDefinition {
+  key: string;
+  label: string;
+}
+
+interface ExtraField extends FieldDefinition {
+  afterKey?: string; // Insert after this key. If not specified, adds to end
+}
+
+interface SchemaFieldsOptions {
+  exclude?: string[];
+  extraFields?: ExtraField[];
+}
+
+export function generateFieldsFromSchema(
+  schema: z.ZodObject<ZodRawShape>,
+  options?: SchemaFieldsOptions,
+): FieldDefinition[] {
+  // Get base fields from schema, excluding specified keys
+  const baseFields = Object.keys(schema.shape)
+    .filter(key => !options?.exclude?.includes(key))
+    .map(key => ({
+      key,
+      label: labelize(key),
+    }));
+
+  // Handle extra fields with positioning
+  const result: FieldDefinition[] = [...baseFields];
+
+  if (options?.extraFields) {
+    options.extraFields.forEach(extraField => {
+      const { afterKey, ...fieldDefinition } = extraField;
+
+      if (afterKey) {
+        const insertIndex = result.findIndex(field => field.key === afterKey);
+        if (insertIndex !== -1) {
+          result.splice(insertIndex + 1, 0, fieldDefinition);
+        } else {
+          result.push(fieldDefinition);
+        }
+      } else {
+        result.push(fieldDefinition);
+      }
+    });
+  }
+
+  return result;
 }
