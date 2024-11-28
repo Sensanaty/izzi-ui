@@ -5,11 +5,14 @@ import { ROUTE_PATH } from "@/router/routes";
 import useNotificationStore from "@/stores/notification";
 import { useHead } from "@unhead/vue";
 
-export const authMiddleware: NavigationGuard = async (to, _from, next) => {
-  const authStore = useAuthStore();
-  const { createNotification } = useNotificationStore();
+export const authMiddleware: NavigationGuard = async (to, from, next) => {
+  // Check if only query parameters changed (same path and name)
+  const isOnlyQueryChanged = to.path === from.path && to.name === from.name;
 
-  if (to.meta.auth) {
+  if (to.meta.auth && !isOnlyQueryChanged) {
+    const authStore = useAuthStore();
+    const { createNotification } = useNotificationStore();
+
     if (!authStore.token && !localStorage.getItem("token")) {
       authStore.logout();
       next(ROUTE_PATH.LOGIN);
