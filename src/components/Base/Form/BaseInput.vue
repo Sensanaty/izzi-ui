@@ -16,10 +16,10 @@
       :autocomplete="autocomplete"
       :aria-invalid="invalid"
       class="
-        rounded bg-neutral-800 font-mono border transition-colors
+        w-full rounded bg-neutral-800 font-mono border transition-colors
         hover:bg-neutral-800/80
         disabled:cursor-not-allowed disabled:bg-neutral-800 disabled:text-neutral-500"
-      :class="{ 'border-red-500 outline-none': invalid, 'py-1 px-1 text-sm': size === 'small', 'py-1.5 px-1.5': size === 'medium', 'py-2 px-2': size === 'large' }"
+      :class="{ 'border-red-500 outline-none': invalid, 'py-1 px-1 text-xs': size === 'xsmall', 'py-1 px-1 text-sm': size === 'small', 'py-1.5 px-1.5': size === 'medium', 'py-2 px-2': size === 'large' }"
       @input="emit('input', $event)"
       @blur="emit('blur', $event)"
       @focus="emit('focus', $event)"
@@ -65,7 +65,7 @@ type BaseInputProps = {
   type?: InputType;
   placeholder?: string;
   errorMessage?: string;
-  size?: "small" | "medium" | "large";
+  size?: "xsmall" | "small" | "medium" | "large";
 
   invalid?: boolean;
   column?: boolean;
