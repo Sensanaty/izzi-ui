@@ -13,7 +13,7 @@ const vTooltip: Directive<HTMLElement, TooltipOptions> = {
     }
 
     const tooltip = document.createElement("div");
-    const defaultClass = "fixed z-50 bg-neutral-950 p-2 border rounded shadow-lg max-w-sm whitespace-normal font-mono text-xs select-all";
+    const defaultClass = "fixed z-50 bg-neutral-950 p-2 border rounded shadow-lg max-w-sm whitespace-normal font-mono select-all";
     tooltip.className = binding.value?.class || defaultClass;
     tooltip.textContent = el.textContent;
     tooltip.style.visibility = "hidden";
