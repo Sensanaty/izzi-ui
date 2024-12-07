@@ -5,12 +5,11 @@ import {
   date,
   array,
   nullable,
-  bigint,
   type infer as ZodInfer,
 } from "zod";
 
 export const PartSchema = object({
-  id: bigint(),
+  id: number().int(),
   part_number: string(),
   description: string().optional(),
   available: number().int().default(0),
@@ -33,7 +32,7 @@ export const PartSchema = object({
   added: date().default(() => new Date()),
   created_at: date().default(() => new Date()),
   updated_at: date().default(() => new Date()),
-  company_id: bigint(),
+  company_id: number().int(),
 });
 
 export type Part = ZodInfer<typeof PartSchema>;

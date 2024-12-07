@@ -14,7 +14,7 @@ export interface PartsQueryParams extends CommonPaginationParams {
 }
 
 const PART_URL = "/parts";
-const PART_ID_URL = (id: number | bigint) => `${PART_URL}/${id}`;
+const PART_ID_URL = (id: number) => `${PART_URL}/${id}`;
 
 export const usePartsStore = defineStore("parts", () => {
   const { metadata, total, currentPage, lastPage, hasPreviousPage, hasNextPage, hasMetadata, setMetadata, clearMetadata } = usePagination();

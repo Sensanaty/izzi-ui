@@ -97,7 +97,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  rowSelected: [ids: Array<bigint | number>];
+  rowSelected: [ids: Array<number>];
   selectionCleared: [];
 }>();
 
@@ -132,17 +132,17 @@ function getDataClass(index: number) {
   }
 }
 
-const selectedRows = ref<Set<bigint | number>>(new Set());
+const selectedRows = ref<Set<number>>(new Set());
 const selectedRowArray = computed(() => Array.from(selectedRows.value));
 
 const allSelected = computed(() => selectedRows.value.size === partRows.value.length);
 const anySelected = computed(() => selectedRows.value.size > 0);
 
-function isRowSelected(id: bigint | number): boolean {
+function isRowSelected(id: number): boolean {
   return selectedRows.value.has(id);
 }
 
-function toggleRow(id: bigint | number) {
+function toggleRow(id: number) {
   if (selectedRows.value.has(id)) {
     selectedRows.value.delete(id);
   } else {
