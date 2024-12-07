@@ -88,6 +88,8 @@ import vTooltip from "@/directives/tooltip.ts";
 import { copyText, formatDate } from "@/utils/stringUtils.ts";
 import PartTableTools from "@/components/Table/Parts/PartTableTools.vue";
 import useNotificationStore from "@/stores/notification.ts";
+import { useRouter } from "vue-router";
+import { ROUTE } from "@/router/routes.ts";
 
 type HeaderRow<T> = { key: keyof T; label: string };
 
@@ -207,13 +209,15 @@ function copyDetails(scope: ActionScope, type: "quote" | "full", index?: number)
     .catch(err => createNotification(err, { kind: "d" }));
 }
 
+const router = useRouter();
+
 function editPart(scope: ActionScope, index?: number) {
   if (scope === "bulk") {
     createNotification("Bulk Editing Is WIP");
     return;
   }
 
-  createNotification("Editing Is WIP");
+  router.push({ name: ROUTE.PART_EDIT, params: { id: partRows.value[index!].id } });
 }
 </script>
 
