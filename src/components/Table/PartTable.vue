@@ -61,6 +61,10 @@ onBeforeMount(() => {
 const partNumberQuery = ref((useRoute()?.query?.query as string) ?? "");
 
 function getByPartNumber() {
+  if (currentParams.value.query === partNumberQuery.value) {
+    return;
+  }
+
   partStore.getAllParts({ count: currentParams.value.count, page: 1, query: partNumberQuery.value });
 }
 
