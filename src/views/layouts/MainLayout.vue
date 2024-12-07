@@ -1,11 +1,11 @@
 <template>
-  <header class="flex items-center bg-neutral-900 w-full px-4 py-1 border-b border-r">
-    <nav class="w-full flex items-center">
+  <header class="flex w-full items-center border-b border-r bg-neutral-900 px-4 py-1">
+    <nav class="flex w-full items-center">
       <RouterLink
         v-for="route in navlinks"
         :key="route.route"
         :to="route.route"
-        class="flex items-center font-bold underline decoration-2 decoration-transparent text-lg mr-4 last:mr-0 hover:!decoration-emerald-500"
+        class="mr-4 flex items-center text-lg font-bold underline decoration-transparent decoration-2 last:mr-0 hover:!decoration-emerald-500"
         exact-active-class="!decoration-emerald-700 text-emerald-600"
       >
         <component
@@ -20,7 +20,7 @@
       <RouterLink
         v-if="!authStore.loggedIn"
         :to="ROUTE_PATH.LOGIN"
-        class="ml-auto flex items-center font-bold underline decoration-2 decoration-transparent text-lg last:mr-0 hover:!decoration-emerald-500"
+        class="ml-auto flex items-center text-lg font-bold underline decoration-transparent decoration-2 last:mr-0 hover:!decoration-emerald-500"
         exact-active-class="!decoration-emerald-700"
       >
         Login
@@ -29,7 +29,7 @@
       <button
         v-else
         type="button"
-        class="ml-auto flex items-center font-bold underline decoration-2 decoration-transparent text-lg last:mr-0 hover:!decoration-emerald-500"
+        class="ml-auto flex items-center text-lg font-bold underline decoration-transparent decoration-2 last:mr-0 hover:!decoration-emerald-500"
         @click.prevent="authStore.logout"
       >
         Logout
@@ -37,7 +37,7 @@
     </nav>
   </header>
 
-  <main class="flex flex-col mx-2.5 mt-2 mb-4">
+  <main class="mx-2.5 mb-4 mt-2 flex flex-col">
     <slot />
   </main>
 </template>

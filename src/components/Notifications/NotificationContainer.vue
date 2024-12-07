@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col fixed bottom-5 left-4 max-w-96 z-10">
+  <div class="fixed bottom-5 left-4 z-10 flex max-w-96 flex-col">
     <TransitionGroup name="notification-slide">
       <NotificationBox v-for="notification in notifications" :key="notification.id" :notification="notification" />
     </TransitionGroup>

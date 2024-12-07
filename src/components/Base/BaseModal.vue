@@ -1,16 +1,16 @@
 <template>
   <Transition>
-    <div v-if="model" ref="modalContainer" class="flex fixed top-0 left-0 bg-neutral-950/50 w-screen h-screen z-30" @click.prevent="onBackdropClick">
+    <div v-if="model" ref="modalContainer" class="fixed left-0 top-0 z-30 flex h-screen w-screen bg-neutral-950/50" @click.prevent="onBackdropClick">
       <div
-        class="m-auto mt-64 border rounded bg-neutral-900 z-40"
+        class="z-40 m-auto mt-64 rounded border bg-neutral-900"
         :class="{ 'w-1/4': size === 'small', 'w-1/3': size === 'large' }"
         @click.stop.prevent
       >
-        <header v-if="title" class="border-b-2 px-2.5 pt-1 font-semibold text-lg">
+        <header v-if="title" class="border-b-2 px-2.5 pt-1 text-lg font-semibold">
           {{ title }}
         </header>
 
-        <div class="flex flex-col max-h-96 overflow-auto py-3.5 px-2.5">
+        <div class="flex max-h-96 flex-col overflow-auto px-2.5 py-3.5">
           <slot />
         </div>
 

@@ -1,6 +1,7 @@
 import pluginVue from "eslint-plugin-vue";
 import stylistic from "@stylistic/eslint-plugin";
 import vueTsEslintConfig from "@vue/eslint-config-typescript";
+import tailwind from "eslint-plugin-tailwindcss";
 
 export default [
   {
@@ -9,6 +10,7 @@ export default [
 
   ...pluginVue.configs["flat/recommended"],
   ...vueTsEslintConfig(),
+  ...tailwind.configs["flat/recommended"],
 
   {
     name: "app/files-to-lint",
@@ -32,6 +34,7 @@ export default [
       }],
       "@typescript-eslint/no-unused-vars": "off",
       "vue/max-attributes-per-line": ["warn", { singleline: 5, multiline: 1 }],
+      "tailwindcss/no-custom-classname": "off",
     },
   },
 

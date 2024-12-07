@@ -16,16 +16,16 @@
       :autocomplete="autocomplete"
       :aria-invalid="invalid"
       class="
-        w-full rounded bg-neutral-800 font-mono border transition-colors
+        w-full rounded border bg-neutral-800 font-mono transition-colors
         hover:bg-neutral-800/80
         disabled:cursor-not-allowed disabled:bg-neutral-800 disabled:text-neutral-500"
-      :class="{ 'border-red-500 outline-none': invalid, 'py-1 px-1 text-xs': size === 'xsmall', 'py-1 px-1 text-sm': size === 'small', 'py-1.5 px-1.5': size === 'medium', 'py-2 px-2': size === 'large' }"
+      :class="{ 'border-red-500 outline-none': invalid, 'p-1 text-xs': size === 'xsmall', 'p-1 text-sm': size === 'small', 'p-1.5': size === 'medium', 'p-2': size === 'large' }"
       @input="emit('input', $event)"
       @blur="emit('blur', $event)"
       @focus="emit('focus', $event)"
     >
 
-    <div role="alert" class="mt-0.5 min-h-5 mr-auto text-sm text-red-500 mb-1" aria-live="polite">
+    <div role="alert" class="mb-1 mr-auto mt-0.5 min-h-5 text-sm text-red-500" aria-live="polite">
       {{ invalid && required ? errorMessage : '' }}
     </div>
   </div>

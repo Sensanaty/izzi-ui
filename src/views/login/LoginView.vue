@@ -1,7 +1,7 @@
 <template>
-  <img src="/images/logo.svg" alt="DAP Logo" class="w-32 mx-auto mb-8">
+  <img src="/images/logo.svg" alt="DAP Logo" class="mx-auto mb-8 w-32">
 
-  <form class="flex flex-col border w-fit rounded mx-auto p-4 bg-neutral-900" @submit.prevent>
+  <form class="mx-auto flex w-fit flex-col rounded border bg-neutral-900 p-4" @submit.prevent>
     <BaseInput
       id="username"
       v-model="values.username"

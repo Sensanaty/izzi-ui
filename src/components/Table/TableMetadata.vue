@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center mx-auto gap-x-1.5 border" :class="roundedTop ? 'rounded-t-lg border-b-0' : 'rounded-b-lg border-t-0'">
+  <div class="mx-auto flex items-center gap-x-1.5 border" :class="roundedTop ? 'rounded-t-lg border-b-0' : 'rounded-b-lg border-t-0'">
     <button :disabled="isFetching || !metadata.prev" @click.prevent="emit('navigate', 'first')">
       <PhCaretDoubleLeft weight="fill" />
     </button>

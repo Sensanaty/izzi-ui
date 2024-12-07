@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    class="bg-neutral-900 px-3 py-2 text-start font-mono font-semibold w-full text-sm border-2 rounded z-20 mb-3 cursor-pointer last:mb-0 hover:bg-neutral-900/50 active:bg-neutral-950"
+    class="z-20 mb-3 w-full cursor-pointer rounded border-2 bg-neutral-900 px-3 py-2 text-start font-mono text-sm font-semibold last:mb-0 hover:bg-neutral-900/50 active:bg-neutral-950"
     :class="[notification.kind]"
     @click.prevent="removeNotification(notification.id)"
   >
