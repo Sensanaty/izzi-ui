@@ -50,13 +50,13 @@ const privateRoutes: RouteRecordRaw[] = [
       {
         path: ROUTE_PATH.PART_CREATE,
         name: ROUTE.PART_CREATE,
-        component: import("@/views/PartEdit.vue"),
+        component: import("@/views/Part/PartEdit.vue"),
         meta: { title: "Parts - Create", isCreatePage: true },
       },
       {
         path: ROUTE_PATH.PART_EDIT,
         name: ROUTE.PART_EDIT,
-        component: import("@/views/PartEdit.vue"),
+        component: import("@/views/Part/PartEdit.vue"),
         meta: { title: "Parts - Edit", isCreatePage: false },
       },
     ],
