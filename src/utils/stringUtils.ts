@@ -19,3 +19,25 @@ export function labelize(input: string): string {
 
   return words;
 };
+
+export function formatDate(isoString: string) {
+  const date = new Date(isoString);
+
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
+
+export async function copyText(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+
+    return Promise.resolve(true);
+  } catch (err: unknown) {
+    console.error(err);
+
+    return Promise.reject(err);
+  }
+}
