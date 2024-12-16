@@ -4,9 +4,10 @@ import {
   number,
   date,
   array,
-  nullable,
+  enum as ZodEnum,
   type infer as ZodInfer,
 } from "zod";
+
 
 export const PartSchema = object({
   id: number().int(),
@@ -26,9 +27,9 @@ export const PartSchema = object({
   max_price: number().multipleOf(0.01).default(0.0).optional(),
   max_order: number().int().default(0).optional(),
   lead_time: string().optional(),
-  quote_type: string().optional(),
+  quote_type: ZodEnum(["OUTRIGHT SALE", "FLAT RATE EXCHANGE", "EXCHANGE + COST"]).default("OUTRIGHT SALE"),
   tag: string().optional(),
-  internal_note: nullable(string()).optional(),
+  internal_note: string().optional(),
   added: date().default(() => new Date()),
   created_at: date().default(() => new Date()),
   updated_at: date().default(() => new Date()),
