@@ -61,8 +61,8 @@ export const usePartsStore = defineStore("parts", () => {
   }
 
   async function getPart(id: Part["id"]) {
-    const response = await fetch<Part>(PART_ID_URL(id), "GET");
-    currentPart.value = response;
+    const response = await fetch<{ data: Part; token?: string }>(PART_ID_URL(id), "GET");
+    currentPart.value = response.data;
   };
 
   function clearCurrentPart() {
