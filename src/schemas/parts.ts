@@ -1,5 +1,6 @@
 import {
   object,
+  coerce,
   string,
   number,
   date,
@@ -10,30 +11,29 @@ import {
 
 
 export const PartSchema = object({
-  id: number().int(),
-  part_number: string(),
+  id: coerce.number().int().readonly(),
+  part_number: string().min(1, { message: "Part Number is required" }),
   description: string().optional(),
-  available: number().int().default(0),
-  reserved: number().int().default(0),
-  sold: number().int().default(0),
+  available: coerce.number().int().default(0),
+  reserved: coerce.number().int().default(0),
+  sold: coerce.number().int().default(0),
   condition: string().optional(),
-  min_cost: number().multipleOf(0.01).default(0.0).optional(),
-  min_price: number().multipleOf(0.01).default(0.0).optional(),
-  min_order: number().int().default(0).optional(),
-  med_cost: number().multipleOf(0.01).default(0.0).optional(),
-  med_price: number().multipleOf(0.01).default(0.0).optional(),
-  med_order: number().int().default(0).optional(),
-  max_cost: number().multipleOf(0.01).default(0.0).optional(),
-  max_price: number().multipleOf(0.01).default(0.0).optional(),
-  max_order: number().int().default(0).optional(),
+  min_cost: coerce.number().multipleOf(0.01).default(0.0).optional(),
+  min_price: coerce.number().multipleOf(0.01).default(0.0).optional(),
+  min_order: coerce.number().int().default(0).optional(),
+  med_cost: coerce.number().multipleOf(0.01).default(0.0).optional(),
+  med_price: coerce.number().multipleOf(0.01).default(0.0).optional(),
+  med_order: coerce.number().int().default(0).optional(),
+  max_cost: coerce.number().multipleOf(0.01).default(0.0).optional(),
+  max_price: coerce.number().multipleOf(0.01).default(0.0).optional(),
+  max_order: coerce.number().int().default(0).optional(),
   lead_time: string().optional(),
   quote_type: ZodEnum(["OUTRIGHT SALE", "FLAT RATE EXCHANGE", "EXCHANGE + COST"]).default("OUTRIGHT SALE"),
   tag: string().optional(),
   internal_note: string().optional(),
-  added: date().default(() => new Date()),
   created_at: date().default(() => new Date()),
   updated_at: date().default(() => new Date()),
-  company_id: number().int(),
+  company_id: coerce.number().int(),
 });
 
 export type Part = ZodInfer<typeof PartSchema>;
@@ -56,7 +56,5 @@ export const PartUpdateSchema = PartSchema.partial().required({ id: true });
 export type UpdatePart = ZodInfer<typeof PartUpdateSchema>;
 
 // Schema for creating new parts (id & Rails-generated timestamps omitted)
-export const CreatePartSchema = PartSchema.omit({ id: true, created_at: true, updated_at: true }).extend({
-  added: date().default(() => new Date()),
-});
+export const CreatePartSchema = PartSchema.omit({ id: true, created_at: true, updated_at: true });
 export type CreatePart = ZodInfer<typeof CreatePartSchema>;
