@@ -28,7 +28,7 @@ export const PartSchema = object({
   max_price: coerce.number().multipleOf(0.01).default(0.0).optional(),
   max_order: coerce.number().int().default(0).optional(),
   lead_time: string().optional(),
-  quote_type: ZodEnum(["OUTRIGHT SALE", "FLAT RATE EXCHANGE", "EXCHANGE + COST"]).default("OUTRIGHT SALE"),
+  quote_type: ZodEnum(["outright_sale", "flat_rate_exchange", "exchange_plus_cost"]).default("outright_sale"),
   tag: string().optional(),
   internal_note: string().optional(),
   created_at: date().default(() => new Date()),
