@@ -15,6 +15,12 @@
       </ul>
     </Transition>
 
+    <BaseButton class="mb-4" @click="openHistoryModal">
+      View Part History
+    </BaseButton>
+
+    <PartVersionModal v-if="isHistoryModalOpen" :current-part="form" @close="closeHistoryModal" @choose-past-version="choosePastVersion" />
+
     <div class="flex w-full flex-col gap-y-2">
       <FormField
         id="partNumber"
@@ -192,13 +198,15 @@
 <script setup lang="ts">
 import { ref, toRaw, watch } from "vue";
 import { usePartsStore } from "@/stores/parts";
-import { CreatePartSchema, type CreatePart, type UpdatePart } from "@/schemas";
+import { CreatePartSchema, type CreatePart, type UpdatePart, type Part } from "@/schemas";
 import FormField from "@/components/Base/Form/FormField.vue";
 import { ZodError, type ZodIssue } from "zod";
 import extractDefaults from "@/utils/zodUtils.ts";
 import SoloLabel from "@/components/Base/Form/SoloLabel.vue";
 import SoloTextarea from "@/components/Base/Form/SoloTextarea.vue";
 import { labelize } from "@/utils/stringUtils.ts";
+import useModal from "@/composables/useModal.ts";
+import PartVersionModal from "@/components/Parts/PartVersionModal.vue";
 
 type Props = { isCreatePage?: boolean };
 
@@ -258,5 +266,12 @@ async function handleSubmit() {
 function resetForm() {
   form.value = structuredClone(toRaw(partStore.currentPart));
   errors.value = {};
+}
+
+const { isOpen: isHistoryModalOpen, openModal: openHistoryModal, closeModal: closeHistoryModal } = useModal();
+
+function choosePastVersion(key: keyof UpdatePart | keyof CreatePart, value: unknown) {
+  // @ts-expect-error Because the types technically exclude created_at, very annoying
+  form.value[key] = value;
 }
 </script>

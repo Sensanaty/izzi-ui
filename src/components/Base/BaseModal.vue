@@ -1,16 +1,16 @@
 <template>
   <Transition>
-    <div v-if="model" ref="modalContainer" class="fixed left-0 top-0 z-30 flex h-screen w-screen bg-neutral-950/50" @click.prevent="onBackdropClick">
+    <div v-if="model" ref="modalContainer" class="fixed left-0 top-0 z-30 flex h-screen w-screen bg-neutral-950/60" @click.prevent="onBackdropClick">
       <div
-        class="z-40 m-auto mt-64 rounded border bg-neutral-900"
-        :class="{ 'w-1/4': size === 'small', 'w-1/3': size === 'large' }"
+        class="z-40 m-auto rounded border bg-neutral-900"
+        :class="{ 'w-1/4': size === 'small', 'w-1/3': size === 'large', 'w-1/2': size === 'xlarge', 'w-5/6': size === '2xlarge' }"
         @click.stop.prevent
       >
         <header v-if="title" class="border-b-2 px-2.5 pt-1 text-lg font-semibold">
           {{ title }}
         </header>
 
-        <div class="flex max-h-96 flex-col overflow-auto px-2.5 py-3.5">
+        <div class="flex max-h-[48rem] flex-col overflow-auto px-2.5 py-3.5">
           <slot />
         </div>
 
@@ -35,7 +35,7 @@ const model = defineModel<boolean>();
 
 type ModalProps = {
   title?: string;
-  size?: "large" | "small";
+  size?: "2xlarge" | "xlarge" | "large" | "small";
   closeOnBackdrop?: boolean;
 };
 

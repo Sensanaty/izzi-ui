@@ -5,7 +5,7 @@ import useFetch, {
   type PaginatedResponse,
   type CommonPaginationParams,
 } from "@/composables/useFetch";
-import { PartSchema, type Part, type CreatePart, type UpdatePart } from "@/schemas";
+import { PartSchema, type Part, type CreatePart, type UpdatePart, type PartVersion } from "@/schemas";
 import usePagination from "@/composables/usePagination";
 
 export interface PartsQueryParams extends CommonPaginationParams {
@@ -15,6 +15,7 @@ export interface PartsQueryParams extends CommonPaginationParams {
 
 const PART_URL = "/parts";
 const PART_ID_URL = (id: number) => `${PART_URL}/${id}`;
+const PART_VERSIONS_URL = (id: number) => `${PART_ID_URL(id)}/versions`;
 
 export const usePartsStore = defineStore("parts", () => {
   const { metadata, total, currentPage, lastPage, hasPreviousPage, hasNextPage, hasMetadata, setMetadata, clearMetadata } = usePagination();
@@ -22,6 +23,7 @@ export const usePartsStore = defineStore("parts", () => {
 
   const parts = ref<Part[]>([]);
   const currentPart = ref<Part>(extractDefaults(PartSchema));
+  const currentPartVersions = ref<PartVersion[]>([]);
   const currentParams = ref<PartsQueryParams>({ page: 1, count: 20, query: "" });
 
   async function getAllParts(params: PartsQueryParams) {
@@ -65,6 +67,16 @@ export const usePartsStore = defineStore("parts", () => {
     currentPart.value = response.data;
   };
 
+  const { fetch: fetchVersion, isFetching: isFetchingVersions } = useFetch();
+  async function getPartVersions() {
+    const response = await fetchVersion<{ data: PartVersion[]; token?: string }>(PART_VERSIONS_URL(currentPart.value.id), "GET");
+    currentPartVersions.value = response.data;
+  }
+
+  function clearPartVersions() {
+    currentPartVersions.value = [];
+  }
+
   function clearCurrentPart() {
     currentPart.value = extractDefaults(PartSchema);
   }
@@ -87,12 +99,16 @@ export const usePartsStore = defineStore("parts", () => {
     parts.value = [];
     currentPart.value = extractDefaults(PartSchema);
     clearMetadata();
-    currentParams.value = { page:1, count: 20, query: "" };
+    currentParams.value = { page: 1, count: 20, query: "" };
   }
 
   return {
     parts,
     currentPart,
+
+    currentPartVersions,
+    isFetchingVersions,
+
     metadata,
     currentParams,
 
@@ -114,6 +130,7 @@ export const usePartsStore = defineStore("parts", () => {
     getNextPage,
     getPreviousPage,
     getPart,
+    getPartVersions,
     clearCurrentPart,
     createPart,
     updatePart,
