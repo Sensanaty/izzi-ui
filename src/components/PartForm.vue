@@ -19,7 +19,7 @@
       View Part History
     </BaseButton>
 
-    <PartVersionModal v-if="isHistoryModalOpen" :current-part="form" @close="closeHistoryModal" @choose-past-version="choosePastVersion" />
+    <PartVersionModal v-if="isHistoryModalOpen" :current-part="form" @close="closeHistoryModal" @choose-past-version="choosePastVersion" @reset="resetPartHistory" />
 
     <div class="flex w-full flex-col gap-y-2">
       <FormField
@@ -273,5 +273,9 @@ const { isOpen: isHistoryModalOpen, openModal: openHistoryModal, closeModal: clo
 function choosePastVersion(key: keyof UpdatePart | keyof CreatePart, value: unknown) {
   // @ts-expect-error Because the types technically exclude created_at, very annoying
   form.value[key] = value;
+}
+
+function resetPartHistory(payload: UpdatePart | CreatePart) {
+  form.value = structuredClone(payload);
 }
 </script>

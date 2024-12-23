@@ -77,6 +77,10 @@ export const usePartsStore = defineStore("parts", () => {
     currentPartVersions.value = [];
   }
 
+  async function deletePartHistory() {
+    const response = await fetchVersion(PART_VERSIONS_URL(currentPart.value.id), "DELETE");
+  }
+
   function clearCurrentPart() {
     currentPart.value = extractDefaults(PartSchema);
   }
@@ -130,7 +134,11 @@ export const usePartsStore = defineStore("parts", () => {
     getNextPage,
     getPreviousPage,
     getPart,
+
     getPartVersions,
+    clearPartVersions,
+    deletePartHistory,
+
     clearCurrentPart,
     createPart,
     updatePart,

@@ -1,5 +1,5 @@
 <template>
-  <BaseModal :model-value="true" :title="`Part history #${currentPart.id}`" size="xlarge" @close="emit('close')">
+  <BaseModal :model-value="true" :title="`Part history #${currentPart.id} (limited to 10 history entries)`" size="xlarge" @close="emit('close')">
     <h1 v-if="partStore.isFetchingVersions" class="text-center text-3xl">
       Fetching versions...
     </h1>
@@ -49,11 +49,25 @@
     <div v-else>
       <h1>No previous versions of this part found</h1>
     </div>
+
+    <template #footer>
+      <BaseButton class="mr-8" variant="danger" @click.prevent="deleteHistory">
+        Delete history
+      </BaseButton>
+
+      <BaseButton class="mr-4" @click.prevent="resetToCurrent">
+        Reset
+      </BaseButton>
+
+      <BaseButton @click.prevent="emit('close')">
+        Close
+      </BaseButton>
+    </template>
   </BaseModal>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, toRaw, watch } from "vue";
 import BaseModal from "@/components/Base/BaseModal.vue";
 import usePartsStore from "@/stores/parts.ts";
 import { PartSchema, type CreatePart, type UpdatePart, type Part, type Version } from "@/schemas";
@@ -63,6 +77,7 @@ import { PhArrowLeft, PhArrowRight } from "@phosphor-icons/vue";
 const emit = defineEmits<{
   (e: "close"): void;
   (e: "choosePastVersion", key: keyof Part, value: unknown): void;
+  (e: "reset", payload: CreatePart | UpdatePart);
 }>();
 
 const props = defineProps<{
@@ -74,6 +89,8 @@ const partStore = usePartsStore();
 onMounted(async () => {
   await partStore.getPartVersions();
 });
+
+onBeforeUnmount(() => partStore.clearPartVersions());
 
 const currentPage = ref(0);
 const nextPage = () => currentPage.value += 1;
@@ -93,29 +110,33 @@ const orderedKeys = computed(() => {
 });
 
 const isChanged = (key: keyof Part) => {
-  if (key === "updated_at" || key === "created_at" || !currentVersion.value?.object_changes) {
+  if (key === "updated_at" || key === "created_at") {
     return false;
   };
 
-  // Check if the key exists in object_changes
-  if (!(key in currentVersion.value.object_changes)) {
-    return false;
-  };
-
-  const changes = currentVersion.value.object_changes[key];
-  if (!Array.isArray(changes) || changes.length !== 2) {
-    return false;
-  };
-
-  const versionValue = changes[1];
-  const currentValue = props.currentPart[key];
-
-  return versionValue === currentValue;
+  return props.currentPart[key] !== currentVersion.value.object[key];
 };
 
 function chooseVersion(event: MouseEvent, key: keyof Part) {
   if (event.currentTarget instanceof HTMLElement && event.currentTarget.classList.contains("diff")) {
     emit("choosePastVersion", key, currentVersion.value.object[key]);
+  }
+}
+
+const originalCurrentPart = ref(structuredClone(toRaw(props.currentPart)));
+
+watch(() => props.currentPart.id, () => originalCurrentPart.value = structuredClone(toRaw(props.currentPart)));
+
+function resetToCurrent() {
+  emit("reset", toRaw(originalCurrentPart.value));
+}
+
+async function deleteHistory() {
+  if (!confirm("Are you sure you want to delete all history for this part? This action cannot be undone, and will delete ALL past history for the currently viewed part.")) {
+    return;
+  } else {
+    await partStore.deletePartHistory();
+    await partStore.getPartVersions();
   }
 }
 </script>

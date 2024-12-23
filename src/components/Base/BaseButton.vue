@@ -8,6 +8,7 @@
      hover:bg-neutral-800 hover:text-emerald-600
      active:bg-neutral-700 active:text-emerald-400 disabled:cursor-not-allowed
      disabled:bg-neutral-950 disabled:text-white/20"
+    :class="{ 'border-red-500 text-red-500 hover:bg-red-950 hover:text-red-600': variant === 'danger' }"
   >
     <slot />
   </button>
@@ -21,10 +22,12 @@ type BaseButtonProps = {
 
   disabled?: boolean;
   autofocus?: boolean;
+  variant?: "normal" | "danger";
 };
 
 const props = withDefaults(defineProps<BaseButtonProps>(), {
   type: "button",
+  variant: "normal",
 });
 
 
