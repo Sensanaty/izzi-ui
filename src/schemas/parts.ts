@@ -8,7 +8,7 @@ import {
   enum as ZodEnum,
   type infer as ZodInfer,
 } from "zod";
-
+import type { Version } from "@/schemas/version.ts";
 
 export const PartSchema = object({
   id: coerce.number().int().readonly(),
@@ -58,3 +58,5 @@ export type UpdatePart = ZodInfer<typeof PartUpdateSchema>;
 // Schema for creating new parts (id & Rails-generated timestamps omitted)
 export const CreatePartSchema = PartSchema.omit({ id: true, created_at: true, updated_at: true });
 export type CreatePart = ZodInfer<typeof CreatePartSchema>;
+
+export type PartVersion = Version<UpdatePart | CreatePart>;
