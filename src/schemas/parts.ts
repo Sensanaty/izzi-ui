@@ -34,6 +34,7 @@ export const PartSchema = object({
   created_at: date().default(() => new Date()),
   updated_at: date().default(() => new Date()),
   company_id: coerce.number().int(),
+  company_name: string().readonly(),
 });
 
 export type Part = ZodInfer<typeof PartSchema>;
@@ -59,4 +60,4 @@ export type UpdatePart = ZodInfer<typeof PartUpdateSchema>;
 export const CreatePartSchema = PartSchema.omit({ created_at: true, updated_at: true });
 export type CreatePart = ZodInfer<typeof CreatePartSchema>;
 
-export type PartVersion = Version<UpdatePart | CreatePart>;
+export type PartVersion = Version<Part>;
