@@ -15,7 +15,7 @@
       </ul>
     </Transition>
 
-    <BaseButton class="mb-4" @click="openHistoryModal">
+    <BaseButton v-if="!isCreatePage" class="mb-4" @click="openHistoryModal">
       View Part History
     </BaseButton>
 
@@ -147,13 +147,22 @@
         label-class="min-w-28"
       />
 
-      <FormField
-        id="quoteType"
-        v-model="form.quote_type"
-        :invalid="!!errors?.quote_type"
-        label="Quote Type"
-        label-class="min-w-28"
-      />
+      <div class="flex items-center gap-2 border-b pb-2.5">
+        <SoloLabel html-for="quoteType" class="min-w-28">
+          Quote type
+        </SoloLabel>
+        <SoloSelect id="quoteType" v-model="form.quote_type" :invalid="!!errors?.quote_type" placeholder="Quote type">
+          <option value="outright_sale">
+            Outright Sale
+          </option>
+          <option value="flat_rate_exchange">
+            Flat Rate Exchange
+          </option>
+          <option value="exchange_plus_cost">
+            Exchange + Cost
+          </option>
+        </SoloSelect>
+      </div>
 
       <SoloLabel html-for="tag" class="min-w-28">
         Tag
@@ -196,7 +205,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRaw, watch } from "vue";
+import { defineAsyncComponent, ref, toRaw, watch } from "vue";
 import { usePartsStore } from "@/stores/parts";
 import { CreatePartSchema, type CreatePart, type UpdatePart, type Part } from "@/schemas";
 import FormField from "@/components/Base/Form/FormField.vue";
@@ -206,7 +215,9 @@ import SoloLabel from "@/components/Base/Form/SoloLabel.vue";
 import SoloTextarea from "@/components/Base/Form/SoloTextarea.vue";
 import { labelize } from "@/utils/stringUtils.ts";
 import useModal from "@/composables/useModal.ts";
-import PartVersionModal from "@/components/Parts/PartVersionModal.vue";
+import SoloSelect from "@/components/Base/Form/SoloSelect.vue";
+
+const PartVersionModal = defineAsyncComponent(() => import("@/components/Parts/PartVersionModal.vue"));
 
 type Props = { isCreatePage?: boolean };
 
