@@ -78,7 +78,8 @@ const usePartsStore = defineStore("parts", () => {
   }
 
   async function deletePartHistory() {
-    const response = await fetchVersion(PART_VERSIONS_URL(currentPart.value.id), "DELETE");
+    await fetchVersion(PART_VERSIONS_URL(currentPart.value.id), "DELETE");
+    clearPartVersions();
   }
 
   function clearCurrentPart() {
