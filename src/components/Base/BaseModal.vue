@@ -10,7 +10,7 @@
           {{ title }}
         </header>
 
-        <div class="flex max-h-[48rem] flex-col overflow-auto px-2.5 py-3.5">
+        <div class="flex max-h-[48rem] flex-col overflow-auto px-2.5 py-3.5" :class="slotClass">
           <slot />
         </div>
 
@@ -37,12 +37,14 @@ type ModalProps = {
   title?: string;
   size?: "2xlarge" | "xlarge" | "large" | "small";
   closeOnBackdrop?: boolean;
+  slotClass?: string;
 };
 
 const props = withDefaults(defineProps<ModalProps>(), {
   title: "",
   size: "small",
   closeOnBackdrop: true,
+  slotClass: "",
 });
 
 const emit = defineEmits<{ (e: "close"): void }>();

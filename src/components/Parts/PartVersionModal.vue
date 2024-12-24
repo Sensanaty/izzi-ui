@@ -1,12 +1,18 @@
 <template>
-  <BaseModal :model-value="true" :title="`Part history #${currentPart.id} (limited to 10 history entries)`" size="xlarge" @close="emit('close')">
+  <BaseModal
+    :model-value="true"
+    :title="`Part history #${currentPart.id} (limited to 10 history entries)`"
+    size="xlarge"
+    slot-class="pt-0"
+    @close="emit('close')"
+  >
     <h1 v-if="partStore.isFetchingVersions" class="text-center text-3xl">
       Fetching versions...
     </h1>
 
     <div v-else-if="!partStore.isFetchingVersions && partStore.currentPartVersions.length > 0" class="grid grid-cols-2 gap-x-2">
       <div class="flex flex-col gap-y-2 border-r-2">
-        <h1 class="h-8 text-center font-bold">
+        <h1 class="sticky top-0 mb-0.5 h-8 border-b bg-neutral-900 py-1.5 text-center font-bold">
           Current Part
         </h1>
 
@@ -17,7 +23,7 @@
       </div>
 
       <div class="relative flex flex-col gap-y-2">
-        <div class="flex h-8 items-center justify-between">
+        <div class="sticky top-0 mb-0.5 flex h-8 w-full items-center justify-center gap-x-4 border-b bg-neutral-900 py-1.5 font-bold">
           <BaseButton :disabled="currentPage === 0" @click="prevPage">
             <PhArrowLeft size="1.5rem" />
           </BaseButton>
@@ -118,6 +124,10 @@ const isChanged = (key: keyof Part) => {
 };
 
 function chooseVersion(event: MouseEvent, key: keyof Part) {
+  if (key === "company_name") {
+    emit("choosePastVersion", "company_id", currentVersion.value.object.company_id);
+  }
+
   if (event.currentTarget instanceof HTMLElement && event.currentTarget.classList.contains("diff")) {
     emit("choosePastVersion", key, currentVersion.value.object[key]);
   }
