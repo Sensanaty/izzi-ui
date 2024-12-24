@@ -77,7 +77,7 @@ import { PhArrowLeft, PhArrowRight } from "@phosphor-icons/vue";
 const emit = defineEmits<{
   (e: "close"): void;
   (e: "choosePastVersion", key: keyof Part, value: unknown): void;
-  (e: "reset", payload: CreatePart | UpdatePart);
+  (e: "reset", payload: CreatePart | UpdatePart): void;
 }>();
 
 const props = defineProps<{
