@@ -216,6 +216,7 @@ import SoloTextarea from "@/components/Base/Form/SoloTextarea.vue";
 import { labelize } from "@/utils/stringUtils.ts";
 import useModal from "@/composables/useModal.ts";
 import SoloSelect from "@/components/Base/Form/SoloSelect.vue";
+import { onBeforeRouteLeave } from "vue-router";
 
 const PartVersionModal = defineAsyncComponent(() => import("@/components/Parts/PartVersionModal.vue"));
 
@@ -234,6 +235,11 @@ const form = ref<CreatePart | UpdatePart>(props.isCreatePage ? extractDefaults(C
 watch(() => partStore.currentPart.id, () => {
   form.value = structuredClone(toRaw(partStore.currentPart));
   form.value.company_id = 123;
+});
+
+onBeforeRouteLeave(() => {
+  partStore.clearCurrentPart();
+  form.value = structuredClone(toRaw(partStore.currentPart));
 });
 
 const errors = ref<Record<string, string>>({});
