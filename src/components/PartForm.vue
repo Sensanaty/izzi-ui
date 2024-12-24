@@ -232,10 +232,7 @@ const emit = defineEmits<{
 const partStore = usePartsStore();
 const form = ref<CreatePart | UpdatePart>(props.isCreatePage ? extractDefaults(CreatePartSchema) : partStore.currentPart );
 
-watch(() => partStore.currentPart.id, () => {
-  form.value = structuredClone(toRaw(partStore.currentPart));
-  form.value.company_id = 123;
-});
+watch(() => partStore.currentPart.id, () => form.value = structuredClone(toRaw(partStore.currentPart)));
 
 onBeforeRouteLeave(() => {
   partStore.clearCurrentPart();
