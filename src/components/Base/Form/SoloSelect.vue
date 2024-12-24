@@ -9,7 +9,7 @@
       :disabled="disabled"
       :aria-invalid="invalid"
       :aria-errormessage="errorId"
-      class="w-full appearance-none rounded border bg-neutral-800 font-mono transition-colors hover:bg-neutral-800/80 disabled:cursor-not-allowed disabled:bg-neutral-800 disabled:text-neutral-500"
+      class="w-full cursor-pointer appearance-none rounded border bg-neutral-800 font-mono transition-colors hover:bg-neutral-800/80 disabled:cursor-not-allowed disabled:bg-neutral-800 disabled:text-neutral-500"
       :class="[
         selectClass,
         {
