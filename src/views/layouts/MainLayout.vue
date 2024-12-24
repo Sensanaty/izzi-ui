@@ -1,27 +1,27 @@
 <template>
   <header class="flex w-full items-center border-b border-r bg-neutral-900 px-4 py-1">
     <nav class="flex w-full items-center">
-      <template v-for="route in navlinks" :key="route.route">
+      <template v-for="navlink in navlinks" :key="navlink.route">
         <div class="mr-4 flex items-center">
           <RouterLink
-            :to="route.route"
+            :to="navlink.route"
             class="flex items-center text-lg font-bold underline decoration-transparent decoration-2 hover:!decoration-emerald-500"
             exact-active-class="!decoration-emerald-700 text-emerald-600"
           >
             <component
-              :is="route.icon"
-              v-if="route.icon"
+              :is="navlink.icon"
+              v-if="navlink.icon"
               class="mr-1.5 transition-colors duration-75"
               v-bind="{ weight: 'duotone', color: 'currentColor' }"
             />
-            <span class="text-white">{{ route.text }}</span>
+            <span class="text-white">{{ navlink.text }}</span>
           </RouterLink>
 
-          <template v-if="route.subroutes && isRouteActive(route.route)">
+          <template v-if="navlink.subroutes && isRouteActive(navlink.route)">
             <span class="mx-2 select-none text-neutral-500">|</span>
 
             <RouterLink
-              v-for="subRoute in route.subroutes"
+              v-for="subRoute in navlink.subroutes"
               :key="subRoute.route"
               :to="subRoute.route"
               class="mr-2 text-lg font-semibold underline decoration-transparent decoration-2 last:mr-0 hover:!decoration-emerald-500"
@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 import { ROUTE_PATH } from "@/router/routes";
-import { PhAirplaneTilt } from "@phosphor-icons/vue";
+import { PhAirplaneTilt, PhBuildingOffice } from "@phosphor-icons/vue";
 import { useRoute } from "vue-router";
 
 import type { Component } from "vue";
@@ -82,6 +82,11 @@ const navlinks: AdminNavlinks[] = [
     route: ROUTE_PATH.HOME,
     icon: PhAirplaneTilt,
     subroutes: [{ text: "Create", route: ROUTE_PATH.PART_CREATE, isSubLink: true }],
+  },
+  {
+    text: "Companies",
+    route: ROUTE_PATH.COMPANY_INDEX,
+    icon: PhBuildingOffice,
   },
 ];
 
