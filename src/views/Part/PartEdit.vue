@@ -15,15 +15,19 @@ import { computed, onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
 import PartForm from "@/components/PartForm.vue";
 import usePartsStore from "@/stores/parts.ts";
+import useCompanyStore from "@/stores/company.ts";
 
 const route = useRoute();
 
 const partStore = usePartsStore();
+const companyStore = useCompanyStore();
 const isCreatePage = computed(() => !!route.meta?.isCreatePage);
 
 onBeforeMount(async () => {
   if (!isCreatePage.value && route.params.id) {
     await partStore.getPart(Number(route.params.id));
   }
+
+  await companyStore.getAllCompanies();
 });
 </script>

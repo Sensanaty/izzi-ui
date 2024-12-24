@@ -31,6 +31,18 @@
         label-class="min-w-28"
       />
 
+      <div class="flex items-center gap-2">
+        <SoloLabel html-for="companyId" class="min-w-28">
+          Company
+        </SoloLabel>
+
+        <SoloSelect id="companyId" v-model="form.company_id" :invalid="!!errors?.company_id" placeholder="Company">
+          <option v-for="company in companyStore.companies" :key="company.id" :value="company.id">
+            {{ company.name }}
+          </option>
+        </SoloSelect>
+      </div>
+
       <div class="flex justify-between border-y py-2.5 md:flex-col md:border-y-0">
         <FormField
           id="available"
@@ -217,6 +229,7 @@ import { labelize } from "@/utils/stringUtils.ts";
 import useModal from "@/composables/useModal.ts";
 import SoloSelect from "@/components/Base/Form/SoloSelect.vue";
 import { onBeforeRouteLeave } from "vue-router";
+import useCompanyStore from "@/stores/company.ts";
 
 const PartVersionModal = defineAsyncComponent(() => import("@/components/Parts/PartVersionModal.vue"));
 
@@ -230,9 +243,14 @@ const emit = defineEmits<{
 }>();
 
 const partStore = usePartsStore();
+const companyStore = useCompanyStore();
 const form = ref<CreatePart | UpdatePart>(props.isCreatePage ? extractDefaults(CreatePartSchema) : partStore.currentPart );
 
 watch(() => partStore.currentPart.id, () => form.value = structuredClone(toRaw(partStore.currentPart)));
+
+watch(() => form.value.company_id, (value) => {
+  form.value.company_name = companyStore.companies.find((company) => company.id === value)?.name;
+});
 
 onBeforeRouteLeave(() => {
   partStore.clearCurrentPart();
