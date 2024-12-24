@@ -17,7 +17,7 @@ const PART_URL = "/parts";
 const PART_ID_URL = (id: number) => `${PART_URL}/${id}`;
 const PART_VERSIONS_URL = (id: number) => `${PART_ID_URL(id)}/versions`;
 
-export const usePartsStore = defineStore("parts", () => {
+const usePartsStore = defineStore("parts", () => {
   const { metadata, total, currentPage, lastPage, hasPreviousPage, hasNextPage, hasMetadata, setMetadata, clearMetadata } = usePagination();
   const { fetch, isFetching, hasErrored, hasFetched } = useFetch();
 

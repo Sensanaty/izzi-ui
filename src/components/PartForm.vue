@@ -206,7 +206,7 @@
 
 <script setup lang="ts">
 import { defineAsyncComponent, ref, toRaw, watch } from "vue";
-import { usePartsStore } from "@/stores/parts";
+import usePartsStore from "@/stores/parts";
 import { CreatePartSchema, type CreatePart, type UpdatePart, type Part } from "@/schemas";
 import FormField from "@/components/Base/Form/FormField.vue";
 import { ZodError, type ZodIssue } from "zod";
