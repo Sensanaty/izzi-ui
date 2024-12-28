@@ -11,7 +11,7 @@ import {
 import type { Version } from "@/schemas/version.ts";
 
 export const PartSchema = object({
-  id: coerce.number().int().readonly(),
+  id: coerce.number().int().readonly().strip(),
   part_number: string().min(1, { message: "Part Number is required" }),
   description: string().optional(),
   available: coerce.number().int().default(0),
@@ -57,7 +57,7 @@ export const PartUpdateSchema = PartSchema.partial().required({ id: true });
 export type UpdatePart = ZodInfer<typeof PartUpdateSchema>;
 
 // Schema for creating new parts (id & Rails-generated timestamps omitted)
-export const CreatePartSchema = PartSchema.omit({ id: true, created_at: true, updated_at: true });
+export const CreatePartSchema = PartSchema.omit({ created_at: true, updated_at: true });
 export type CreatePart = ZodInfer<typeof CreatePartSchema>;
 
 export type PartVersion = Version<Part>;
