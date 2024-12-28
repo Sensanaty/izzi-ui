@@ -15,6 +15,7 @@ export const CompanySchema = object({
   country: string().optional(),
   website: string().url().optional(),
   subscription: string().optional(),
+  parts_count: coerce.number().int().readonly(),
   created_at: date().default(() => new Date()),
   updated_at: date().default(() => new Date()),
 });
