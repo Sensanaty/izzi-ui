@@ -34,7 +34,7 @@ export const PartSchema = object({
   created_at: date().default(() => new Date()),
   updated_at: date().default(() => new Date()),
   company_id: coerce.number().int(),
-  company_name: string().readonly(),
+  company_name: string().readonly().catch(""),
 });
 
 export type Part = ZodInfer<typeof PartSchema>;
