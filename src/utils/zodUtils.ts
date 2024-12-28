@@ -1,4 +1,5 @@
-import { z, type ZodRawShape } from "zod";
+import { ref } from "vue";
+import { z, ZodError, type ZodIssue, type ZodRawShape } from "zod";
 import { labelize } from "@/utils/stringUtils.ts";
 
 type ZodArrayDef = z.ZodArray<z.ZodTypeAny>;
@@ -117,4 +118,35 @@ export function generateFieldsFromSchema(
   }
 
   return result;
+}
+
+export function useZodValidation<T extends z.ZodType>(schema: T) {
+  type SchemaType = z.infer<T>;
+
+  const errors = ref<Partial<Record<keyof SchemaType, string>>>({});
+
+  const validate = (form: SchemaType) => {
+    try {
+      schema.parse(form);
+      errors.value = {};
+      return true;
+    } catch (e) {
+      if (e instanceof ZodError) {
+        errors.value = e.errors.reduce<Partial<Record<keyof SchemaType, string>>>((acc, curr: ZodIssue) => {
+          const path = curr.path[0] as keyof SchemaType;
+          acc[path] = curr.message;
+          return acc;
+        }, {});
+        return false;
+      }
+
+      // Re-throw unexpected errors
+      throw e;
+    }
+  };
+
+  return {
+    errors,
+    validate,
+  };
 }
