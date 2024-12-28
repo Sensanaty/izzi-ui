@@ -27,5 +27,5 @@ export const parseCompany = (data: unknown): Company => CompanySchema.parse(data
 
 export const parseCompanies = (data: unknown): Company[] => CompaniesArraySchema.parse(data);
 
-export const CreateCompanySchema = CompanySchema.omit({ id: true, created_at: true, updated_at: true });
-export type CreateOrUpdateCompany = ZodInfer<typeof CreateCompanySchema>;
+export const CreateOrUpdateCompanySchema = CompanySchema.omit({ id: true, created_at: true, updated_at: true });
+export type CreateOrUpdateCompany = ZodInfer<typeof CreateOrUpdateCompanySchema>;
