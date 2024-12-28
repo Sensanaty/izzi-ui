@@ -59,6 +59,16 @@ const useCompanyStore = defineStore("company", () => {
     }
   }
 
+  async function deleteCompany(companyId: Company["id"]) {
+    await fetch(COMPANY_ID_URL(companyId), "DELETE", { successMessage: "Company deleted" });
+
+    const index = companies.value.findIndex(({ id }) => id === companyId);
+
+    if (index > -1) {
+      companies.value.splice(index, 1);
+    }
+  }
+
   async function fetchParts(companyId: Company["id"]) {
     const response = await fetch<Part[]>(COMPANY_PARTS_URL(companyId), "GET");
     return response;
@@ -77,6 +87,7 @@ const useCompanyStore = defineStore("company", () => {
     getAllCompanies,
     createCompany,
     updateCompany,
+    deleteCompany,
 
     fetchParts,
   };
