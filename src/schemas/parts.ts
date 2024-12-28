@@ -57,7 +57,7 @@ export const PartUpdateSchema = PartSchema.partial().required({ id: true });
 export type UpdatePart = ZodInfer<typeof PartUpdateSchema>;
 
 // Schema for creating new parts (id & Rails-generated timestamps omitted)
-export const CreatePartSchema = PartSchema.omit({ created_at: true, updated_at: true });
+export const CreatePartSchema = PartSchema.omit({ id: true, created_at: true, updated_at: true });
 export type CreatePart = ZodInfer<typeof CreatePartSchema>;
 
 export type PartVersion = Version<Part>;
