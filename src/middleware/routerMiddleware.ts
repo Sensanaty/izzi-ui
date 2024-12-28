@@ -4,6 +4,7 @@ import useAuthStore from "@/stores/auth";
 import { ROUTE_PATH } from "@/router/routes";
 import useNotificationStore from "@/stores/notification";
 import { useHead } from "@unhead/vue";
+import { useRouter } from "vue-router";
 
 export const authMiddleware: NavigationGuard = async (to, from, next) => {
   // Check if only query parameters changed (same path and name)
@@ -15,27 +16,30 @@ export const authMiddleware: NavigationGuard = async (to, from, next) => {
 
     if (!authStore.token && !localStorage.getItem("token")) {
       authStore.logout();
-      next(ROUTE_PATH.LOGIN);
 
       createNotification("No authorization token found, please log in again", { kind: "i" });
-    } else {
-      const { authenticate } = useAuthApi();
+      return next(ROUTE_PATH.LOGIN);
+    }
 
-      authenticate(true).then((payload) => {
+    // Allow navigation to proceed
+    next();
+
+    // Perform authentication check in the background
+    const { authenticate } = useAuthApi();
+    const router = useRouter();
+    authenticate(true)
+      .then((payload) => {
         authStore.setAuthFromLocal();
-
         if (payload.token) {
           authStore.setToken(payload.token);
         }
-
-        next();
-      }).catch(() => {
+      })
+      .catch(() => {
         createNotification("Authorization failed, please login again", { kind: "i" });
-
         authStore.logout();
-        next(ROUTE_PATH.LOGIN);
+
+        router.push(ROUTE_PATH.LOGIN);
       });
-    }
   } else {
     next();
   }
