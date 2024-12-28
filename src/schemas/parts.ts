@@ -11,7 +11,7 @@ import {
 import type { Version } from "@/schemas/version.ts";
 
 export const PartSchema = object({
-  id: coerce.number().int().readonly().strip(),
+  id: coerce.number().int().readonly().catch(0),
   part_number: string().min(1, { message: "Part Number is required" }),
   description: string().optional(),
   available: coerce.number().int().default(0),
