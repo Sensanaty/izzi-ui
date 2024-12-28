@@ -49,19 +49,19 @@ const privateRoutes: RouteRecordRaw[] = [
   {
     path: ROUTE_PATH.PART_INDEX,
     name: ROUTE.PART_INDEX,
-    component: import("@/views/Part/PartIndex.vue"),
+    component: () => import("@/views/Part/PartIndex.vue"),
     meta: { auth: true },
     children: [
       {
         path: ROUTE_PATH.PART_CREATE,
         name: ROUTE.PART_CREATE,
-        component: import("@/views/Part/PartEdit.vue"),
+        component: () => import("@/views/Part/PartEdit.vue"),
         meta: { title: "Parts - Create", isCreatePage: true },
       },
       {
         path: ROUTE_PATH.PART_EDIT,
         name: ROUTE.PART_EDIT,
-        component: import("@/views/Part/PartEdit.vue"),
+        component: () => import("@/views/Part/PartEdit.vue"),
         meta: { title: "Parts - Edit", isCreatePage: false },
       },
     ],
@@ -70,7 +70,7 @@ const privateRoutes: RouteRecordRaw[] = [
   {
     path: ROUTE_PATH.COMPANY_INDEX,
     name: ROUTE.COMPANY_INDEX,
-    component: import("@/views/Company/CompanyIndex.vue"),
+    component: () => import("@/views/Company/CompanyIndex.vue"),
     meta: { auth: true },
   },
 ];
