@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import useFetch from "@/composables/useFetch.ts";
-import { ref } from "vue";
-import type { Company, CreateOrUpdateCompany } from "@/schemas";
+import { computed, ref } from "vue";
+import fuzzysort from "fuzzysort";
+import type { Company, CreateOrUpdateCompany, Part } from "@/schemas";
 
 type WrappedResponse<T> = {
   data: T;
@@ -10,6 +11,7 @@ type WrappedResponse<T> = {
 
 const COMPANY_URL = "/companies";
 const COMPANY_ID_URL = (id: Company["id"]) => `${COMPANY_URL}/${id}`;
+const COMPANY_PARTS_URL = (id: Company["id"]) => `${COMPANY_ID_URL(id)}/parts`;
 
 const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes
 
@@ -18,6 +20,18 @@ const useCompanyStore = defineStore("company", () => {
 
   const companies = ref<Company[]>([]);
   const lastFetched = ref<Date | null>(null);
+
+  const nameFilter = ref("");
+
+  const filteredCompanies = computed<Company[]>(() => {
+    if (!nameFilter.value) {
+      return companies.value;
+    }
+
+    return fuzzysort
+      .go(nameFilter.value, companies.value, { key: "name" })
+      .map(({ obj }) => obj);
+  });
 
   async function getAllCompanies(force?: boolean) {
     const now = new Date();
@@ -45,16 +59,26 @@ const useCompanyStore = defineStore("company", () => {
     }
   }
 
+  async function fetchParts(companyId: Company["id"]) {
+    const response = await fetch<Part[]>(COMPANY_PARTS_URL(companyId), "GET");
+    return response;
+  }
+
   return {
     companies,
+    filteredCompanies,
 
     isFetching,
     hasErrored,
     hasFetched,
 
+    nameFilter,
+
     getAllCompanies,
     createCompany,
     updateCompany,
+
+    fetchParts,
   };
 });
 
