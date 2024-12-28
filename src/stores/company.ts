@@ -2,7 +2,8 @@ import { defineStore } from "pinia";
 import useFetch from "@/composables/useFetch.ts";
 import { computed, ref } from "vue";
 import fuzzysort from "fuzzysort";
-import type { Company, CreateOrUpdateCompany, Part } from "@/schemas";
+import extractDefaults from "@/utils/zodUtils.ts";
+import { CompanySchema, type Company, type CreateOrUpdateCompany, type Part } from "@/schemas";
 
 type WrappedResponse<T> = {
   data: T;
@@ -23,6 +24,9 @@ const useCompanyStore = defineStore("company", () => {
 
   const nameFilter = ref("");
 
+  const currentCompany = ref<Company>(extractDefaults(CompanySchema));
+  const clearCurrentCompany = () => currentCompany.value = extractDefaults(CompanySchema);
+
   const filteredCompanies = computed<Company[]>(() => {
     if (!nameFilter.value) {
       return companies.value;
@@ -42,6 +46,11 @@ const useCompanyStore = defineStore("company", () => {
       lastFetched.value = now;
       companies.value = response.data;
     }
+  }
+
+  async function getCompany(id: Company["id"]) {
+    const response = await fetch<WrappedResponse<Company>>(COMPANY_ID_URL(id), "GET");
+    currentCompany.value = response.data;
   }
 
   async function createCompany(data: CreateOrUpdateCompany) {
@@ -78,6 +87,9 @@ const useCompanyStore = defineStore("company", () => {
     companies,
     filteredCompanies,
 
+    currentCompany,
+    clearCurrentCompany,
+
     isFetching,
     hasErrored,
     hasFetched,
@@ -85,6 +97,7 @@ const useCompanyStore = defineStore("company", () => {
     nameFilter,
 
     getAllCompanies,
+    getCompany,
     createCompany,
     updateCompany,
     deleteCompany,
