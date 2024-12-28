@@ -71,7 +71,7 @@ const privateRoutes: RouteRecordRaw[] = [
     path: ROUTE_PATH.COMPANY_INDEX,
     name: ROUTE.COMPANY_INDEX,
     component: () => import("@/views/Company/CompanyIndex.vue"),
-    meta: { auth: true },
+    meta: { title: "Companies", auth: true },
   },
 ];
 
