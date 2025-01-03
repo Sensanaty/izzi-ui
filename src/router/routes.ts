@@ -11,6 +11,8 @@ export const ROUTE = {
   PART_EDIT: "partEdit",
 
   COMPANY_INDEX: "companyIndex",
+  COMPANY_CREATE: "companyCreate",
+  COMPANY_EDIT: "companyEdit",
 } as const;
 
 // Ensures that `ROUTE_PATH` can only contain keys that belong in `ROUTE`
@@ -27,6 +29,8 @@ export const ROUTE_PATH: ValidPathKey = {
 
   // Company-related Routes
   COMPANY_INDEX: "/companies",
+  COMPANY_CREATE: "/companies/create",
+  COMPANY_EDIT: "/companies/:id",
 } as const;
 
 const publicRoutes: RouteRecordRaw[] = [
@@ -72,6 +76,18 @@ const privateRoutes: RouteRecordRaw[] = [
     name: ROUTE.COMPANY_INDEX,
     component: () => import("@/views/Company/CompanyIndex.vue"),
     meta: { title: "Companies", auth: true },
+  },
+  {
+    path: ROUTE_PATH.COMPANY_CREATE,
+    name: ROUTE.COMPANY_CREATE,
+    component: () => import("@/views/Company/CompanyEdit.vue"),
+    meta: { title: "Companies - Create", isCreatePage: true },
+  },
+  {
+    path: ROUTE_PATH.COMPANY_EDIT,
+    name: ROUTE.COMPANY_EDIT,
+    component: () => import("@/views/Company/CompanyEdit.vue"),
+    meta: { title: "Companies - Edit", isCreatePage: false },
   },
 ];
 

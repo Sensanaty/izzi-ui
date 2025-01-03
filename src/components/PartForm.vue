@@ -239,7 +239,7 @@ const props = defineProps<Props>();
 
 const partStore = usePartsStore();
 const companyStore = useCompanyStore();
-const form = ref<CreatePart | UpdatePart>(props.isCreatePage ? extractDefaults(CreatePartSchema) : partStore.currentPart );
+const form = ref<CreatePart | UpdatePart>(props.isCreatePage ? extractDefaults(CreatePartSchema) : partStore.currentPart);
 
 watch(() => partStore.currentPart.id, () => form.value = structuredClone(toRaw(partStore.currentPart)));
 
