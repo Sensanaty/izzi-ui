@@ -2,20 +2,21 @@ import {
   array,
   coerce,
   date,
+  literal,
   object,
   string,
   type infer as ZodInfer,
 } from "zod";
 
 export const CompanySchema = object({
-  id: coerce.number().int().readonly(),
-  name: string().min(1, { message: "Company Name is required" }),
+  id: coerce.number().int().readonly().catch(0),
+  name: string().min(1, { message: "Name is required" }),
   address: string().optional(),
   city: string().optional(),
   country: string().optional(),
-  website: string().url().optional(),
+  website: string().url().optional().or(literal("")),
   subscription: string().optional(),
-  parts_count: coerce.number().int().readonly(),
+  parts_count: coerce.number().int().readonly().catch(0),
   created_at: date().default(() => new Date()),
   updated_at: date().default(() => new Date()),
 });
