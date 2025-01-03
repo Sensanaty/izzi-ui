@@ -49,8 +49,8 @@ const useCompanyStore = defineStore("company", () => {
   }
 
   async function getCompany(id: Company["id"]) {
-    const response = await fetch<WrappedResponse<Company>>(COMPANY_ID_URL(id), "GET");
-    currentCompany.value = response.data;
+    const response = await fetch<Company>(COMPANY_ID_URL(id), "GET");
+    currentCompany.value = response;
   }
 
   async function createCompany(data: CreateOrUpdateCompany) {
