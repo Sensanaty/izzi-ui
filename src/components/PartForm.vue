@@ -237,11 +237,6 @@ type Props = { isCreatePage?: boolean };
 
 const props = defineProps<Props>();
 
-const emit = defineEmits<{
-  (e: "submit", data: CreatePart | UpdatePart): void;
-  (e: "success"): void;
-}>();
-
 const partStore = usePartsStore();
 const companyStore = useCompanyStore();
 const form = ref<CreatePart | UpdatePart>(props.isCreatePage ? extractDefaults(CreatePartSchema) : partStore.currentPart );
@@ -287,9 +282,6 @@ async function handleSubmit() {
     } else {
       await partStore.createPart(form.value as CreatePart);
     }
-
-    emit("success");
-    emit("submit", form.value);
   } catch (e) {
     console.error("Form submission failed:", e);
   }
