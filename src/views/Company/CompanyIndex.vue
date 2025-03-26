@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-x-2 gap-y-3.5 md:grid-cols-2">
+  <div class="flex flex-col gap-x-2 gap-y-3.5">
     <FormField
       id="filterCompanies"
       v-model="companyStore.nameFilter"
