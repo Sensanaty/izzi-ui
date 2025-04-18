@@ -44,9 +44,10 @@ import { ref, toRaw, watch } from "vue";
 import { labelize } from "@/utils/stringUtils.ts";
 import extractDefaults, { useZodValidation } from "@/utils/zodUtils.ts";
 import useCompanyStore from "@/stores/company.ts";
-import { onBeforeRouteLeave, useRoute } from "vue-router";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { type CreateOrUpdateCompany, CreateOrUpdateCompanySchema } from "@/schemas";
 import FormField from "@/components/Base/Form/FormField.vue";
+import { ROUTE } from "@/router/routes.ts";
 
 const props = defineProps<{
   isCreatePage: boolean;
@@ -54,6 +55,7 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
+const router = useRouter();
 
 const companyStore = useCompanyStore();
 const form = ref<CreateOrUpdateCompany>(props.isCreatePage ? extractDefaults(CreateOrUpdateCompanySchema) : companyStore.currentCompany);
@@ -75,6 +77,7 @@ async function handleSubmit() {
       await companyStore.updateCompany(Number(route.params.id), form.value);
     } else {
       await companyStore.createCompany(form.value);
+      await router.push({ name: ROUTE.COMPANY_INDEX });
     }
   } catch (e) {
     console.error("Form submission failed:", e);
