@@ -56,6 +56,8 @@ const useCompanyStore = defineStore("company", () => {
   async function createCompany(data: CreateOrUpdateCompany) {
     const response = await fetch<Company>(COMPANY_URL, "POST", { data, successMessage: "Company created" });
     companies.value.unshift(response);
+
+    return response;
   };
 
   async function updateCompany(companyId: Company["id"], data: CreateOrUpdateCompany) {
