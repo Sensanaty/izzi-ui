@@ -6,7 +6,7 @@ import "@/assets/main.css";
 import App from "@/App.vue";
 
 import router from "@/router";
-import { createHead } from "@unhead/vue";
+import { createHead } from "@unhead/vue/client";
 
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseInput from "@/components/Base/Form/BaseInput.vue";
