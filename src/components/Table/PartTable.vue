@@ -14,9 +14,11 @@
     <TableMetadata
       :metadata="partStore.metadata"
       :is-fetching="partStore.isFetching"
+      should-show-toolbox
       rounded-top
       @goto="partStore.getPage"
       @navigate="navigatePages"
+      @export="partStore.exportParts"
     />
 
     <PartData :parts="partStore.parts" />
