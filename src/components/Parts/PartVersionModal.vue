@@ -16,7 +16,7 @@
           Current Part
         </h1>
 
-        <div v-for=" key in orderedKeys" :key="key" class="p-0.5 font-mono transition-colors" :class="{ 'bg-emerald-900': isChanged(key) }">
+        <div v-for="key in orderedKeys" :key="key" class="p-0.5 font-mono transition-colors" :class="{ 'bg-emerald-900': isChanged(key) }">
           <span class="font-bold">{{ labelize(key) }}</span>
           <span>: {{ currentPart[key] ? currentPart[key] : 'N/A' }}</span>
         </div>
