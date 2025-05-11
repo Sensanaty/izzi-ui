@@ -32,16 +32,28 @@
         </p>
 
         <ul class="flex flex-col gap-y-1.5">
-          <li v-for="part in parts" :key="part.id">
+          <li v-for="part in parts" :key="part.id" class="flex flex-col border-b-2 py-2">
             <RouterLink
               :to="{ name: ROUTE.PART_EDIT, params: { id: part.id } }"
-              class="font-mono underline underline-offset-2 transition-colors duration-75 hover:text-emerald-500"
+              class="mb-1 w-fit font-mono underline underline-offset-2 transition-colors duration-75 hover:text-emerald-500"
               target="_blank"
             >
               {{ part.part_number }}
             </RouterLink>
 
-            <span v-if="part.description"> - {{ part.description }}</span>
+            <div v-if="part.description" class="flex items-center">
+              <h2 class="mr-2 font-bold">
+                Description:
+              </h2>
+              <p>{{ part.description }}</p>
+            </div>
+
+            <div v-if="part.tag" class="flex items-center">
+              <h2 class="mr-2 font-bold">
+                Tag:
+              </h2>
+              <p>{{ part.tag }}</p>
+            </div>
           </li>
         </ul>
       </div>
