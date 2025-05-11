@@ -17,6 +17,12 @@ type FetchConfig = Partial<{
   axiosConfig: RawAxiosRequestConfig;
 }>;
 
+interface DownloadConfig extends Omit<FetchConfig, "data"> {
+  filename?: string;
+  responseType?: "blob" | "arraybuffer";
+  contentType?: string;
+}
+
 export type PaginationMetadata = {
   page: number;
   prev: number | null;
@@ -37,7 +43,7 @@ export type PaginatedResponse<T> = {
 export interface CommonPaginationParams {
   page?: number;
   count?: number;
-};
+}
 
 const useFetch = (needsAuth = true) => {
   const { createNotification } = useNotificationStore();
@@ -104,6 +110,105 @@ const useFetch = (needsAuth = true) => {
     }
   }
 
+  async function downloadFile(downloadUrl: string, config?: DownloadConfig): Promise<void> {
+    if (isFetching.value) {
+      return Promise.reject();
+    }
+
+    status.value = "fetching";
+
+    try {
+      const queryConfig: AxiosRequestConfig = {
+        ...config?.axiosConfig,
+        method: "GET",
+        responseType: config?.responseType || "blob",
+        params: config?.params,
+      };
+
+      if (config?.contentType) {
+        queryConfig.headers = {
+          ...queryConfig.headers,
+          "Accept": config.contentType,
+        };
+      }
+
+      const response = await api(downloadUrl, queryConfig);
+
+      let filename = config?.filename;
+      const contentDisposition = response.headers["content-disposition"];
+
+      if (!filename && contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (filenameMatch && filenameMatch[1]) {
+          filename = filenameMatch[1];
+        }
+      }
+
+      if (!filename) {
+        filename = "download";
+
+        // Try to add extension based on content-type
+        const contentType = response.headers["content-type"];
+
+        if (contentType?.includes("csv")) {
+          filename += ".csv";
+        } else {
+          filename += ".txt";
+        }
+      }
+
+      const blob = new Blob([response.data], { type: response.headers["content-type"] });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+
+      if (config?.successMessage) {
+        createNotification(config.successMessage, { kind: "s" });
+      }
+
+      status.value = "success";
+
+      return Promise.resolve();
+    } catch (error: unknown) {
+      status.value = "error";
+
+      if (config?.skipError) {
+        console.error("An error occurred during download:", error);
+        return Promise.reject();
+      }
+
+      if (error instanceof AxiosError) {
+        // Check if the error response is JSON that we can parse
+        if (error.response?.data instanceof Blob &&
+          error.response.headers["content-type"]?.includes("application/json")) {
+
+          // Convert Blob to text to read the error message
+          const text = await error.response.data.text();
+          try {
+            error.response.data = JSON.parse(text);
+            await handleAxiosError(error);
+          } catch (e) {
+            createNotification("Failed to download file", { kind: "w" });
+          }
+        } else {
+          await handleAxiosError(error);
+        }
+
+        return Promise.reject();
+      }
+
+      createNotification("An unknown error occurred during download", { kind: "w" });
+      return Promise.reject();
+    }
+  }
+
   const toastError = useThrottleFn((message: string) => {
     createNotification(message, {
       kind: "w",
@@ -131,6 +236,7 @@ const useFetch = (needsAuth = true) => {
     hasFetched,
 
     fetch,
+    downloadFile,
   };
 };
 
