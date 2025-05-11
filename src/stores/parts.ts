@@ -14,12 +14,13 @@ export interface PartsQueryParams extends CommonPaginationParams {
 }
 
 const PART_URL = "/parts";
+const PART_EXPORT_URL = `${PART_URL}/export`;
 const PART_ID_URL = (id: number) => `${PART_URL}/${id}`;
 const PART_VERSIONS_URL = (id: number) => `${PART_ID_URL(id)}/versions`;
 
 const usePartsStore = defineStore("parts", () => {
   const { metadata, total, currentPage, lastPage, hasPreviousPage, hasNextPage, hasMetadata, setMetadata, clearMetadata } = usePagination();
-  const { fetch, isFetching, hasErrored, hasFetched } = useFetch();
+  const { fetch, downloadFile, isFetching, hasErrored, hasFetched } = useFetch();
 
   const parts = ref<Part[]>([]);
   const currentPart = ref<Part>(extractDefaults(PartSchema));
@@ -98,7 +99,11 @@ const usePartsStore = defineStore("parts", () => {
 
   async function deletePart(id: Part["id"]) {
     await fetch(PART_ID_URL(id), "DELETE", { successMessage: "Part deleted" });
-  };
+  }
+
+  async function exportParts() {
+    await downloadFile(PART_EXPORT_URL);
+  }
 
   function reset() {
     parts.value = [];
@@ -145,6 +150,7 @@ const usePartsStore = defineStore("parts", () => {
     updatePart,
     deletePart,
     reset,
+    exportParts,
   };
 });
 
