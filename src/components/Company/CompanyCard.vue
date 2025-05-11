@@ -27,6 +27,10 @@
       </div>
 
       <div v-else>
+        <p v-if="company.parts_count >= 100" class="mb-4 font-bold">
+          Showing only 100 last update parts
+        </p>
+
         <ul class="flex flex-col gap-y-1.5">
           <li v-for="part in parts" :key="part.id">
             <RouterLink
@@ -62,7 +66,7 @@
     </p>
 
     <p class="mt-4 text-center text-lg">
-      Deleting this company will also <span class="text-red-500">delete ALL PARTS</span> belonging to the company.
+      Deleting this company will also <span class="font-bold text-red-500">delete ALL PARTS</span> belonging to the company. This action cannot be undone.
     </p>
 
     <template #footer>
