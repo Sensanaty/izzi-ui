@@ -30,7 +30,7 @@ export const PartSchema = object({
   lead_time: string().optional(),
   quote_type: ZodEnum(["outright_sale", "flat_rate_exchange", "exchange_plus_cost"]).default("outright_sale"),
   tag: string().optional(),
-  internal_note: string().optional(),
+  internal_note: string().optional().catch(""),
   created_at: date().default(() => new Date()),
   updated_at: date().default(() => new Date()),
   company_id: coerce.number().int(),
