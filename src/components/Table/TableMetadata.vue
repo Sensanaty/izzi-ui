@@ -9,6 +9,7 @@
     </button>
 
     <BaseInput
+      :id="searchId"
       v-model="localPage"
       :disabled="isFetching"
       class="w-12"
@@ -32,7 +33,7 @@
 
 <script setup lang="ts">
 import { PhCaretLeft, PhCaretDoubleLeft, PhCaretDoubleRight, PhCaretRight } from "@phosphor-icons/vue";
-import { ref, watch } from "vue";
+import { ref, useId, watch } from "vue";
 
 import type { PaginationMetadata } from "@/composables/useFetch.ts";
 
@@ -41,6 +42,8 @@ type Props = {
   isFetching: boolean;
   roundedTop?: boolean;
 };
+
+const searchId = useId();
 
 const props = defineProps<Props>();
 
