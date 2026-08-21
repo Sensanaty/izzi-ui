@@ -2,6 +2,9 @@
   "name": "vue-template",
   "private": true,
   "type": "module",
+  "imports": {
+    "#style.css": "./src/assets/main.css"
+  },
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",
@@ -14,6 +17,7 @@
     "format": "oxfmt ."
   },
   "dependencies": {
+    "@lucide/vue": "^1.33.0",
     "pinia": "^4.0.3",
     "vue": "^3.5.41",
     "vue-router": "^5.2.0"
