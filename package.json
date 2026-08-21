@@ -1,0 +1,46 @@
+{
+  "name": "vue-template",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "run-p type-check build-only",
+    "build-only": "vite build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --build",
+    "lint": "run-s lint:*",
+    "lint:oxlint": "oxlint . --fix",
+    "lint:eslint": "eslint . --fix --cache",
+    "format": "oxfmt ."
+  },
+  "dependencies": {
+    "pinia": "^4.0.3",
+    "vue": "^3.5.41",
+    "vue-router": "^5.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@tsconfig/node24": "^24.0.5",
+    "@types/node": "^24.13.3",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/eslint-config-typescript": "^14.9.0",
+    "@vue/tsconfig": "^0.9.1",
+    "eslint": "^10.8.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-oxlint": "~1.79.0",
+    "eslint-plugin-vue": "~10.10.0",
+    "jiti": "^2.7.0",
+    "npm-run-all2": "^9.0.3",
+    "oxfmt": "^0.64.0",
+    "oxlint": "~1.79.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.3",
+    "vite": "^8.2.2",
+    "vite-plugin-vue-devtools": "^8.2.1",
+    "vue-eslint-parser": "^10.4.1",
+    "vue-tsc": "^3.3.11"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
