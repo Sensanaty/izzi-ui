@@ -5,7 +5,6 @@
     >
       <div class="mb-6">
         <h1 class="text-3xl font-black">Sign in</h1>
-        <p class="text-text-muted mt-2">Sign in to access the IZZI application.</p>
       </div>
 
       <form class="grid gap-4" novalidate @submit.prevent="submitLogin">
