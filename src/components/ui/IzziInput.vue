@@ -141,12 +141,13 @@ const clearInput = (): void => {
   inputElement.value?.focus();
 };
 
-const togglePasswordVisibility = async (): Promise<void> => {
+async function togglePasswordVisibility(): Promise<void> {
   showPassword.value = !showPassword.value;
 
   await nextTick();
   inputElement.value?.focus();
-};
+}
+
 
 defineExpose({
   focus: (): void => inputElement.value?.focus(),
