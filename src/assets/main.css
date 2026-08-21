@@ -9,6 +9,7 @@
   --color-surface: var(--theme-surface);
   --color-surface-raised: var(--theme-surface-raised);
   --color-surface-hover: var(--theme-surface-hover);
+  --color-input: var(--theme-input);
   --color-text: var(--theme-text);
   --color-text-muted: var(--theme-text-muted);
   --color-border: var(--theme-border);
@@ -32,10 +33,11 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
-  --theme-background: #fff1d6;
+  --theme-background: #fff8ed;
   --theme-surface: #ffe4ad;
   --theme-surface-raised: #ffe1a3;
   --theme-surface-hover: #ffd27a;
+  --theme-input: #fff7e8;
   --theme-text: #14213d;
   --theme-text-muted: #52647d;
   --theme-border: #c58a2e;
@@ -60,6 +62,7 @@
   --theme-surface: #111111;
   --theme-surface-raised: #191919;
   --theme-surface-hover: #242424;
+  --theme-input: #111111;
   --theme-text: #f5f5f5;
   --theme-text-muted: #b3b3b3;
   --theme-border: #4a3525;

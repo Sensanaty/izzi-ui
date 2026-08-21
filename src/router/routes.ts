@@ -2,15 +2,24 @@ import { Route, RoutePath } from "@/router/constants.ts";
 
 import type { RouteRecordRaw } from "vue-router";
 
-const publicRoutes: RouteRecordRaw[] = [
+export type RouteMeta = {
+  requiresAuth: boolean;
+  title?: string;
+};
+
+const appRoutes: RouteRecordRaw[] = [
+  {
+    path: RoutePath.LOGIN,
+    name: Route.LOGIN,
+    component: () => import("@/views/LoginView.vue"),
+    meta: { requiresAuth: false, title: "Sign in" } satisfies RouteMeta,
+  },
   {
     path: RoutePath.HOME,
     name: Route.HOME,
     component: () => import("@/views/HomeView.vue"),
-    meta: { title: "Home" },
+    meta: { requiresAuth: true, title: "Home" } satisfies RouteMeta,
   },
-] as const;
+];
 
-const privateRoutes: RouteRecordRaw[] = [] as const;
-
-export const routes: RouteRecordRaw[] = [...publicRoutes, ...privateRoutes];
+export const routes: RouteRecordRaw[] = appRoutes;

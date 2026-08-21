@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type ApiErrorKind =
   | "unauthorized"
   | "forbidden"
@@ -22,22 +24,6 @@ export class ApiError extends Error {
     this.details = details;
   }
 }
-
-export type User = {
-  id: number;
-  username: string;
-  email: string;
-  admin: boolean;
-};
-
-export type AuthenticationResponse = {
-  user: User;
-  token: string;
-};
-
-export type UserResponse = {
-  user: User;
-};
 
 type RequestOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -95,41 +81,6 @@ const parseErrorPayload = (value: unknown): ApiErrorPayload => {
   return { error: value.error, errors: value.errors };
 };
 
-const parseUser = (value: unknown): User => {
-  if (
-    !isRecord(value) ||
-    typeof value.id !== "number" ||
-    typeof value.username !== "string" ||
-    typeof value.email !== "string" ||
-    typeof value.admin !== "boolean"
-  ) {
-    throw createError("unexpected", "The server returned an invalid user.");
-  }
-
-  return {
-    id: value.id,
-    username: value.username,
-    email: value.email,
-    admin: value.admin,
-  };
-};
-
-export const parseAuthenticationResponse = (value: unknown): AuthenticationResponse => {
-  if (!isRecord(value) || typeof value.token !== "string") {
-    throw createError("unexpected", "The server returned an invalid authentication response.");
-  }
-
-  return { user: parseUser(value.user), token: value.token };
-};
-
-export const parseUserResponse = (value: unknown): UserResponse => {
-  if (!isRecord(value)) {
-    throw createError("unexpected", "The server returned an invalid user response.");
-  }
-
-  return { user: parseUser(value.user) };
-};
-
 const getErrorKind = (status: number): ApiErrorKind => {
   if (status === 401) return "unauthorized";
   if (status === 403) return "forbidden";
@@ -138,11 +89,12 @@ const getErrorKind = (status: number): ApiErrorKind => {
   return "unexpected";
 };
 
-const requestJson = async <Payload>(
+async function requestJson<TParsedResponse>(
   path: string,
   options: RequestOptions,
+  schema: z.ZodType<TParsedResponse>,
   hasRetried: boolean,
-): Promise<Payload> => {
+): Promise<TParsedResponse> {
   if (!apiBaseUrl) {
     throw createError("configuration", "The API base URL is not configured.");
   }
@@ -180,7 +132,7 @@ const requestJson = async <Payload>(
     const refreshed = await refreshPromise;
 
     if (refreshed) {
-      return requestJson<Payload>(path, options, true);
+      return requestJson(path, options, schema, true);
     }
 
     authHandlers.onRefreshFailure();
@@ -203,23 +155,37 @@ const requestJson = async <Payload>(
     );
   }
 
+  let payload: unknown;
+
   if (response.status === 204) {
-    return undefined as Payload;
+    payload = undefined;
+  } else {
+    try {
+      payload = await response.json();
+    } catch {
+      throw createError("unexpected", "The server returned an invalid response.", response.status);
+    }
   }
 
-  try {
-    return (await response.json()) as Payload;
-  } catch {
+  const result = schema.safeParse(payload);
+
+  if (!result.success) {
     throw createError("unexpected", "The server returned an invalid response.", response.status);
   }
-};
+
+  return result.data;
+}
 
 export const api = {
-  get: <Response>(path: string, options: Omit<RequestOptions, "method" | "body"> = {}) =>
-    requestJson<Response>(path, { ...options, method: "GET" }, false),
-  post: <Response>(
+  get: <TParsedResponse>(
     path: string,
-    body?: unknown,
+    schema: z.ZodType<TParsedResponse>,
     options: Omit<RequestOptions, "method" | "body"> = {},
-  ) => requestJson<Response>(path, { ...options, method: "POST", body }, false),
+  ) => requestJson(path, { ...options, method: "GET" }, schema, false),
+  post: <TParsedResponse>(
+    path: string,
+    body: unknown,
+    schema: z.ZodType<TParsedResponse>,
+    options: Omit<RequestOptions, "method" | "body"> = {},
+  ) => requestJson(path, { ...options, method: "POST", body }, schema, false),
 };
