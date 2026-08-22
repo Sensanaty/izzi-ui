@@ -10,6 +10,7 @@ export const initializeAuth = (pinia: Pinia, router: Router): void => {
 
   configureApiAuth({
     getAccessToken: () => auth.accessToken,
+    initializeAuth: auth.restoreSession,
     refreshAccessToken: auth.refreshAccessToken,
     onRefreshFailure: () => {
       auth.clearAuth();

@@ -34,6 +34,7 @@ type RequestOptions = {
 
 type AuthClientHandlers = {
   getAccessToken: () => string | null;
+  initializeAuth: () => Promise<void>;
   refreshAccessToken: () => Promise<boolean>;
   onRefreshFailure: () => void;
 };
@@ -103,6 +104,10 @@ async function requestJson<TParsedResponse>(
 
   if (options.body !== undefined) {
     headers.set("Content-Type", "application/json");
+  }
+
+  if (options.requiresAuth !== false && !options.skipRefresh && authHandlers) {
+    await authHandlers.initializeAuth();
   }
 
   const accessToken = authHandlers?.getAccessToken();
