@@ -29,6 +29,7 @@
         :ensure-dom-order="true"
         :loading="loading || !isGridReady"
         :modules="modules"
+        multi-sort-key="ctrl"
         :row-data="parts"
         :row-selection="rowSelection"
         :suppress-column-move-animation="true"
@@ -39,7 +40,7 @@
         @column-visible="emit('column-visible')"
         @grid-ready="emit('grid-ready', $event)"
         @selection-changed="emit('selection-changed', $event)"
-        @sort-changed="emit('sort-changed')"
+        @sort-changed="emit('sort-changed', $event)"
       />
     </div>
 
@@ -74,6 +75,7 @@ import type {
   SelectionChangedEvent,
   SelectionColumnDef,
   RowSelectionOptions,
+  SortChangedEvent,
   Theme,
 } from "ag-grid-community";
 
@@ -105,7 +107,7 @@ const emit = defineEmits<{
   "column-visible": [];
   "grid-ready": [event: GridReadyEvent<Part>];
   "selection-changed": [event: SelectionChangedEvent<Part>];
-  "sort-changed": [];
+  "sort-changed": [event: SortChangedEvent<Part>];
   "go-to-page": [page: number];
   "change-page-size": [size: number];
   "update:page-input": [page: number];

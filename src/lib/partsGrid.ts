@@ -1,11 +1,12 @@
 import PartsGridActions from "@/components/parts/PartsGridActions.vue";
 
 import type { PartsGridActionsParams } from "@/components/parts/PartsGridActions.vue";
-import type { Part } from "@/lib/schemas/part";
+import type { Part, PartField } from "@/lib/schemas/part";
 import type { ColDef } from "ag-grid-community";
 
+export type PartColumnField = Exclude<PartField, "id" | "created_at" | "company_id">;
 export type ColumnOption = {
-  field: string;
+  field: "actions" | PartColumnField;
   label: string;
 };
 
@@ -40,6 +41,7 @@ export const selectionColumnDef = {
 
 export const defaultColDef: ColDef<Part> = {
   sortable: true,
+  comparator: () => 0,
   resizable: true,
   filter: true,
   minWidth: 120,

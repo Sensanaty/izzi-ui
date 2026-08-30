@@ -18,6 +18,21 @@
       <IzziButton type="submit" class="my-auto" :disabled="isLoading">Search</IzziButton>
     </form>
 
+    <details
+      class="border-border rounded-sm border p-3"
+      :open="isAdvancedSearchOpen"
+      @toggle="handleAdvancedSearchToggle"
+    >
+      <summary class="cursor-pointer font-bold">Advanced search</summary>
+
+      <AdvancedPartSearch
+        v-if="isAdvancedSearchLoaded"
+        :key="advancedSearchKey"
+        :initial-conditions="conditions"
+        @apply="applyAdvancedConditions"
+      />
+    </details>
+
     <PartsColumnSettings
       :column-options="columnOptions"
       :pinned-columns="pinnedColumns"
@@ -82,12 +97,12 @@
     @column-visible="persistColumnState"
     @grid-ready="handleGridReady"
     @selection-changed="handleSelectionChanged"
-    @sort-changed="persistColumnState"
+    @sort-changed="handleSortChanged"
   />
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, defineAsyncComponent, onMounted, ref, watch } from "vue";
 import {
   AllCommunityModule,
   colorSchemeDark,
@@ -95,15 +110,17 @@ import {
   ModuleRegistry,
   themeQuartz,
 } from "ag-grid-community";
-import { getParts } from "@/api/parts";
+import { isPartsSortField } from "@/api/parts";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
 import PartsGrid from "@/components/parts/PartsGrid.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
+import { usePagination } from "@/composables/usePagination";
 import { usePartsCopy } from "@/composables/usePartsCopy";
+import { usePartsData } from "@/composables/usePartsData";
 import { usePartsGrid } from "@/composables/usePartsGrid";
+import { usePartsSearch } from "@/composables/usePartsSearch";
 import { useTheme } from "@/composables/useTheme";
-import { ApiError } from "@/lib/api";
 import {
   columnOptions,
   createPartsColumnDefs,
@@ -111,27 +128,52 @@ import {
   selectionColumnDef,
 } from "@/lib/partsGrid";
 
+import type { PartsCondition } from "@/api/parts";
 import type { Part } from "@/lib/schemas/part";
-import type { SelectionChangedEvent } from "ag-grid-community";
+import type { SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-const pageSizeOptions = [5, 10, 25, 50, 100];
-const pageSizeStorageKey = "izzi-parts-page-size";
-const pageSize = ref(getInitialPageSize());
-const pageInput = ref(1);
-const parts = ref<Part[]>([]);
-const searchQuery = ref("");
-const currentPage = ref(1);
-const lastPage = ref(1);
-const totalParts = ref(0);
+const AdvancedPartSearch = defineAsyncComponent(
+  () => import("@/components/parts/AdvancedPartSearch.vue"),
+);
+
+const {
+  advancedSearchKey,
+  conditions,
+  isAdvancedSearchLoaded,
+  isAdvancedSearchOpen,
+  isWritingUrl,
+  partsUrlQuery,
+  searchQuery,
+  sort,
+  syncQueryToUrl,
+  updateFromUrl,
+} = usePartsSearch();
+
+const pagination = usePagination({
+  pageSizeOptions: [5, 10, 25, 50, 100],
+  defaultPageSize: 25,
+  storageKey: "izzi-parts-page-size",
+});
+
+const {
+  currentPage,
+  getBoundedPage,
+  hasNextPage,
+  hasPreviousPage,
+  lastPage,
+  pageInput,
+  pageSize,
+  pageSizeOptions,
+  setPageSize,
+  totalItems: totalParts,
+  updateMetadata,
+} = pagination;
+
 const selectedPartCount = ref(0);
 const selectedParts = ref<Part[]>([]);
 const isGridReady = ref(false);
-const hasPreviousPage = computed(() => currentPage.value > 1);
-const hasNextPage = computed(() => currentPage.value < lastPage.value);
-const isLoading = ref(false);
-const errorMessage = ref<string | null>(null);
 
 const modules = [AllCommunityModule];
 const { theme: appTheme } = useTheme();
@@ -142,11 +184,19 @@ const rowSelection = { mode: "multiRow", enableClickSelection: false } as const;
 const { actionMessage, copyDetails, copyDetailsForParts } = usePartsCopy();
 const columnDefs = createPartsColumnDefs(copyDetailsForParts);
 
-function getInitialPageSize(): number {
-  const storedPageSize = Number(localStorage.getItem(pageSizeStorageKey));
-
-  return pageSizeOptions.includes(storedPageSize) ? storedPageSize : 25;
-}
+const { errorMessage, isLoading, loadParts, parts } = usePartsData({
+  page: currentPage,
+  pageSize,
+  searchQuery,
+  conditions,
+  sort,
+  updatePagination: updateMetadata,
+  onLoaded: () => {
+    selectedPartCount.value = 0;
+    selectedParts.value = [];
+    actionMessage.value = null;
+  },
+});
 
 const {
   handleGridReady,
@@ -174,44 +224,58 @@ function copySelectedDetails(type: "quote" | "full"): Promise<void> {
   return copyDetails(selectedParts.value, type);
 }
 
-async function loadParts(page = 1): Promise<void> {
-  isLoading.value = true;
-  errorMessage.value = null;
+watch(
+  partsUrlQuery.state,
+  (state) => {
+    if (isWritingUrl.value) return;
 
-  try {
-    const response = await getParts({
-      page,
-      count: pageSize.value,
-      query: searchQuery.value.trim(),
-    });
-    parts.value = response.data;
-    currentPage.value = response.metadata.page;
-    pageInput.value = response.metadata.page;
-    lastPage.value = response.metadata.last;
-    totalParts.value = response.metadata.total;
-    selectedPartCount.value = 0;
-    selectedParts.value = [];
-    actionMessage.value = null;
-  } catch (error) {
-    parts.value = [];
-    errorMessage.value = error instanceof ApiError ? error.message : "Unable to load parts.";
-  } finally {
-    isLoading.value = false;
-  }
+    updateFromUrl(state);
+
+    void loadParts();
+  },
+  { flush: "sync" },
+);
+
+function handleAdvancedSearchToggle(event: Event): void {
+  const details = event.currentTarget;
+
+  if (!(details instanceof HTMLDetailsElement)) return;
+
+  isAdvancedSearchOpen.value = details.open;
+
+  if (details.open) isAdvancedSearchLoaded.value = true;
 }
 
 function searchParts(): void {
-  void loadParts();
+  conditions.value = [];
+  void syncQueryToUrl().then(() => loadParts());
+}
+
+function applyAdvancedConditions(nextConditions: PartsCondition[]): void {
+  searchQuery.value = "";
+  conditions.value = nextConditions;
+
+  void syncQueryToUrl().then(() => loadParts());
+}
+
+function handleSortChanged(event: SortChangedEvent<Part>): void {
+  sort.value = event.api
+    .getColumnState()
+    .filter((column): column is typeof column & { sort: "asc" | "desc" } => column.sort !== null)
+    .sort((left, right) => (left.sortIndex ?? 0) - (right.sortIndex ?? 0))
+    .flatMap((column) =>
+      isPartsSortField(column.colId) ? [{ field: column.colId, direction: column.sort }] : [],
+    );
+
+  void syncQueryToUrl().then(() => loadParts());
 }
 
 function goToPage(page: number): void {
-  const boundedPage = Math.min(Math.max(Math.trunc(page), 1), lastPage.value);
-  void loadParts(boundedPage);
+  void loadParts(getBoundedPage(page));
 }
 
 function changePageSize(size: number): void {
-  pageSize.value = size;
-  localStorage.setItem(pageSizeStorageKey, String(size));
+  setPageSize(size);
   goToPage(1);
 }
 
