@@ -4,14 +4,17 @@
       <h1 class="font-bold text-3xl">
         {{ isEditing ? `Editing part ${partId}` : "Add new part" }}
       </h1>
+
       <p class="text-text-muted">
         {{ isEditing ? "Update the part record" : "Add a part to the inventory" }}
       </p>
     </div>
+
     <div class="flex flex-wrap items-center gap-3">
       <IzziButton v-if="isEditing" variant="secondary" size="sm" @click="isVersionsOpen = true">
         View past versions
       </IzziButton>
+
       <RouterLink class="text-accent underline" :to="{ path: RoutePath.HOME, query: route.query }">
         Back to parts
       </RouterLink>
@@ -23,6 +26,7 @@
   <form class="grid gap-6" novalidate @submit.prevent="submitForm">
     <section class="bg-surface-raised border-border grid gap-4 rounded-sm border-2 p-4">
       <h2 class="font-bold text-xl">Part details</h2>
+
       <div class="grid gap-4 md:grid-cols-2">
         <IzziInput
           v-model="form.part_number"
@@ -30,16 +34,19 @@
           :error="fieldError('part_number')"
           required
         />
+
         <IzziInput
           v-model="form.description"
           label="Description"
           :error="fieldError('description')"
           required
         />
+
         <div class="grid content-start gap-1">
-          <span class="font-bold" id="part-company-label"
-            >Company <sup aria-hidden="true">*</sup><span class="sr-only">(required)</span></span
-          >
+          <span class="font-bold" id="part-company-label">
+            Company <sup aria-hidden="true">*</sup><span class="sr-only">(required)</span>
+          </span>
+
           <IzziDropdown
             v-model="form.company_id"
             id="part-company"
@@ -51,22 +58,30 @@
             :disabled="isSaving || companiesLoading || isCreatingCompany"
             :error="fieldError('company_id')"
           />
-          <IzziButton
-            class="justify-self-start"
-            size="sm"
-            variant="secondary"
-            :disabled="isSaving || isCreatingCompany"
-            @click="isCreatingCompany = !isCreatingCompany"
-          >
-            {{ isCreatingCompany ? "Cancel new company" : "New company" }}
-          </IzziButton>
-          <RouterLink class="text-accent text-sm underline" :to="RoutePath.COMPANY_NEW">
-            Open full company form
-          </RouterLink>
-          <div v-if="isCreatingCompany" class="border-border grid gap-3 rounded-sm border-2 p-3">
-            <CompanyFormFields v-model="newCompanyForm" :errors="companyFieldErrors" />
+
+          <div class="mt-2 flex flex-wrap items-center gap-3">
             <IzziButton
-              class="justify-self-start"
+              size="sm"
+              variant="secondary"
+              :disabled="isSaving"
+              @click="isCreatingCompany = !isCreatingCompany"
+            >
+              {{ isCreatingCompany ? "Cancel new company" : "New company" }}
+            </IzziButton>
+
+            <RouterLink class="text-accent text-sm underline" :to="RoutePath.COMPANY_NEW">
+              Open full company form
+            </RouterLink>
+          </div>
+
+          <div
+            v-if="isCreatingCompany"
+            class="border-border mt-2 grid gap-4 rounded-sm border-2 p-4"
+          >
+            <CompanyFormFields v-model="newCompanyForm" :errors="companyFieldErrors" />
+
+            <IzziButton
+              class="mt-1 justify-self-start"
               size="sm"
               :disabled="isSavingCompany"
               @click="createQuickCompany"
@@ -74,20 +89,24 @@
               {{ isSavingCompany ? "Saving..." : "Create and select company" }}
             </IzziButton>
           </div>
+
           <span v-if="!companiesLoading && !companies.length" class="text-danger" role="alert">
             No companies are available
           </span>
         </div>
+
         <IzziInput
           v-model="form.condition"
           label="Condition"
           :error="fieldError('condition')"
           required
         />
+
         <div class="grid content-start gap-1">
-          <span class="font-bold" id="quote-type-label"
-            >Quote type <sup aria-hidden="true">*</sup><span class="sr-only">(required)</span></span
-          >
+          <span class="font-bold" id="quote-type-label">
+            Quote type <sup aria-hidden="true">*</sup><span class="sr-only">(required)</span>
+          </span>
+
           <IzziDropdown
             v-model="form.quote_type"
             id="quote-type"
@@ -97,10 +116,14 @@
             :error="fieldError('quote_type')"
           />
         </div>
+
         <IzziInput v-model="form.tag" label="Tag" :error="fieldError('tag')" required />
+
         <IzziInput v-model="form.lead_time" label="Lead time" :error="fieldError('lead_time')" />
+
         <IzziInput v-model="form.added" label="Added" type="date" :error="fieldError('added')" />
       </div>
+
       <IzziTextArea
         v-model="form.internal_note"
         label="Internal note"
@@ -110,6 +133,7 @@
 
     <section class="bg-surface-raised border-border grid gap-4 rounded-sm border-2 p-4">
       <h2 class="font-bold text-xl">Inventory and pricing</h2>
+
       <div class="grid gap-4 md:grid-cols-3">
         <IzziInput
           v-model="form.available"
@@ -119,6 +143,7 @@
           :error="fieldError('available')"
           required
         />
+
         <IzziInput
           v-model="form.reserved"
           label="Reserved"
@@ -127,6 +152,7 @@
           :error="fieldError('reserved')"
           required
         />
+
         <IzziInput
           v-model="form.sold"
           label="Sold"
@@ -136,6 +162,7 @@
           required
         />
       </div>
+
       <div v-for="tier in priceTiers" :key="tier.key" class="grid gap-4 md:grid-cols-3">
         <IzziInput
           v-model="form[tier.cost]"
@@ -145,6 +172,7 @@
           step="0.01"
           :error="fieldError(tier.cost)"
         />
+
         <IzziInput
           v-model="form[tier.price]"
           :label="`${tier.label} price`"
@@ -153,6 +181,7 @@
           step="0.01"
           :error="fieldError(tier.price)"
         />
+
         <IzziInput
           v-model="form[tier.order]"
           :label="`${tier.label} minimum order`"
@@ -164,9 +193,10 @@
     </section>
 
     <div class="flex flex-wrap gap-2">
-      <IzziButton type="submit" :disabled="isSaving || companiesLoading">{{
-        isSaving ? "Saving..." : isEditing ? "Save changes" : "Create part"
-      }}</IzziButton>
+      <IzziButton type="submit" :disabled="isSaving || companiesLoading">
+        {{ isSaving ? "Saving..." : isEditing ? "Save changes" : "Create part" }}
+      </IzziButton>
+
       <IzziButton variant="secondary" :disabled="isSaving" @click="cancel">Cancel</IzziButton>
     </div>
   </form>
@@ -196,8 +226,8 @@ import { notifyApiError } from "@/lib/notifications";
 import { RoutePath } from "@/router/constants";
 import { useNotificationStore } from "@/stores/notification";
 
-import type { Company } from "@/lib/schemas/company";
 import type { CompanyFormState } from "@/components/companies/CompanyFormFields.vue";
+import type { Company } from "@/lib/schemas/company";
 import type { Part } from "@/lib/schemas/part";
 
 const quoteTypes = ["OUTRIGHT SALE", "FLAT RATE EXCHANGE", "EXCHANGE + COST"] as const;
@@ -271,30 +301,37 @@ const emptyForm = (): FormState => ({
 const route = useRoute();
 const router = useRouter();
 const { createNotification } = useNotificationStore();
+
 const form = reactive<FormState>(emptyForm());
 const companies = ref<Company[]>([]);
-const companyOptions = computed(() =>
-  companies.value.map((company) => ({ value: String(company.id), label: company.name })),
-);
+
 const companiesLoading = ref(true);
 const isCreatingCompany = ref(false);
 const isSavingCompany = ref(false);
 const companyFieldErrors = ref<Record<string, string[]>>({});
+
 const newCompanyForm = reactive<CompanyFormState>({
   name: "",
   address: "",
   city: "",
   country: "",
   website: "",
-  type: "",
   subscription: "",
 });
+
 const isSaving = ref(false);
 const isVersionsOpen = ref(false);
+
 const loadError = ref<string | null>(null);
 const fieldErrors = ref<Record<string, string[]>>({});
+
+const companyOptions = computed(() =>
+  companies.value.map((company) => ({ value: String(company.id), label: company.name })),
+);
+
 const partId = computed(() => Number(route.params.id));
 const isEditing = computed(() => Number.isInteger(partId.value) && partId.value > 0);
+
 const currentValues = computed<Partial<Record<keyof Part, string | number | null | undefined>>>(
   () => ({
     ...form,
@@ -435,21 +472,22 @@ async function createQuickCompany(): Promise<void> {
       city: newCompanyForm.city.trim() || null,
       country: newCompanyForm.country.trim() || null,
       website: newCompanyForm.website.trim() || null,
-      type: newCompanyForm.type.trim() || null,
       subscription: newCompanyForm.subscription.trim() || null,
     });
+
     companies.value = [company, ...companies.value];
     form.company_id = String(company.id);
     isCreatingCompany.value = false;
+
     Object.assign(newCompanyForm, {
       name: "",
       address: "",
       city: "",
       country: "",
       website: "",
-      type: "",
       subscription: "",
     });
+
     companyFieldErrors.value = {};
     createNotification("Company created");
   } catch (error) {
@@ -520,15 +558,16 @@ function cancel(): void {
 
 function resetForRoute(): void {
   Object.assign(form, emptyForm());
+
   Object.assign(newCompanyForm, {
     name: "",
     address: "",
     city: "",
     country: "",
     website: "",
-    type: "",
     subscription: "",
   });
+
   isCreatingCompany.value = false;
   companyFieldErrors.value = {};
   fieldErrors.value = {};
