@@ -135,6 +135,76 @@ const getErrorKind = (status: number): ApiErrorKind => {
   return "unexpected";
 };
 
+async function requestBlob(
+  path: string,
+  options: RequestOptions,
+  hasRetried: boolean,
+): Promise<Blob> {
+  if (!apiBaseUrl) {
+    throw createError("configuration", "The API base URL is not configured");
+  }
+
+  const headers = new Headers({ Accept: "text/csv" });
+
+  if (options.requiresAuth !== false && !options.skipRefresh && authHandlers) {
+    await authHandlers.initializeAuth();
+  }
+
+  const accessToken = authHandlers?.getAccessToken();
+
+  if (options.requiresAuth !== false && accessToken) {
+    headers.set("Authorization", `Bearer ${accessToken}`);
+  }
+
+  let response: Response;
+
+  try {
+    response = await fetch(`${apiBaseUrl}${path}`, {
+      method: "GET",
+      headers,
+      credentials: "include",
+    });
+  } catch {
+    throw createError("network", "Unable to reach the server");
+  }
+
+  if (response.status === 401 && !hasRetried && !options.skipRefresh && authHandlers) {
+    refreshPromise ??= authHandlers.refreshAccessToken().finally(() => {
+      refreshPromise = null;
+    });
+
+    const refreshed = await refreshPromise;
+
+    if (refreshed) {
+      return requestBlob(path, options, true);
+    }
+
+    authHandlers.onRefreshFailure();
+  }
+
+  if (!response.ok) {
+    let payload: unknown = {};
+
+    try {
+      payload = await response.json();
+    } catch {
+      payload = {};
+    }
+
+    const parsedPayload = parseErrorPayload(payload);
+    throw createError(
+      getErrorKind(response.status),
+      parsedPayload.message,
+      response.status,
+      parsedPayload.code,
+      parsedPayload.details,
+      parsedPayload.fieldErrors,
+    );
+  }
+
+  return response.blob();
+}
+
 async function requestJson<TParsedResponse>(
   path: string,
   options: RequestOptions,
@@ -230,6 +300,9 @@ async function requestJson<TParsedResponse>(
 }
 
 export const api = {
+  getBlob: (path: string, options: Omit<RequestOptions, "method" | "body"> = {}) =>
+    requestBlob(path, { ...options, method: "GET" }, false),
+
   get: <TParsedResponse>(
     path: string,
     schema: z.ZodType<TParsedResponse>,
