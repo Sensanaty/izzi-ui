@@ -10,7 +10,7 @@
   <template v-else>
     <AppHeader v-if="auth.isAuthenticated" />
 
-    <main>
+    <main class="flex w-full flex-col gap-4 px-4 py-6 lg:px-6">
       <RouterView />
     </main>
   </template>
