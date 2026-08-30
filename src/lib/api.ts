@@ -235,18 +235,21 @@ export const api = {
     schema: z.ZodType<TParsedResponse>,
     options: Omit<RequestOptions, "method" | "body"> = {},
   ) => requestJson(path, { ...options, method: "GET" }, schema, false),
+
   post: <TParsedResponse>(
     path: string,
     body: unknown,
     schema: z.ZodType<TParsedResponse>,
     options: Omit<RequestOptions, "method" | "body"> = {},
   ) => requestJson(path, { ...options, method: "POST", body }, schema, false),
+
   patch: <TParsedResponse>(
     path: string,
     body: unknown,
     schema: z.ZodType<TParsedResponse>,
     options: Omit<RequestOptions, "method" | "body"> = {},
   ) => requestJson(path, { ...options, method: "PATCH", body }, schema, false),
+
   delete: <TParsedResponse>(
     path: string,
     schema: z.ZodType<TParsedResponse>,
