@@ -8,9 +8,14 @@
         {{ isEditing ? "Update the part record" : "Add a part to the inventory" }}
       </p>
     </div>
-    <RouterLink class="text-accent underline" :to="{ path: RoutePath.HOME, query: route.query }">
-      Back to parts
-    </RouterLink>
+    <div class="flex flex-wrap items-center gap-3">
+      <IzziButton v-if="isEditing" variant="secondary" size="sm" @click="isVersionsOpen = true">
+        View past versions
+      </IzziButton>
+      <RouterLink class="text-accent underline" :to="{ path: RoutePath.HOME, query: route.query }">
+        Back to parts
+      </RouterLink>
+    </div>
   </div>
 
   <p v-if="loadError" class="text-danger" role="alert">{{ loadError }}</p>
@@ -43,9 +48,32 @@
             placeholder="Select a company"
             searchable
             search-label="companies"
-            :disabled="isSaving || companiesLoading"
+            :disabled="isSaving || companiesLoading || isCreatingCompany"
             :error="fieldError('company_id')"
           />
+          <IzziButton
+            class="justify-self-start"
+            size="sm"
+            variant="secondary"
+            :disabled="isSaving || isCreatingCompany"
+            @click="isCreatingCompany = !isCreatingCompany"
+          >
+            {{ isCreatingCompany ? "Cancel new company" : "New company" }}
+          </IzziButton>
+          <RouterLink class="text-accent text-sm underline" :to="RoutePath.COMPANY_NEW">
+            Open full company form
+          </RouterLink>
+          <div v-if="isCreatingCompany" class="border-border grid gap-3 rounded-sm border-2 p-3">
+            <CompanyFormFields v-model="newCompanyForm" :errors="companyFieldErrors" />
+            <IzziButton
+              class="justify-self-start"
+              size="sm"
+              :disabled="isSavingCompany"
+              @click="createQuickCompany"
+            >
+              {{ isSavingCompany ? "Saving..." : "Create and select company" }}
+            </IzziButton>
+          </div>
           <span v-if="!companiesLoading && !companies.length" class="text-danger" role="alert">
             No companies are available
           </span>
@@ -142,13 +170,24 @@
       <IzziButton variant="secondary" :disabled="isSaving" @click="cancel">Cancel</IzziButton>
     </div>
   </form>
+
+  <PartVersionsDialog
+    v-if="isVersionsOpen"
+    :part-id="partId"
+    :current-values="currentValues"
+    @close="isVersionsOpen = false"
+    @restore="restoreVersionField"
+    @restore-all="restoreVersion"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
-import { getCompanies } from "@/api/companies";
+import { createCompany, getCompanies } from "@/api/companies";
 import { createPart, getPart, updatePart } from "@/api/parts";
+import CompanyFormFields from "@/components/companies/CompanyFormFields.vue";
+import PartVersionsDialog from "@/components/parts/PartVersionsDialog.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziDropdown from "@/components/ui/IzziDropdown.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
@@ -157,7 +196,8 @@ import { notifyApiError } from "@/lib/notifications";
 import { RoutePath } from "@/router/constants";
 import { useNotificationStore } from "@/stores/notification";
 
-import type { Company } from "@/api/companies";
+import type { Company } from "@/lib/schemas/company";
+import type { CompanyFormState } from "@/components/companies/CompanyFormFields.vue";
 import type { Part } from "@/lib/schemas/part";
 
 const quoteTypes = ["OUTRIGHT SALE", "FLAT RATE EXCHANGE", "EXCHANGE + COST"] as const;
@@ -237,11 +277,47 @@ const companyOptions = computed(() =>
   companies.value.map((company) => ({ value: String(company.id), label: company.name })),
 );
 const companiesLoading = ref(true);
+const isCreatingCompany = ref(false);
+const isSavingCompany = ref(false);
+const companyFieldErrors = ref<Record<string, string[]>>({});
+const newCompanyForm = reactive<CompanyFormState>({
+  name: "",
+  address: "",
+  city: "",
+  country: "",
+  website: "",
+  type: "",
+  subscription: "",
+});
 const isSaving = ref(false);
+const isVersionsOpen = ref(false);
 const loadError = ref<string | null>(null);
 const fieldErrors = ref<Record<string, string[]>>({});
 const partId = computed(() => Number(route.params.id));
 const isEditing = computed(() => Number.isInteger(partId.value) && partId.value > 0);
+const currentValues = computed<Partial<Record<keyof Part, string | number | null | undefined>>>(
+  () => ({
+    ...form,
+    company_name: companies.value.find((company) => String(company.id) === form.company_id)?.name,
+  }),
+);
+
+type PartVersionField = keyof Part;
+
+type VersionValue = string | number | null | undefined;
+
+function restoreVersionField(field: PartVersionField, value: VersionValue): void {
+  if (field === "company_name") return;
+  if (!(field in form)) return;
+
+  form[field as keyof FormState] = value === null || value === undefined ? "" : String(value);
+}
+
+function restoreVersion(values: Partial<Record<PartVersionField, VersionValue>>): void {
+  Object.entries(values).forEach(([field, value]) => {
+    restoreVersionField(field as PartVersionField, value);
+  });
+}
 
 function fieldError(field: string): string | null {
   return fieldErrors.value[field]?.join(", ") ?? null;
@@ -254,6 +330,17 @@ watch(form, (nextForm) => {
     const value = nextForm[field as keyof FormState];
 
     if (typeof value === "string" && value.trim()) delete fieldErrors.value[field];
+  });
+});
+
+watch(newCompanyForm, (nextForm) => {
+  Object.keys(companyFieldErrors.value).forEach((field) => {
+    if (
+      typeof nextForm[field as keyof CompanyFormState] === "string" &&
+      nextForm[field as keyof CompanyFormState].trim()
+    ) {
+      delete companyFieldErrors.value[field];
+    }
   });
 });
 
@@ -323,6 +410,56 @@ async function load(): Promise<void> {
   }
 }
 
+function validateCompanyForm(): boolean {
+  if (newCompanyForm.name.trim()) {
+    companyFieldErrors.value = {};
+
+    return true;
+  }
+
+  companyFieldErrors.value = { name: ["is required"] };
+  createNotification("Company name is required", { kind: "w" });
+
+  return false;
+}
+
+async function createQuickCompany(): Promise<void> {
+  if (!validateCompanyForm()) return;
+
+  isSavingCompany.value = true;
+
+  try {
+    const company = await createCompany({
+      name: newCompanyForm.name.trim(),
+      address: newCompanyForm.address.trim() || null,
+      city: newCompanyForm.city.trim() || null,
+      country: newCompanyForm.country.trim() || null,
+      website: newCompanyForm.website.trim() || null,
+      type: newCompanyForm.type.trim() || null,
+      subscription: newCompanyForm.subscription.trim() || null,
+    });
+    companies.value = [company, ...companies.value];
+    form.company_id = String(company.id);
+    isCreatingCompany.value = false;
+    Object.assign(newCompanyForm, {
+      name: "",
+      address: "",
+      city: "",
+      country: "",
+      website: "",
+      type: "",
+      subscription: "",
+    });
+    companyFieldErrors.value = {};
+    createNotification("Company created");
+  } catch (error) {
+    const details = notifyApiError(error, "Unable to create company");
+    companyFieldErrors.value = details.fieldErrors;
+  } finally {
+    isSavingCompany.value = false;
+  }
+}
+
 function validateForm(): boolean {
   const requiredFields = [
     "part_number",
@@ -383,6 +520,17 @@ function cancel(): void {
 
 function resetForRoute(): void {
   Object.assign(form, emptyForm());
+  Object.assign(newCompanyForm, {
+    name: "",
+    address: "",
+    city: "",
+    country: "",
+    website: "",
+    type: "",
+    subscription: "",
+  });
+  isCreatingCompany.value = false;
+  companyFieldErrors.value = {};
   fieldErrors.value = {};
   loadError.value = null;
   companiesLoading.value = true;

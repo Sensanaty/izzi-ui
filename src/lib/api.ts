@@ -247,4 +247,9 @@ export const api = {
     schema: z.ZodType<TParsedResponse>,
     options: Omit<RequestOptions, "method" | "body"> = {},
   ) => requestJson(path, { ...options, method: "PATCH", body }, schema, false),
+  delete: <TParsedResponse>(
+    path: string,
+    schema: z.ZodType<TParsedResponse>,
+    options: Omit<RequestOptions, "method" | "body"> = {},
+  ) => requestJson(path, { ...options, method: "DELETE" }, schema, false),
 };

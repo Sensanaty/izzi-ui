@@ -1,5 +1,10 @@
 import { api } from "@/lib/api";
-import { partResponseSchema, partsResponseSchema } from "@/lib/schemas/part";
+import { emptyResponseSchema } from "@/lib/schemas/common";
+import {
+  partResponseSchema,
+  partVersionsResponseSchema,
+  partsResponseSchema,
+} from "@/lib/schemas/part";
 
 import type { PartField } from "@/lib/schemas/part";
 
@@ -177,4 +182,12 @@ export async function createPart(payload: PartPayload) {
 
 export async function updatePart(partId: number, payload: PartPayload) {
   return api.patch(`/parts/${partId}`, payload, partResponseSchema);
+}
+
+export async function getPartVersions(partId: number) {
+  return api.get(`/parts/${partId}/versions`, partVersionsResponseSchema);
+}
+
+export async function deletePartVersions(partId: number) {
+  return api.delete(`/parts/${partId}/versions`, emptyResponseSchema);
 }

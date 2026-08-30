@@ -48,9 +48,22 @@ export const partsResponseSchema = z.object({
     .passthrough(),
 });
 
+export const partVersionSchema = z.object({
+  id: z.number(),
+  item_type: z.string(),
+  item_id: z.number(),
+  created_at: z.string(),
+  object: partSchema.partial().passthrough(),
+});
+
+export const partVersionsResponseSchema = z.object({
+  data: z.array(partVersionSchema),
+});
+
 export type Part = z.infer<typeof partSchema>;
 export type PartField = keyof Part;
 export type PartResponse = z.infer<typeof partResponseSchema>;
 export type PartsResponse = z.infer<typeof partsResponseSchema>;
+export type PartVersion = z.infer<typeof partVersionSchema>;
 
 export const partFields = Object.keys(partSchema.shape) as PartField[];

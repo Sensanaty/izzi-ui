@@ -32,6 +32,12 @@ const appRoutes: RouteRecordRaw[] = [
     component: () => import("@/views/PartFormView.vue"),
     meta: { requiresAuth: true, title: "Edit part" } satisfies RouteMeta,
   },
+  {
+    path: RoutePath.COMPANY_NEW,
+    name: Route.COMPANY_NEW,
+    component: () => import("@/views/CompanyFormView.vue"),
+    meta: { requiresAuth: true, title: "New company" } satisfies RouteMeta,
+  },
 ];
 
 export const routes: RouteRecordRaw[] = appRoutes;
