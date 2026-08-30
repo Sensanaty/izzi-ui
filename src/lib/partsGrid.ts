@@ -43,7 +43,7 @@ export const defaultColDef: ColDef<Part> = {
   sortable: true,
   comparator: () => 0,
   resizable: true,
-  filter: true,
+  filter: false,
   minWidth: 120,
 };
 
