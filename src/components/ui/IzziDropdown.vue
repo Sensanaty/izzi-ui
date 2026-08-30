@@ -4,11 +4,14 @@
       ref="triggerElement"
       v-bind="attrs"
       :id="triggerId"
-      class="bg-input border-border focus:ring-focus-ring flex h-10 w-full items-center justify-between gap-2 rounded-sm border-2 px-3 py-2 text-left outline-none focus:ring-2 disabled:cursor-not-allowed disabled:text-text-muted"
+      class="bg-input focus:ring-focus-ring flex h-10 w-full items-center justify-between gap-2 rounded-sm border-2 px-3 py-2 text-left outline-none focus:ring-2 disabled:cursor-not-allowed disabled:text-text-muted"
+      :class="error || invalid ? 'border-danger!' : 'border-border!'"
       type="button"
       aria-haspopup="listbox"
       :aria-controls="listboxId"
+      :aria-errormessage="error ? errorId : undefined"
       :aria-expanded="isOpen"
+      :aria-invalid="Boolean(error) || invalid"
       :aria-activedescendant="searchable ? undefined : activeOptionId"
       :disabled="disabled"
       @click="toggle"
@@ -83,6 +86,10 @@
         </li>
       </ul>
     </div>
+
+    <p v-if="error" :id="errorId" class="text-danger" role="alert" aria-live="polite">
+      {{ error }}
+    </p>
   </div>
 </template>
 
@@ -115,6 +122,8 @@ type IzziDropdownProps = {
   emptyOptionLabel?: string;
   searchable?: boolean;
   searchLabel?: string;
+  error?: string | null;
+  invalid?: boolean;
   disabled?: boolean;
 };
 
@@ -127,6 +136,8 @@ const props = withDefaults(defineProps<IzziDropdownProps>(), {
   emptyOptionLabel: "No selection",
   searchable: false,
   searchLabel: "options",
+  error: null,
+  invalid: false,
 });
 
 const model = defineModel<string>({ default: "" });
@@ -155,6 +166,7 @@ const dropdownOptions = computed<readonly IzziDropdownOption[]>(() => {
 
 const triggerId = props.id ?? `izzi-dropdown-${componentId}`;
 const listboxId = `${triggerId}-listbox`;
+const errorId = `${triggerId}-error`;
 
 const filteredOptions = computed(() => {
   const normalizedQuery = normalizeSearchText(query.value.trim());
