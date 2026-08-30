@@ -7,7 +7,6 @@ export const companySchema = z.object({
   city: z.string().nullable().optional(),
   country: z.string().nullable().optional(),
   website: z.string().nullable().optional(),
-  type: z.string().nullable().optional(),
   subscription: z.string().nullable().optional(),
 });
 

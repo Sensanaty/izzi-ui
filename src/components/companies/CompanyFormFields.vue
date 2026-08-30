@@ -1,7 +1,6 @@
 <template>
   <div class="grid gap-4 md:grid-cols-2">
     <IzziInput v-model="form.name" label="Name" :error="fieldError('name')" required />
-    <IzziInput v-model="form.type" label="Type" :error="fieldError('type')" />
     <IzziInput v-model="form.address" label="Address" :error="fieldError('address')" />
     <IzziInput v-model="form.city" label="City" :error="fieldError('city')" />
     <IzziInput v-model="form.country" label="Country" :error="fieldError('country')" />
@@ -23,7 +22,6 @@ export type CompanyFormState = {
   city: string;
   country: string;
   website: string;
-  type: string;
   subscription: string;
 };
 

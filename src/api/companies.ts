@@ -9,7 +9,6 @@ export type CompanyPayload = {
   city: string | null;
   country: string | null;
   website: string | null;
-  type: string | null;
   subscription: string | null;
 };
 

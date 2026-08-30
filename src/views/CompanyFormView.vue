@@ -43,7 +43,6 @@ const form = reactive<CompanyFormState>({
   city: "",
   country: "",
   website: "",
-  type: "",
   subscription: "",
 });
 const fieldErrors = ref<Record<string, string[]>>({});
@@ -69,7 +68,6 @@ function payload(): CompanyFormState {
     city: form.city.trim(),
     country: form.country.trim(),
     website: form.website.trim(),
-    type: form.type.trim(),
     subscription: form.subscription.trim(),
   };
 }
@@ -87,7 +85,6 @@ async function submitForm(): Promise<void> {
       city: form.city.trim() || null,
       country: form.country.trim() || null,
       website: form.website.trim() || null,
-      type: form.type.trim() || null,
       subscription: form.subscription.trim() || null,
     });
     createNotification("Company created");
