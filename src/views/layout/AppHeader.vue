@@ -4,6 +4,13 @@
   >
     <nav aria-label="Main navigation" class="flex items-center gap-3">
       <RouterLink class="font-black" to="/">IZZICUP</RouterLink>
+      <RouterLink
+        class="border-border border-l pl-3 text-sm text-text hover:text-accent"
+        exact-active-class="!text-accent"
+        :to="RoutePath.PART_NEW"
+      >
+        New Part
+      </RouterLink>
     </nav>
 
     <div class="flex items-center gap-2">
