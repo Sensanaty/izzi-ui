@@ -1,8 +1,14 @@
 import { z } from "zod";
+import { apiErrorResponseSchema } from "@/lib/schemas/api";
+
+export type { ApiErrorResponse } from "@/lib/schemas/api";
 
 export type ApiErrorKind =
+  | "bad_request"
   | "unauthorized"
   | "forbidden"
+  | "not_found"
+  | "conflict"
   | "validation"
   | "network"
   | "unexpected"
@@ -11,8 +17,10 @@ export type ApiErrorKind =
 export type ApiErrorDetails = {
   status: number | null;
   kind: ApiErrorKind;
+  code: string | null;
   message: string;
   fieldErrors: Record<string, string[]>;
+  details: Record<string, unknown>;
 };
 
 export class ApiError extends Error {
@@ -23,6 +31,24 @@ export class ApiError extends Error {
     this.name = "ApiError";
     this.details = details;
   }
+}
+
+export function getApiErrorDetails(
+  exception: unknown,
+  fallbackMessage = "An unexpected API error occurred.",
+): ApiErrorDetails {
+  if (exception instanceof ApiError) {
+    return exception.details;
+  }
+
+  return {
+    kind: "unexpected",
+    status: null,
+    code: null,
+    message: fallbackMessage,
+    fieldErrors: {},
+    details: {},
+  };
 }
 
 type RequestOptions = {
@@ -39,9 +65,11 @@ type AuthClientHandlers = {
   onRefreshFailure: () => void;
 };
 
-type ApiErrorPayload = {
-  error?: unknown;
-  errors?: unknown;
+type ParsedApiErrorPayload = {
+  code: string | null;
+  message: string;
+  details: Record<string, unknown>;
+  fieldErrors: Record<string, string[]>;
 };
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "");
@@ -52,39 +80,45 @@ export const configureApiAuth = (handlers: AuthClientHandlers): void => {
   authHandlers = handlers;
 };
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null;
+
+const isStringArrayRecord = (value: unknown): value is Record<string, string[]> => {
+  if (!isRecord(value)) return false;
+
+  return Object.values(value).every(
+    (messages) => Array.isArray(messages) && messages.every((message) => typeof message === "string"),
+  );
+};
+
+const parseErrorPayload = (value: unknown): ParsedApiErrorPayload => {
+  const result = apiErrorResponseSchema.safeParse(value);
+
+  if (!result.success) {
+    return { code: null, message: "The request could not be completed.", details: {}, fieldErrors: {} };
+  }
+
+  const { code, message, details } = result.data.error;
+  const fieldErrors = isStringArrayRecord(details.fields) ? details.fields : {};
+
+  return { code, message, details, fieldErrors };
+};
+
 const createError = (
   kind: ApiErrorKind,
   message: string,
   status: number | null = null,
+  code: string | null = null,
+  details: Record<string, unknown> = {},
   fieldErrors: Record<string, string[]> = {},
-): ApiError => new ApiError({ kind, message, status, fieldErrors });
-
-const getErrorMessage = (payload: ApiErrorPayload): string => {
-  if (typeof payload.error === "string") {
-    return payload.error;
-  }
-
-  if (Array.isArray(payload.errors)) {
-    return payload.errors.filter((error): error is string => typeof error === "string").join(" ");
-  }
-
-  return "The request could not be completed.";
-};
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null;
-
-const parseErrorPayload = (value: unknown): ApiErrorPayload => {
-  if (!isRecord(value)) {
-    return {};
-  }
-
-  return { error: value.error, errors: value.errors };
-};
+): ApiError => new ApiError({ kind, status, code, message, details, fieldErrors });
 
 const getErrorKind = (status: number): ApiErrorKind => {
+  if (status === 400) return "bad_request";
   if (status === 401) return "unauthorized";
   if (status === 403) return "forbidden";
+  if (status === 404) return "not_found";
+  if (status === 409) return "conflict";
   if (status === 422) return "validation";
 
   return "unexpected";
@@ -155,8 +189,11 @@ async function requestJson<TParsedResponse>(
     const parsedPayload = parseErrorPayload(payload);
     throw createError(
       getErrorKind(response.status),
-      getErrorMessage(parsedPayload),
+      parsedPayload.message,
       response.status,
+      parsedPayload.code,
+      parsedPayload.details,
+      parsedPayload.fieldErrors,
     );
   }
 

@@ -1,6 +1,6 @@
 import { computed, readonly, ref } from "vue";
 import { defineStore } from "pinia";
-import { ApiError, api, type ApiErrorDetails } from "@/lib/api";
+import { api, getApiErrorDetails, type ApiErrorDetails } from "@/lib/api";
 import { developmentCredentials } from "@/lib/developmentAuth";
 import { authenticationResponseSchema } from "@/lib/schemas/auth";
 import { emptyResponseSchema } from "@/lib/schemas/common";
@@ -22,21 +22,8 @@ export const useAuthStore = defineStore("auth", () => {
   const canAutoLogin = computed(() => developmentCredentials !== null);
   const isInitializing = computed(() => isLoading.value && !isInitialized.value);
 
-  function getApiError(error: unknown): ApiErrorDetails {
-    if (error instanceof ApiError) {
-      return error.details;
-    }
-
-    return {
-      kind: "unexpected",
-      status: null,
-      message: "An unexpected authentication error occurred.",
-      fieldErrors: {},
-    };
-  }
-
   const setError = (exception: unknown): void => {
-    error.value = getApiError(exception);
+    error.value = getApiErrorDetails(exception, "An unexpected authentication error occurred.");
   };
 
   const clearAuth = (): void => {
@@ -61,7 +48,7 @@ export const useAuthStore = defineStore("auth", () => {
         return true;
       } catch (exception: unknown) {
         clearAuth();
-        const errorDetails = getApiError(exception);
+        const errorDetails = getApiErrorDetails(exception, "An unexpected authentication error occurred.");
 
         error.value = errorDetails;
 
