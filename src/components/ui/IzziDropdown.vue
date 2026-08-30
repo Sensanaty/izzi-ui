@@ -4,7 +4,7 @@
       ref="triggerElement"
       v-bind="attrs"
       :id="triggerId"
-      class="bg-input focus:ring-focus-ring flex h-10 w-full items-center justify-between gap-2 rounded-sm border-2 px-3 py-2 text-left outline-none focus:ring-2 disabled:cursor-not-allowed disabled:text-text-muted"
+      class="bg-input focus:ring-focus-ring flex h-11 w-full items-center justify-between gap-2 rounded-sm border-2 px-3 py-2 text-left outline-none focus:ring-2 disabled:cursor-not-allowed disabled:text-text-muted"
       :class="error || invalid ? 'border-danger!' : 'border-border!'"
       type="button"
       aria-haspopup="listbox"
