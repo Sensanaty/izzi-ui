@@ -1,7 +1,7 @@
 <template>
   <div class="grid content-start gap-1">
-    <div class="min-h-6">
-      <label v-if="label" class="font-bold" :for="inputId">
+    <div v-if="label" class="min-h-6">
+      <label class="font-bold" :for="inputId">
         {{ label }}
         <sup v-if="required" aria-hidden="true">*</sup>
 
@@ -9,8 +9,8 @@
       </label>
     </div>
 
-    <div class="min-h-5">
-      <p v-if="description" :id="descriptionId" class="text-text-muted text-sm">
+    <div v-if="description" class="min-h-5">
+      <p :id="descriptionId" class="text-text-muted text-sm">
         {{ description }}
       </p>
     </div>
@@ -113,6 +113,10 @@ const model = defineModel<string>({ default: "" });
 
 const attrs = useAttrs();
 
+const emit = defineEmits<{
+  clear: [];
+}>();
+
 const inputElement = useTemplateRef<HTMLInputElement>("inputElement");
 
 const showPassword = ref(false);
@@ -139,6 +143,7 @@ const describedBy = computed(() => {
 const clearInput = (): void => {
   model.value = "";
   inputElement.value?.focus();
+  emit("clear");
 };
 
 async function togglePasswordVisibility(): Promise<void> {
@@ -147,7 +152,6 @@ async function togglePasswordVisibility(): Promise<void> {
   await nextTick();
   inputElement.value?.focus();
 }
-
 
 defineExpose({
   focus: (): void => inputElement.value?.focus(),
