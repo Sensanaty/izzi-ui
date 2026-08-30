@@ -14,12 +14,19 @@
       <RouterView />
     </main>
   </template>
+
+  <NotificationContainer />
 </template>
 
 <script setup lang="ts">
+import { defineAsyncComponent } from "vue";
 import { RouterView } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import AppHeader from "@/views/layout/AppHeader.vue";
+
+const NotificationContainer = defineAsyncComponent(
+  () => import("@/components/notifications/NotificationContainer.vue"),
+);
 
 const auth = useAuthStore();
 </script>
