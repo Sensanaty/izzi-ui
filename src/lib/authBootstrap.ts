@@ -1,4 +1,5 @@
 import { configureApiAuth } from "@/lib/api";
+import { notifyApiErrorDetails } from "@/lib/notifications";
 import { Route } from "@/router/constants";
 import { useAuthStore } from "@/stores/auth";
 
@@ -13,6 +14,10 @@ export const initializeAuth = (pinia: Pinia, router: Router): void => {
     initializeAuth: auth.restoreSession,
     refreshAccessToken: auth.refreshAccessToken,
     onRefreshFailure: () => {
+      if (auth.error) {
+        notifyApiErrorDetails(auth.error, "Your session has expired. Please sign in again");
+      }
+
       auth.clearAuth();
 
       if (auth.isInitialized && router.currentRoute.value.name !== Route.LOGIN) {

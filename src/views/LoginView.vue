@@ -60,10 +60,13 @@
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import IzziInput from "@/components/ui/IzziInput.vue";
+import { notifyApiErrorDetails } from "@/lib/notifications";
 import { RoutePath } from "@/router/constants";
 import { useAuthStore } from "@/stores/auth";
+import { useNotificationStore } from "@/stores/notification";
 
 const auth = useAuthStore();
+const { createNotification } = useNotificationStore();
 const route = useRoute();
 const router = useRouter();
 const username = ref("");
@@ -91,13 +94,19 @@ async function submitLogin(): Promise<void> {
   validationError.value = null;
 
   if (!username.value.trim() || !password.value) {
-    validationError.value = "Username and password are required.";
+    validationError.value = "Username and password are required";
+    createNotification(validationError.value, { kind: "w" });
 
     return;
   }
 
   const loggedIn = await auth.login(username.value.trim(), password.value);
   password.value = "";
+
+  if (!loggedIn && auth.error && auth.error.code !== "invalid_credentials") {
+    notifyApiErrorDetails(auth.error, "Unable to sign in");
+  }
+
   await redirectAfterLogin(loggedIn);
 }
 

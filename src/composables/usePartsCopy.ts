@@ -1,4 +1,6 @@
 import { ref } from "vue";
+import { notifyApiError } from "@/lib/notifications";
+import { useNotificationStore } from "@/stores/notification";
 
 import type { Part } from "@/lib/schemas/part";
 
@@ -66,6 +68,7 @@ function getFieldsForCopy(type: CopyType): PartField[] {
 
 export function usePartsCopy() {
   const actionMessage = ref<string | null>(null);
+  const { createNotification } = useNotificationStore();
 
   async function copyDetailsForParts(partsToCopy: Part[], type: CopyType): Promise<void> {
     const fields = getFieldsForCopy(type);
@@ -79,9 +82,11 @@ export function usePartsCopy() {
       await navigator.clipboard.writeText(clipboardText);
       const copyType = type === "quote" ? "Quote Details" : "Part Details";
 
-      actionMessage.value = `${copyType} Copied To Clipboard`;
+      const message = `${copyType} copied to clipboard`;
+      actionMessage.value = message;
+      createNotification(message);
     } catch (error) {
-      actionMessage.value = error instanceof Error ? error.message : "Unable to copy details.";
+      actionMessage.value = notifyApiError(error, "Unable to copy details").message;
     }
   }
 

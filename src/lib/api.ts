@@ -33,12 +33,17 @@ export class ApiError extends Error {
   }
 }
 
+const normalizeErrorMessage = (message: string): string => message.trimEnd().replace(/[.!?]+$/, "");
+
 export function getApiErrorDetails(
   exception: unknown,
-  fallbackMessage = "An unexpected API error occurred.",
+  fallbackMessage = "An unexpected API error occurred",
 ): ApiErrorDetails {
   if (exception instanceof ApiError) {
-    return exception.details;
+    return {
+      ...exception.details,
+      message: normalizeErrorMessage(exception.details.message),
+    };
   }
 
   return {
@@ -87,7 +92,8 @@ const isStringArrayRecord = (value: unknown): value is Record<string, string[]> 
   if (!isRecord(value)) return false;
 
   return Object.values(value).every(
-    (messages) => Array.isArray(messages) && messages.every((message) => typeof message === "string"),
+    (messages) =>
+      Array.isArray(messages) && messages.every((message) => typeof message === "string"),
   );
 };
 
@@ -95,7 +101,12 @@ const parseErrorPayload = (value: unknown): ParsedApiErrorPayload => {
   const result = apiErrorResponseSchema.safeParse(value);
 
   if (!result.success) {
-    return { code: null, message: "The request could not be completed.", details: {}, fieldErrors: {} };
+    return {
+      code: null,
+      message: "The request could not be completed",
+      details: {},
+      fieldErrors: {},
+    };
   }
 
   const { code, message, details } = result.data.error;
@@ -131,7 +142,7 @@ async function requestJson<TParsedResponse>(
   hasRetried: boolean,
 ): Promise<TParsedResponse> {
   if (!apiBaseUrl) {
-    throw createError("configuration", "The API base URL is not configured.");
+    throw createError("configuration", "The API base URL is not configured");
   }
 
   const headers = new Headers({ Accept: "application/json" });
@@ -160,7 +171,7 @@ async function requestJson<TParsedResponse>(
       credentials: "include",
     });
   } catch {
-    throw createError("network", "Unable to reach the server.");
+    throw createError("network", "Unable to reach the server");
   }
 
   if (response.status === 401 && !hasRetried && !options.skipRefresh && authHandlers) {
@@ -205,14 +216,14 @@ async function requestJson<TParsedResponse>(
     try {
       payload = await response.json();
     } catch {
-      throw createError("unexpected", "The server returned an invalid response.", response.status);
+      throw createError("unexpected", "The server returned an invalid response", response.status);
     }
   }
 
   const result = schema.safeParse(payload);
 
   if (!result.success) {
-    throw createError("unexpected", "The server returned an invalid response.", response.status);
+    throw createError("unexpected", "The server returned an invalid response", response.status);
   }
 
   return result.data;

@@ -1,6 +1,6 @@
 import { ref, type Ref } from "vue";
 import { getParts } from "@/api/parts";
-import { ApiError } from "@/lib/api";
+import { notifyApiError } from "@/lib/notifications";
 
 import type { PartsCondition, PartsSort } from "@/api/parts";
 import type { PaginationMetadata } from "@/composables/usePagination";
@@ -38,7 +38,9 @@ export function usePartsData(options: PartsDataOptions) {
       options.onLoaded?.();
     } catch (error) {
       parts.value = [];
-      errorMessage.value = error instanceof ApiError ? error.message : "Unable to load parts.";
+      errorMessage.value = notifyApiError(error, "Unable to load parts", {
+        skipAuthenticationErrors: true,
+      }).message;
     } finally {
       isLoading.value = false;
     }

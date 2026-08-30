@@ -130,8 +130,8 @@ export function useAdvancedSearch<Field extends string, Operator extends string>
     if (!incompleteCondition) return null;
 
     return incompleteCondition.operator === "between"
-      ? "Enter both values for a range."
-      : "Enter a value for every condition.";
+      ? "Enter both values for a range"
+      : "Enter a value for every condition";
   }
 
   function getConditions(): AdvancedSearchCondition<Field, Operator>[] {

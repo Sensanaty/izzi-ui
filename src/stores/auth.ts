@@ -23,7 +23,7 @@ export const useAuthStore = defineStore("auth", () => {
   const isInitializing = computed(() => isLoading.value && !isInitialized.value);
 
   const setError = (exception: unknown): void => {
-    error.value = getApiErrorDetails(exception, "An unexpected authentication error occurred.");
+    error.value = getApiErrorDetails(exception, "An unexpected authentication error occurred");
   };
 
   const clearAuth = (): void => {
@@ -48,7 +48,10 @@ export const useAuthStore = defineStore("auth", () => {
         return true;
       } catch (exception: unknown) {
         clearAuth();
-        const errorDetails = getApiErrorDetails(exception, "An unexpected authentication error occurred.");
+        const errorDetails = getApiErrorDetails(
+          exception,
+          "An unexpected authentication error occurred",
+        );
 
         error.value = errorDetails;
 

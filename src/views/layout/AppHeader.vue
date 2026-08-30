@@ -30,6 +30,7 @@
 import { Crown } from "@lucide/vue";
 import { RouterLink, useRouter } from "vue-router";
 import ThemeToggle from "@/components/ui/ThemeToggle.vue";
+import { notifyApiErrorDetails } from "@/lib/notifications";
 import { RoutePath } from "@/router/constants";
 import { useAuthStore } from "@/stores/auth";
 
@@ -38,6 +39,11 @@ const router = useRouter();
 
 async function signOut(): Promise<void> {
   await auth.logout();
+
+  if (auth.error) {
+    notifyApiErrorDetails(auth.error, "Unable to sign out");
+  }
+
   await router.replace(RoutePath.LOGIN);
 }
 </script>
