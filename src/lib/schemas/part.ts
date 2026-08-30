@@ -30,6 +30,10 @@ export const partSchema = z.object({
   updated_at: z.string(),
 });
 
+export const partResponseSchema = z.object({
+  data: partSchema,
+});
+
 export const partsResponseSchema = z.object({
   data: z.array(partSchema),
   metadata: z
@@ -46,6 +50,7 @@ export const partsResponseSchema = z.object({
 
 export type Part = z.infer<typeof partSchema>;
 export type PartField = keyof Part;
+export type PartResponse = z.infer<typeof partResponseSchema>;
 export type PartsResponse = z.infer<typeof partsResponseSchema>;
 
 export const partFields = Object.keys(partSchema.shape) as PartField[];

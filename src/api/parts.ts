@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { partsResponseSchema } from "@/lib/schemas/part";
+import { partResponseSchema, partsResponseSchema } from "@/lib/schemas/part";
 
 import type { PartField } from "@/lib/schemas/part";
 
@@ -141,4 +141,40 @@ export async function getParts(query: PartsQuery = {}) {
   const path = queryString ? `/parts?${queryString}` : "/parts";
 
   return api.get(path, partsResponseSchema);
+}
+
+export type PartPayload = {
+  part_number: string;
+  description: string;
+  available: number;
+  reserved: number;
+  sold: number;
+  condition: string;
+  min_cost: string;
+  min_price: string;
+  min_order: number | null;
+  med_cost: string;
+  med_price: string;
+  med_order: number | null;
+  max_cost: string;
+  max_price: string;
+  max_order: number | null;
+  lead_time: string | null;
+  quote_type: string;
+  tag: string;
+  internal_note: string | null;
+  added: string | null;
+  company_id: number;
+};
+
+export async function getPart(partId: number) {
+  return api.get(`/parts/${partId}`, partResponseSchema);
+}
+
+export async function createPart(payload: PartPayload) {
+  return api.post("/parts", payload, partResponseSchema);
+}
+
+export async function updatePart(partId: number, payload: PartPayload) {
+  return api.patch(`/parts/${partId}`, payload, partResponseSchema);
 }

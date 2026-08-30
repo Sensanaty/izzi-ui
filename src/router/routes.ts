@@ -20,6 +20,18 @@ const appRoutes: RouteRecordRaw[] = [
     component: () => import("@/views/HomeView.vue"),
     meta: { requiresAuth: true, title: "Home" } satisfies RouteMeta,
   },
+  {
+    path: RoutePath.PART_NEW,
+    name: Route.PART_NEW,
+    component: () => import("@/views/PartFormView.vue"),
+    meta: { requiresAuth: true, title: "Create part" } satisfies RouteMeta,
+  },
+  {
+    path: RoutePath.PART_EDIT,
+    name: Route.PART_EDIT,
+    component: () => import("@/views/PartFormView.vue"),
+    meta: { requiresAuth: true, title: "Edit part" } satisfies RouteMeta,
+  },
 ];
 
 export const routes: RouteRecordRaw[] = appRoutes;
