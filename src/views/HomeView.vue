@@ -1,5 +1,8 @@
 <template>
-  <h1 class="font-bold text-3xl mb-2">Parts</h1>
+  <div class="flex items-center justify-between gap-3">
+    <h1 class="font-bold text-3xl mb-2">Parts</h1>
+    <RouterLink class="text-accent underline" :to="RoutePath.PART_NEW">Create part</RouterLink>
+  </div>
 
   <div class="flex flex-col gap-2 sm:flex-row sm:items-start">
     <form class="flex flex-col gap-2 sm:flex-row" @submit.prevent="searchParts">
@@ -110,6 +113,7 @@ import {
   ModuleRegistry,
   themeQuartz,
 } from "ag-grid-community";
+import { RouterLink } from "vue-router";
 import { isPartsSortField } from "@/api/parts";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
 import PartsGrid from "@/components/parts/PartsGrid.vue";
@@ -127,6 +131,7 @@ import {
   defaultColDef,
   selectionColumnDef,
 } from "@/lib/partsGrid";
+import { RoutePath } from "@/router/constants";
 
 import type { PartsCondition } from "@/api/parts";
 import type { Part } from "@/lib/schemas/part";

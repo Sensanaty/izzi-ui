@@ -42,7 +42,9 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref } from "vue";
 import { Settings } from "@lucide/vue";
+import { useRoute, useRouter } from "vue-router";
 import IzziButton from "@/components/ui/IzziButton.vue";
+import { Route } from "@/router/constants";
 
 import type { Part } from "@/lib/schemas/part";
 import type { ICellRendererParams } from "ag-grid-community";
@@ -55,7 +57,7 @@ type Props = {
   params: PartsGridActionsParams;
 };
 
-type ActionType = "quote" | "full";
+type ActionType = "edit" | "quote" | "full";
 
 type Action = {
   label: string;
@@ -63,10 +65,13 @@ type Action = {
 };
 
 const actions: Action[] = [
+  { label: "Edit part", type: "edit" },
   { label: "Copy quote details", type: "quote" },
   { label: "Copy full details", type: "full" },
 ];
 
+const route = useRoute();
+const router = useRouter();
 const isMenuOpen = ref(false);
 const menuElement = ref<HTMLDivElement | null>(null);
 const menuStyle = ref({ left: "0px", top: "0px" });
@@ -105,7 +110,17 @@ function closeMenu(): void {
 function runAction(type: ActionType): void {
   const part = props.params.data;
 
-  if (part) void props.params.copyDetailsForParts([part], type);
+  if (!part) return;
+
+  if (type === "edit") {
+    void router.push({
+      name: Route.PART_EDIT,
+      params: { id: part.id },
+      query: route.query,
+    });
+  } else {
+    void props.params.copyDetailsForParts([part], type);
+  }
 
   closeMenu();
 }
