@@ -1,0 +1,93 @@
+import { ref } from "vue";
+
+import type { Part } from "@/lib/schemas/part";
+
+export type PartField = {
+  key: keyof Part;
+  label: string;
+};
+
+const partFields: PartField[] = [
+  { key: "part_number", label: "Part Number" },
+  { key: "description", label: "Description" },
+  { key: "company_name", label: "Company Name" },
+  { key: "available", label: "Available" },
+  { key: "reserved", label: "Reserved" },
+  { key: "sold", label: "Sold" },
+  { key: "condition", label: "Condition" },
+  { key: "min_cost", label: "Minimum Cost" },
+  { key: "min_price", label: "Minimum Price" },
+  { key: "min_order", label: "Minimum Order" },
+  { key: "med_cost", label: "Medium Cost" },
+  { key: "med_price", label: "Medium Price" },
+  { key: "med_order", label: "Medium Order" },
+  { key: "max_cost", label: "Maximum Cost" },
+  { key: "max_price", label: "Maximum Price" },
+  { key: "max_order", label: "Maximum Order" },
+  { key: "lead_time", label: "Lead Time" },
+  { key: "quote_type", label: "Quote Type" },
+  { key: "tag", label: "Tag" },
+  { key: "internal_note", label: "Internal Note" },
+  { key: "added", label: "Added" },
+  { key: "created_at", label: "Created At" },
+  { key: "updated_at", label: "Updated At" },
+  { key: "id", label: "ID" },
+];
+
+const quoteExcludedFields = new Set<keyof Part>([
+  "id",
+  "company_name",
+  "min_cost",
+  "med_cost",
+  "max_cost",
+  "internal_note",
+  "created_at",
+  "updated_at",
+]);
+
+type CopyType = "quote" | "full";
+
+function formatPartDetails(part: Part, fields: PartField[]): string {
+  return fields
+    .map(({ key, label }) => {
+      const value = part[key];
+      const displayValue = value ? value : "N/A";
+
+      return `${label}: ${displayValue}`;
+    })
+    .join("\n");
+}
+
+function getFieldsForCopy(type: CopyType): PartField[] {
+  if (type === "full") return partFields;
+
+  return partFields.filter(({ key }) => !quoteExcludedFields.has(key));
+}
+
+export function usePartsCopy() {
+  const actionMessage = ref<string | null>(null);
+
+  async function copyDetailsForParts(partsToCopy: Part[], type: CopyType): Promise<void> {
+    const fields = getFieldsForCopy(type);
+
+    const clipboardText = partsToCopy
+      .map((part) => formatPartDetails(part, fields))
+      .filter(Boolean)
+      .join("\n\n==========\n\n");
+
+    try {
+      await navigator.clipboard.writeText(clipboardText);
+      const copyType = type === "quote" ? "Quote Details" : "Part Details";
+
+      actionMessage.value = `${copyType} Copied To Clipboard`;
+    } catch (error) {
+      actionMessage.value = error instanceof Error ? error.message : "Unable to copy details.";
+    }
+  }
+
+  function copyDetails(partsToCopy: Part[], type: CopyType): Promise<void> {
+    return copyDetailsForParts(partsToCopy, type);
+  }
+
+  return { actionMessage, copyDetails, copyDetailsForParts };
+}
