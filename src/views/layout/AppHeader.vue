@@ -4,6 +4,7 @@
   >
     <nav aria-label="Main navigation" class="flex items-center gap-3">
       <RouterLink class="font-black" to="/">IZZICUP</RouterLink>
+
       <RouterLink
         class="border-border border-l pl-3 text-sm text-text hover:text-accent"
         exact-active-class="!text-accent"
@@ -14,6 +15,15 @@
     </nav>
 
     <div class="flex items-center gap-2">
+      <RouterLink
+        v-if="auth.isAdmin"
+        class="border-border border-r pr-3 mr-4 text-sm text-text hover:text-accent"
+        exact-active-class="!text-accent"
+        :to="RoutePath.USERS"
+      >
+        Users
+      </RouterLink>
+
       <span class="text-text relative mr-4 hidden text-sm sm:inline-flex">
         {{ auth.user?.username }}
 

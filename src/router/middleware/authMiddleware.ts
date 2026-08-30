@@ -18,6 +18,10 @@ export async function authMiddleware(to: RouteLocationNormalizedGeneric) {
     };
   }
 
+  if (to.meta?.requiresAdmin && !auth.isAdmin) {
+    return { name: Route.HOME };
+  }
+
   if (to.name === Route.LOGIN && auth.isAuthenticated) {
     return { name: Route.HOME };
   }

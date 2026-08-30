@@ -4,6 +4,7 @@ import type { RouteRecordRaw } from "vue-router";
 
 export type RouteMeta = {
   requiresAuth: boolean;
+  requiresAdmin?: boolean;
   title?: string;
 };
 
@@ -37,6 +38,24 @@ const appRoutes: RouteRecordRaw[] = [
     name: Route.COMPANY_NEW,
     component: () => import("@/views/CompanyFormView.vue"),
     meta: { requiresAuth: true, title: "New company" } satisfies RouteMeta,
+  },
+  {
+    path: RoutePath.USERS,
+    name: Route.USERS,
+    component: () => import("@/views/UsersView.vue"),
+    meta: { requiresAuth: true, requiresAdmin: true, title: "Users" } satisfies RouteMeta,
+  },
+  {
+    path: RoutePath.USER_NEW,
+    name: Route.USER_NEW,
+    component: () => import("@/views/UserFormView.vue"),
+    meta: { requiresAuth: true, requiresAdmin: true, title: "New user" } satisfies RouteMeta,
+  },
+  {
+    path: RoutePath.USER_EDIT,
+    name: Route.USER_EDIT,
+    component: () => import("@/views/UserFormView.vue"),
+    meta: { requiresAuth: true, requiresAdmin: true, title: "Edit user" } satisfies RouteMeta,
   },
 ];
 

@@ -7,6 +7,8 @@ export const userSchema = z.object({
   admin: z.boolean(),
 });
 
+export const usersResponseSchema = z.array(userSchema);
+
 export const userResponseSchema = z.object({
   user: userSchema,
 });
