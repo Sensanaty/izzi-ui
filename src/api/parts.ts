@@ -9,6 +9,7 @@ import {
 import type { PartField } from "@/lib/schemas/part";
 
 export const partsSortFields = [
+  "id",
   "part_number",
   "description",
   "available",
@@ -85,7 +86,7 @@ export type PartsQuery = {
   sort?: PartsSort[];
 };
 
-export async function getParts(query: PartsQuery = {}) {
+function buildPartsQuery(query: PartsQuery): string {
   const searchParams = new URLSearchParams();
 
   if (query.page !== undefined) searchParams.set("page", String(query.page));
@@ -142,10 +143,24 @@ export async function getParts(query: PartsQuery = {}) {
     searchParams.set(`sort[${index}][direction]`, sort.direction);
   });
 
-  const queryString = searchParams.toString();
+  return searchParams.toString();
+}
+
+export async function getParts(query: PartsQuery = {}) {
+  const queryString = buildPartsQuery(query);
   const path = queryString ? `/parts?${queryString}` : "/parts";
 
   return api.get(path, partsResponseSchema);
+}
+
+export async function exportParts(query: PartsQuery = {}): Promise<Blob> {
+  const queryString = buildPartsQuery({
+    ...query,
+    sort: [{ field: "id", direction: "asc" }],
+  });
+  const path = queryString ? `/parts/export?${queryString}` : "/parts/export";
+
+  return api.getBlob(path);
 }
 
 export type PartPayload = {

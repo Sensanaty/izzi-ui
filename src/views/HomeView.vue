@@ -67,6 +67,24 @@
       Copy full details
     </IzziButton>
 
+    <IzziButton
+      size="sm"
+      variant="secondary"
+      :disabled="!selectedParts.length || isLoading || isExporting"
+      @click="exportSelectedParts"
+    >
+      Export selected CSV
+    </IzziButton>
+
+    <IzziButton
+      size="sm"
+      variant="secondary"
+      :disabled="isLoading || isExporting"
+      @click="exportAllParts"
+    >
+      Export all CSV
+    </IzziButton>
+
     <span v-if="actionMessage" class="text-text-muted text-sm" role="status">
       {{ actionMessage }}
     </span>
@@ -114,7 +132,7 @@ import {
   themeQuartz,
 } from "ag-grid-community";
 import { RouterLink } from "vue-router";
-import { isPartsSortField } from "@/api/parts";
+import { exportParts, isPartsSortField } from "@/api/parts";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
 import PartsGrid from "@/components/parts/PartsGrid.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
@@ -125,6 +143,7 @@ import { usePartsData } from "@/composables/usePartsData";
 import { usePartsGrid } from "@/composables/usePartsGrid";
 import { usePartsSearch } from "@/composables/usePartsSearch";
 import { useTheme } from "@/composables/useTheme";
+import { notifyApiError } from "@/lib/notifications";
 import {
   columnOptions,
   createPartsColumnDefs,
@@ -179,6 +198,7 @@ const {
 const selectedPartCount = ref(0);
 const selectedParts = ref<Part[]>([]);
 const isGridReady = ref(false);
+const isExporting = ref(false);
 
 const modules = [AllCommunityModule];
 const { theme: appTheme } = useTheme();
@@ -204,6 +224,7 @@ const { errorMessage, isLoading, loadParts, parts } = usePartsData({
 });
 
 const {
+  exportCsv,
   handleGridReady,
   pinnedColumns,
   persistColumnState,
@@ -227,6 +248,49 @@ function changePinnedColumn(field: string, pinned: "" | "left" | "right"): void 
 
 function copySelectedDetails(type: "quote" | "full"): Promise<void> {
   return copyDetails(selectedParts.value, type);
+}
+
+function createPartsFilename(): string {
+  const timestamp = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "_")
+    .replace("T", "-")
+    .replace(/\.\d{3}Z$/, "");
+
+  return `parts_${timestamp}.csv`;
+}
+
+function downloadBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportSelectedParts(): void {
+  exportCsv(true);
+  actionMessage.value = "Selected parts exported";
+}
+
+async function exportAllParts(): Promise<void> {
+  isExporting.value = true;
+  actionMessage.value = null;
+
+  try {
+    const blob = await exportParts({
+      query: searchQuery.value.trim(),
+      conditions: conditions.value,
+      sort: sort.value,
+    });
+    downloadBlob(blob, createPartsFilename());
+    actionMessage.value = "All parts exported";
+  } catch (error: unknown) {
+    notifyApiError(error, "Unable to export parts", { skipAuthenticationErrors: true });
+  } finally {
+    isExporting.value = false;
+  }
 }
 
 watch(

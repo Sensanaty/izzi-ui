@@ -8,6 +8,16 @@ import type { ColumnPinnedType, ColumnState, GridApi, GridReadyEvent } from "ag-
 const columnStateStorageKey = "izzi-parts-grid-column-state-v4";
 const selectionColumnId = "ag-Grid-SelectionColumn";
 
+function createPartsFilename(): string {
+  const timestamp = new Date()
+    .toISOString()
+    .replace(/[-:]/g, "_")
+    .replace("T", "-")
+    .replace(/\.\d{3}Z$/, "");
+
+  return `parts_${timestamp}.csv`;
+}
+
 const columnStateSchema = z.array(
   z.object({
     colId: z.string(),
@@ -90,6 +100,13 @@ export function usePartsGrid(onReady: GridReadyCallback) {
     gridApi.value?.setColumnsPinned([field], pinnedValue);
   }
 
+  function exportCsv(onlySelected = false): void {
+    gridApi.value?.exportDataAsCsv({
+      fileName: createPartsFilename(),
+      onlySelected,
+    });
+  }
+
   function resetColumnSettings(): void {
     gridApi.value?.resetColumnState();
     gridApi.value?.setColumnsPinned([selectionColumnId], "left");
@@ -102,6 +119,7 @@ export function usePartsGrid(onReady: GridReadyCallback) {
 
   return {
     changePinnedColumn,
+    exportCsv,
     handleGridReady,
     pinnedColumns,
     persistColumnState,
