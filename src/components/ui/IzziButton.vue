@@ -1,10 +1,10 @@
 <template>
   <button
-    class="izzi-button inline-flex rounded-sm font-black items-center justify-center gap-2 border border-transparent whitespace-nowrap cursor-pointer"
+    class="izzi-button inline-flex h-fit rounded-sm font-black items-center justify-center gap-2 border border-transparent whitespace-nowrap cursor-pointer"
     :class="[
       `izzi-button--${variant}`,
       `izzi-button--size-${size}`,
-      { 'izzi-button--round': rounded },
+      { 'izzi-button--round': rounded, 'izzi-button--flat': flat },
     ]"
     :type="type"
     :disabled="disabled"
@@ -23,11 +23,12 @@
 
 <script setup lang="ts">
 type IzziButtonProps = {
-  variant?: "primary" | "secondary" | "outline" | "danger" | "success";
+  variant?: "primary" | "secondary" | "outline" | "danger" | "success" | "ghost";
   size?: "xs" | "sm" | "md" | "lg";
   type?: HTMLButtonElement["type"];
   disabled?: boolean;
   rounded?: boolean;
+  flat?: boolean;
 };
 
 withDefaults(defineProps<IzziButtonProps>(), {
@@ -144,6 +145,17 @@ withDefaults(defineProps<IzziButtonProps>(), {
     }
   }
 
+  &:is(.izzi-button--ghost) {
+    @apply border-transparent bg-transparent;
+
+    &:not(:disabled) {
+      &:hover,
+      &:active {
+        @apply border-transparent bg-transparent;
+      }
+    }
+  }
+
   &:is(.izzi-button--round) {
     @apply rounded-full;
 
@@ -158,6 +170,12 @@ withDefaults(defineProps<IzziButtonProps>(), {
     &:is(.izzi-button--size-lg) {
       @apply size-14;
     }
+  }
+
+  &.izzi-button--flat,
+  &.izzi-button--flat:active {
+    box-shadow: none !important;
+    transform: none !important;
   }
 }
 </style>
