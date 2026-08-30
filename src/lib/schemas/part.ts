@@ -45,4 +45,7 @@ export const partsResponseSchema = z.object({
 });
 
 export type Part = z.infer<typeof partSchema>;
+export type PartField = keyof Part;
 export type PartsResponse = z.infer<typeof partsResponseSchema>;
+
+export const partFields = Object.keys(partSchema.shape) as PartField[];
