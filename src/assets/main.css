@@ -26,6 +26,9 @@
   --color-success: var(--theme-success);
   --color-success-hover: var(--theme-success-hover);
   --color-on-success: var(--theme-on-success);
+  --color-history-change: var(--theme-history-change);
+  --color-history-change-hover: var(--theme-history-change-hover);
+  --color-on-history-change: var(--theme-on-history-change);
 }
 
 :root {
@@ -54,6 +57,9 @@
   --theme-success: #34d399;
   --theme-success-hover: #10b981;
   --theme-on-success: #052e16;
+  --theme-history-change: #dcfce7;
+  --theme-history-change-hover: #bbf7d0;
+  --theme-on-history-change: #166534;
 }
 
 :root[data-theme="dark"] {
@@ -79,6 +85,9 @@
   --theme-success: #14532d;
   --theme-success-hover: #052e16;
   --theme-on-success: #dcfce7;
+  --theme-history-change: #1f4d35;
+  --theme-history-change-hover: #286245;
+  --theme-on-history-change: #d1fae5;
 }
 
 * {
