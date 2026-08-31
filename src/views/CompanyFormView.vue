@@ -1,12 +1,20 @@
 <template>
   <div class="flex items-center justify-between gap-3">
     <div>
-      <h1 class="font-bold text-3xl">{{ isEditing ? `Edit company ${companyId}` : "New company" }}</h1>
+      <h1 class="font-bold text-3xl">
+        {{ isEditing ? `Edit company ${companyId}` : "New company" }}
+      </h1>
+
       <p class="text-text-muted">
-        {{ isEditing ? "Update the company record" : "Add a company for parts, contacts, and orders" }}
+        {{
+          isEditing ? "Update the company record" : "Add a company for parts, contacts, and orders"
+        }}
       </p>
     </div>
-    <RouterLink class="text-accent underline" :to="RoutePath.COMPANIES">Back to companies</RouterLink>
+
+    <RouterLink class="text-accent underline" :to="RoutePath.COMPANIES">
+      Back to companies
+    </RouterLink>
   </div>
 
   <p v-if="loadError" class="text-danger" role="alert">{{ loadError }}</p>
@@ -28,17 +36,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { createCompany, getCompany, updateCompany } from "@/api/companies";
-
-import type { CompanyPayload } from "@/api/companies";
 import CompanyFormFields from "@/components/companies/CompanyFormFields.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import { notifyApiError } from "@/lib/notifications";
 import { Route, RoutePath } from "@/router/constants";
 import { useNotificationStore } from "@/stores/notification";
 
+import type { CompanyPayload } from "@/api/companies";
 import type { CompanyFormState } from "@/components/companies/CompanyFormFields.vue";
 
 const route = useRoute();
@@ -67,24 +74,44 @@ function setForm(company: Awaited<ReturnType<typeof getCompany>>): void {
   });
 }
 
-async function loadCompany(): Promise<void> {
-  if (!isEditing.value) return;
+function resetForm(): void {
+  Object.assign(form, emptyForm());
+  fieldErrors.value = {};
+  loadError.value = null;
+}
 
-  if (!Number.isInteger(companyId.value) || companyId.value < 1) {
+async function loadCompany(): Promise<void> {
+  if (!isEditing.value) {
+    isLoading.value = false;
+
+    return;
+  }
+
+  const requestedCompanyId = companyId.value;
+
+  if (!Number.isInteger(requestedCompanyId) || requestedCompanyId < 1) {
     loadError.value = "Invalid company ID";
+    isLoading.value = false;
 
     return;
   }
 
   isLoading.value = true;
-  loadError.value = null;
 
   try {
-    setForm(await getCompany(companyId.value));
+    const company = await getCompany(requestedCompanyId);
+
+    if (!isEditing.value || companyId.value !== requestedCompanyId) return;
+
+    setForm(company);
   } catch (error) {
-    loadError.value = notifyApiError(error, "Unable to load company").message;
+    if (isEditing.value && companyId.value === requestedCompanyId) {
+      loadError.value = notifyApiError(error, "Unable to load company").message;
+    }
   } finally {
-    isLoading.value = false;
+    if (isEditing.value && companyId.value === requestedCompanyId) {
+      isLoading.value = false;
+    }
   }
 }
 
@@ -142,5 +169,12 @@ function cancel(): void {
   void router.push(RoutePath.COMPANIES);
 }
 
-onMounted(() => void loadCompany());
+watch(
+  () => [route.name, route.params.id],
+  () => {
+    resetForm();
+    void loadCompany();
+  },
+  { immediate: true },
+);
 </script>
