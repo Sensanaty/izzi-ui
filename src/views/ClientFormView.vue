@@ -31,6 +31,7 @@
           placeholder="Select a company"
           searchable
           search-label="companies"
+          virtualize
           :disabled="isSaving || isLoading"
           :error="fieldErrors.company_id?.join(', ') ?? null"
         />

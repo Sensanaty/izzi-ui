@@ -27,7 +27,7 @@
 
     <div
       v-if="isOpen"
-      class="bg-surface-raised border-border absolute z-10 mt-1 grid max-h-80 w-max min-w-80 max-w-screen-sm gap-2 overflow-hidden rounded-sm border-2 p-2 shadow-lg"
+      class="bg-surface-raised border-border absolute z-10 mt-1 grid w-full min-w-80 max-w-screen-sm gap-2 overflow-hidden rounded-sm border-2 p-2 shadow-lg"
     >
       <IzziInput
         v-if="searchable"
@@ -37,6 +37,7 @@
         :aria-controls="listboxId"
         :aria-activedescendant="activeOptionId"
         :aria-label="`Search ${searchLabel}`"
+        autocomplete="off"
         role="searchbox"
         @keydown="handleSearchKeydown"
       />
@@ -49,18 +50,60 @@
         No matching options.
       </p>
 
-      <ul
+      <div
         v-else
+        v-bind="virtualContainerProps"
         :id="listboxId"
-        class="grid max-h-52 gap-1 overflow-y-auto"
+        class="relative overflow-y-auto scrollbar-gutter-both"
+        :class="{
+          'max-h-40': props.size === 'sm',
+          'max-h-52': props.size === 'md',
+          'max-h-80': props.size === 'lg',
+        }"
         role="listbox"
         :aria-labelledby="triggerId"
       >
-        <li
+        <template v-if="shouldVirtualize">
+          <div v-bind="virtualWrapperProps">
+            <div
+              v-for="virtualItem in virtualOptions"
+              :id="optionId(virtualItem.index)"
+              :key="virtualItem.index"
+              class="h-10 min-w-0 cursor-pointer break-words rounded-sm px-2 py-1.5 outline-none"
+              :class="{
+                'bg-primary text-on-primary':
+                  virtualItem.data.value === model &&
+                  hoveredIndex !== virtualItem.index &&
+                  activeIndex !== virtualItem.index,
+                'bg-surface-hover':
+                  hoveredIndex === virtualItem.index || virtualItem.index === activeIndex,
+                'ring-focus-ring ring-2 ring-inset': virtualItem.index === activeIndex,
+              }"
+              role="option"
+              :aria-selected="virtualItem.data.value === model"
+              @mouseenter="handleOptionMouseEnter(virtualItem.index)"
+              @mouseleave="hoveredIndex = -1"
+              @mousedown.prevent
+              @click="select(virtualItem.data)"
+            >
+              <slot
+                name="option"
+                :option="virtualItem.data"
+                :selected="virtualItem.data.value === model"
+                :active="virtualItem.index === activeIndex"
+                :hovered="virtualItem.index === hoveredIndex"
+              >
+                {{ virtualItem.data.label }}
+              </slot>
+            </div>
+          </div>
+        </template>
+        <div
+          v-else
           v-for="(option, index) in filteredOptions"
           :id="optionId(index)"
           :key="option.value"
-          class="min-w-0 cursor-pointer break-words rounded-sm px-2 py-1.5 outline-none"
+          class="mb-1 min-w-0 cursor-pointer break-words rounded-sm px-2 py-1.5 outline-none last:mb-0"
           :class="{
             'bg-primary text-on-primary':
               option.value === model && hoveredIndex !== index && activeIndex !== index,
@@ -83,8 +126,8 @@
           >
             {{ option.label }}
           </slot>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
 
     <p v-if="error" :id="errorId" class="text-danger" role="alert" aria-live="polite">
@@ -106,6 +149,7 @@ import {
   watch,
 } from "vue";
 import { ChevronDown } from "@lucide/vue";
+import { useVirtualList } from "@vueuse/core";
 import IzziInput from "@/components/ui/IzziInput.vue";
 
 export type IzziDropdownOption = {
@@ -125,6 +169,9 @@ type IzziDropdownProps = {
   error?: string | null;
   invalid?: boolean;
   disabled?: boolean;
+  size?: "sm" | "md" | "lg";
+  virtualize?: boolean;
+  virtualizationThreshold?: number;
 };
 
 defineOptions({ inheritAttrs: false });
@@ -138,6 +185,9 @@ const props = withDefaults(defineProps<IzziDropdownProps>(), {
   searchLabel: "options",
   error: null,
   invalid: false,
+  size: "md",
+  virtualize: false,
+  virtualizationThreshold: 100,
 });
 
 const model = defineModel<string>({ default: "" });
@@ -182,6 +232,18 @@ const filteredOptions = computed(() => {
 
 const selectedOption = computed(() => props.options.find((option) => option.value === model.value));
 
+const shouldVirtualize = computed(
+  () => props.virtualize && filteredOptions.value.length > props.virtualizationThreshold,
+);
+const {
+  list: virtualOptions,
+  containerProps: virtualContainerProps,
+  wrapperProps: virtualWrapperProps,
+} = useVirtualList(filteredOptions, {
+  itemHeight: 40,
+  overscan: 5,
+});
+
 const activeOptionId = computed(() =>
   activeIndex.value >= 0 ? optionId(activeIndex.value) : undefined,
 );
@@ -214,8 +276,31 @@ watch(activeIndex, async (index) => {
 
   await nextTick();
 
+  if (shouldVirtualize.value) {
+    scrollVirtualOptionIntoView(index);
+
+    return;
+  }
+
   document.getElementById(optionId(index))?.scrollIntoView({ block: "nearest" });
 });
+
+function scrollVirtualOptionIntoView(index: number): void {
+  const container = virtualContainerProps.ref.value;
+
+  if (!container) return;
+
+  const itemTop = index * 40;
+  const itemBottom = itemTop + 40;
+  const viewportTop = container.scrollTop;
+  const viewportBottom = viewportTop + container.clientHeight;
+
+  if (itemTop < viewportTop) {
+    container.scrollTop = itemTop;
+  } else if (itemBottom > viewportBottom) {
+    container.scrollTop = itemBottom - container.clientHeight;
+  }
+}
 
 function setActiveToSelected(): void {
   const selectedIndex = filteredOptions.value.findIndex((option) => option.value === model.value);
@@ -257,7 +342,6 @@ function toggle(): void {
 
 function handleOptionMouseEnter(index: number): void {
   hoveredIndex.value = index;
-  activeIndex.value = index;
 }
 
 function select(option: IzziDropdownOption): void {
@@ -291,6 +375,13 @@ function handleTriggerKeydown(event: KeyboardEvent): void {
     }
 
     moveActive(event.key === "ArrowDown" ? 1 : -1);
+
+    return;
+  }
+
+  if ((event.key === "PageDown" || event.key === "PageUp") && isOpen.value) {
+    event.preventDefault();
+    moveActive(event.key === "PageDown" ? 5 : -5);
 
     return;
   }
@@ -381,6 +472,16 @@ function handleSearchKeydown(event: KeyboardEvent): void {
     case "ArrowUp":
       event.preventDefault();
       moveActive(-1);
+
+      return;
+    case "PageDown":
+      event.preventDefault();
+      moveActive(5);
+
+      return;
+    case "PageUp":
+      event.preventDefault();
+      moveActive(-5);
 
       return;
     case "Home":

@@ -55,6 +55,8 @@
             placeholder="Select a company"
             searchable
             search-label="companies"
+            virtualize
+            size="lg"
             :disabled="isSaving || companiesLoading || isCreatingCompany"
             :error="fieldError('company_id')"
           />
