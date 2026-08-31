@@ -3,14 +3,36 @@
     class="bg-surface-raised border-border flex items-center justify-between gap-2 border-b-2 border-b-accent px-3.5 py-1.5 text-accent"
   >
     <nav aria-label="Main navigation" class="flex items-center gap-3">
-      <RouterLink class="font-black" to="/">IZZICUP</RouterLink>
+      <RouterLink
+        class="text-lg font-bold text-text hover:text-accent"
+        exact-active-class="!text-accent"
+        :to="RoutePath.HOME"
+      >
+        PARTS
+      </RouterLink>
 
       <RouterLink
-        class="border-border border-l pl-3 text-sm text-text hover:text-accent"
+        class="border-border inline-flex items-center border-l pl-3 text-sm font-semibold text-text hover:text-accent"
         exact-active-class="!text-accent"
         :to="RoutePath.PART_NEW"
       >
-        New Part
+        <PackagePlus aria-hidden="true" class="mr-2 size-4" />Part
+      </RouterLink>
+
+      <RouterLink
+        class="border-border ml-8 border-l pl-3 text-lg font-bold text-text hover:text-accent"
+        exact-active-class="!text-accent"
+        :to="RoutePath.COMPANIES"
+      >
+        COMPANIES
+      </RouterLink>
+
+      <RouterLink
+        class="border-border inline-flex items-center border-l pl-3 text-sm font-semibold text-text hover:text-accent"
+        exact-active-class="!text-accent"
+        :to="RoutePath.COMPANY_NEW"
+      >
+        <Hospital aria-hidden="true" class="mr-2 size-4" />Company
       </RouterLink>
     </nav>
 
@@ -44,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { Crown } from "@lucide/vue";
+import { Crown, Hospital, PackagePlus } from "@lucide/vue";
 import { RouterLink, useRouter } from "vue-router";
 import ThemeToggle from "@/components/ui/ThemeToggle.vue";
 import { notifyApiErrorDetails } from "@/lib/notifications";

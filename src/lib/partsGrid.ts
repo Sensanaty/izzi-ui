@@ -56,13 +56,16 @@ const dateFormatter = (params: { value: string | null | undefined }): string => 
   return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(params.value));
 };
 
-export function createPartsColumnDefs(copyDetailsForParts: CopyDetailsForParts): ColDef<Part>[] {
+export function createPartsColumnDefs(
+  copyDetailsForParts: CopyDetailsForParts,
+  onDelete: (part: Part) => void,
+): ColDef<Part>[] {
   return [
     {
       colId: "actions",
       headerName: "",
       cellRenderer: PartsGridActions,
-      cellRendererParams: { copyDetailsForParts } satisfies Partial<PartsGridActionsParams>,
+      cellRendererParams: { copyDetailsForParts, onDelete } satisfies Partial<PartsGridActionsParams>,
       sortable: false,
       filter: false,
       suppressHeaderMenuButton: true,

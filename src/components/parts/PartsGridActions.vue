@@ -51,13 +51,14 @@ import type { ICellRendererParams } from "ag-grid-community";
 
 export type PartsGridActionsParams = ICellRendererParams<Part> & {
   copyDetailsForParts: (parts: Part[], type: "quote" | "full") => Promise<void>;
+  onDelete: (part: Part) => void;
 };
 
 type Props = {
   params: PartsGridActionsParams;
 };
 
-type ActionType = "edit" | "quote" | "full";
+type ActionType = "edit" | "quote" | "full" | "delete";
 
 type Action = {
   label: string;
@@ -68,6 +69,7 @@ const actions: Action[] = [
   { label: "Edit part", type: "edit" },
   { label: "Copy quote details", type: "quote" },
   { label: "Copy full details", type: "full" },
+  { label: "Delete part", type: "delete" },
 ];
 
 const route = useRoute();
@@ -118,6 +120,8 @@ function runAction(type: ActionType): void {
       params: { id: part.id },
       query: route.query,
     });
+  } else if (type === "delete") {
+    props.params.onDelete(part);
   } else {
     void props.params.copyDetailsForParts([part], type);
   }

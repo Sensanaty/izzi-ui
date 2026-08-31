@@ -1,8 +1,5 @@
 <template>
-  <div class="flex items-center justify-between gap-3">
-    <h1 class="font-bold text-3xl mb-2">Parts</h1>
-    <RouterLink class="text-accent underline" :to="RoutePath.PART_NEW">Create part</RouterLink>
-  </div>
+  <h1 class="mb-2 font-bold text-3xl">Parts</h1>
 
   <div class="flex flex-col gap-2 sm:flex-row sm:items-start">
     <form class="flex flex-col gap-2 sm:flex-row" @submit.prevent="searchParts">
@@ -78,6 +75,15 @@
 
     <IzziButton
       size="sm"
+      variant="danger"
+      :disabled="!selectedParts.length || isLoading || isDeleting"
+      @click="requestBulkDelete"
+    >
+      Delete selected
+    </IzziButton>
+
+    <IzziButton
+      size="sm"
       variant="secondary"
       :disabled="isLoading || isExporting"
       @click="exportAllParts"
@@ -89,6 +95,15 @@
       {{ actionMessage }}
     </span>
   </div>
+
+  <DeleteConfirmationModal
+    v-if="deleteItems.length"
+    item-label="parts"
+    :items="deleteItems"
+    :deleting="isDeleting"
+    @cancel="deleteItems = []"
+    @confirm="confirmDelete"
+  />
 
   <PartsGrid
     :column-defs="columnDefs"
@@ -131,10 +146,10 @@ import {
   ModuleRegistry,
   themeQuartz,
 } from "ag-grid-community";
-import { RouterLink } from "vue-router";
-import { exportParts, isPartsSortField } from "@/api/parts";
+import { deletePart, exportParts, isPartsSortField } from "@/api/parts";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
 import PartsGrid from "@/components/parts/PartsGrid.vue";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
 import { usePagination } from "@/composables/usePagination";
@@ -150,7 +165,6 @@ import {
   defaultColDef,
   selectionColumnDef,
 } from "@/lib/partsGrid";
-import { RoutePath } from "@/router/constants";
 
 import type { PartsCondition } from "@/api/parts";
 import type { Part } from "@/lib/schemas/part";
@@ -199,6 +213,9 @@ const selectedPartCount = ref(0);
 const selectedParts = ref<Part[]>([]);
 const isGridReady = ref(false);
 const isExporting = ref(false);
+const isDeleting = ref(false);
+const deleteItems = ref<{ id: number; label: string }[]>([]);
+const skipDeleteConfirmation = ref(localStorage.getItem("izzi-skip-delete-confirmation") === "true");
 
 const modules = [AllCommunityModule];
 const { theme: appTheme } = useTheme();
@@ -207,7 +224,36 @@ const theme = computed(() =>
 );
 const rowSelection = { mode: "multiRow", enableClickSelection: false } as const;
 const { actionMessage, copyDetails, copyDetailsForParts } = usePartsCopy();
-const columnDefs = createPartsColumnDefs(copyDetailsForParts);
+const columnDefs = createPartsColumnDefs(copyDetailsForParts, requestDelete);
+
+function requestDelete(part: Part): void {
+  deleteItems.value = [{ id: part.id, label: part.part_number }];
+
+  if (skipDeleteConfirmation.value) void confirmDelete(false);
+}
+
+function requestBulkDelete(): void {
+  deleteItems.value = selectedParts.value.map((part) => ({ id: part.id, label: part.part_number }));
+}
+
+async function confirmDelete(dontAskAgain: boolean): Promise<void> {
+  if (dontAskAgain) {
+    skipDeleteConfirmation.value = true;
+    localStorage.setItem("izzi-skip-delete-confirmation", "true");
+  }
+
+  isDeleting.value = true;
+
+  try {
+    await Promise.all(deleteItems.value.map(({ id }) => deletePart(id)));
+    deleteItems.value = [];
+    await loadParts();
+  } catch (error) {
+    notifyApiError(error, "Unable to delete parts");
+  } finally {
+    isDeleting.value = false;
+  }
+}
 
 const { errorMessage, isLoading, loadParts, parts } = usePartsData({
   page: currentPage,

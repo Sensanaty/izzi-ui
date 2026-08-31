@@ -199,6 +199,10 @@ export async function updatePart(partId: number, payload: PartPayload) {
   return api.patch(`/parts/${partId}`, payload, partResponseSchema);
 }
 
+export async function deletePart(partId: number): Promise<void> {
+  await api.delete(`/parts/${partId}`, emptyResponseSchema);
+}
+
 export async function getPartVersions(partId: number) {
   return api.get(`/parts/${partId}/versions`, partVersionsResponseSchema);
 }
