@@ -34,6 +34,22 @@
       >
         <Hospital aria-hidden="true" class="mr-2 size-4" />Company
       </RouterLink>
+
+      <RouterLink
+        class="ml-8 border-l pl-3 text-lg font-bold text-text hover:text-accent"
+        exact-active-class="!text-accent"
+        :to="RoutePath.CLIENTS"
+      >
+        CONTACTS
+      </RouterLink>
+
+      <RouterLink
+        class="border-border inline-flex items-center border-l pl-3 text-sm font-semibold text-text hover:text-accent"
+        exact-active-class="!text-accent"
+        :to="RoutePath.CLIENT_NEW"
+      >
+        <UserPlus aria-hidden="true" class="mr-2 size-4" />Contact
+      </RouterLink>
     </nav>
 
     <div class="flex items-center gap-2">
@@ -66,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { Crown, Hospital, PackagePlus } from "@lucide/vue";
+import { Crown, Hospital, PackagePlus, UserPlus } from "@lucide/vue";
 import { RouterLink, useRouter } from "vue-router";
 import ThemeToggle from "@/components/ui/ThemeToggle.vue";
 import { notifyApiErrorDetails } from "@/lib/notifications";
