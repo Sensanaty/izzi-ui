@@ -36,6 +36,12 @@ const partFields: PartField[] = [
   { key: "id", label: "ID" },
 ];
 
+const quoteTypeLabels: Record<string, string> = {
+  outright_sale: "Outright Sale",
+  flat_rate_exchange: "Flat Rate Exchange",
+  exchange_plus_cost: "Exchange + Cost",
+};
+
 const quoteExcludedFields = new Set<keyof Part>([
   "id",
   "company_name",
@@ -55,6 +61,7 @@ const quoteExcludedFields = new Set<keyof Part>([
 type CopyType = "quote" | "full";
 
 type QuotePriceKey = "min_price" | "med_price" | "max_price";
+type QuoteOrderKey = "min_order" | "med_order" | "max_order";
 
 function displayPartValue(value: Part[keyof Part]): string {
   return value ? String(value) : "N/A";
@@ -64,11 +71,26 @@ function formatPartDetails(part: Part, fields: PartField[]): string {
   return fields.map(({ key, label }) => `${label}: ${displayPartValue(part[key])}`).join("\n");
 }
 
-function formatQuotePrice(part: Part, priceKey: QuotePriceKey): string {
-  const orderKey =
-    priceKey === "min_price" ? "min_order" : priceKey === "med_price" ? "med_order" : "max_order";
+function hasQuoteValue(value: string | number | null | undefined): value is string | number {
+  if (value === null || value === undefined) return false;
+  if (typeof value === "number") return value !== 0;
 
-  return `Price ${displayPartValue(part[priceKey])} for Minimum Order Quantity ${displayPartValue(part[orderKey])}`;
+  const normalizedValue = value.trim().toLowerCase();
+
+  return (
+    normalizedValue !== "" && normalizedValue !== "n/a" && !/^0+(?:\.0+)?$/.test(normalizedValue)
+  );
+}
+
+function formatQuotePrice(part: Part, priceKey: QuotePriceKey): string | null {
+  const orderKey: QuoteOrderKey =
+    priceKey === "min_price" ? "min_order" : priceKey === "med_price" ? "med_order" : "max_order";
+  const price = part[priceKey];
+  const orderQuantity = part[orderKey];
+
+  if (!hasQuoteValue(price) || !hasQuoteValue(orderQuantity)) return null;
+
+  return `Price: USD ${price} for Minimum Order Quantity: ${orderQuantity} EA`;
 }
 
 function formatQuoteDetails(part: Part): string {
@@ -79,8 +101,13 @@ function formatQuoteDetails(part: Part): string {
         return formatQuotePrice(part, key);
       }
 
+      if (key === "quote_type") {
+        return `${label}: ${quoteTypeLabels[part.quote_type] ?? displayPartValue(part.quote_type)}`;
+      }
+
       return `${label}: ${displayPartValue(part[key])}`;
     })
+    .filter((line): line is string => line !== null)
     .join("\n");
 }
 
