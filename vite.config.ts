@@ -5,8 +5,12 @@ import vueDevTools from "vite-plugin-vue-devtools";
 
 import { fileURLToPath, URL } from "node:url";
 
-export default defineConfig({
-  plugins: [tailwindcss(), vue(), vueDevTools()],
+export default defineConfig(({ command }) => ({
+  plugins: [
+    tailwindcss(),
+    vue(),
+    ...(command === "serve" ? [vueDevTools()] : []),
+  ],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -16,4 +20,4 @@ export default defineConfig({
     environment: "node",
     include: ["src/**/__tests__/**/*.test.ts"],
   },
-});
+}));

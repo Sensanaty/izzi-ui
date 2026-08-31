@@ -140,16 +140,18 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, ref, watch } from "vue";
 import {
-  AllCommunityModule,
+  ClientSideRowModelModule,
+  ColumnApiModule,
   colorSchemeDark,
   colorSchemeLight,
+  CsvExportModule,
   ModuleRegistry,
+  RowSelectionModule,
   themeQuartz,
 } from "ag-grid-community";
 import { deletePart, exportParts, isPartsSortField } from "@/api/parts";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
 import PartsGrid from "@/components/parts/PartsGrid.vue";
-import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
 import { usePagination } from "@/composables/usePagination";
@@ -170,10 +172,19 @@ import type { PartsCondition } from "@/api/parts";
 import type { Part } from "@/lib/schemas/part";
 import type { SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
-ModuleRegistry.registerModules([AllCommunityModule]);
+const gridModules = [
+  ClientSideRowModelModule,
+  ColumnApiModule,
+  CsvExportModule,
+  RowSelectionModule,
+];
+ModuleRegistry.registerModules(gridModules);
 
 const AdvancedPartSearch = defineAsyncComponent(
   () => import("@/components/parts/AdvancedPartSearch.vue"),
+);
+const DeleteConfirmationModal = defineAsyncComponent(
+  () => import("@/components/ui/DeleteConfirmationModal.vue"),
 );
 
 const {
@@ -217,7 +228,7 @@ const isDeleting = ref(false);
 const deleteItems = ref<{ id: number; label: string }[]>([]);
 const skipDeleteConfirmation = ref(localStorage.getItem("izzi-skip-delete-confirmation") === "true");
 
-const modules = [AllCommunityModule];
+const modules = gridModules;
 const { theme: appTheme } = useTheme();
 const theme = computed(() =>
   themeQuartz.withPart(appTheme.value === "dark" ? colorSchemeDark : colorSchemeLight),

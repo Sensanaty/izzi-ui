@@ -82,18 +82,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, defineAsyncComponent, onMounted, ref, watch } from "vue";
 import {
-  AllCommunityModule,
+  ClientSideRowModelModule,
+  ColumnApiModule,
   colorSchemeDark,
   colorSchemeLight,
   ModuleRegistry,
+  RowSelectionModule,
   themeQuartz,
 } from "ag-grid-community";
 import { deleteClient, isClientsSortField } from "@/api/clients";
 import ClientsGrid from "@/components/clients/ClientsGrid.vue";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
-import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
 import { useClientsData } from "@/composables/useClientsData";
 import { useClientSearch } from "@/composables/useClientSearch";
@@ -111,8 +112,11 @@ import { notifyApiError } from "@/lib/notifications";
 import type { Client } from "@/lib/schemas/client";
 import type { SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
-ModuleRegistry.registerModules([AllCommunityModule]);
-const modules = [AllCommunityModule];
+const modules = [ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
+ModuleRegistry.registerModules(modules);
+const DeleteConfirmationModal = defineAsyncComponent(
+  () => import("@/components/ui/DeleteConfirmationModal.vue"),
+);
 
 const selectedClients = ref<Client[]>([]);
 const selectedClientCount = ref(0);

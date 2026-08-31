@@ -110,59 +110,56 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, defineAsyncComponent, onMounted, ref, watch } from "vue";
 import {
-  AllCommunityModule,
+  ClientSideRowModelModule,
+  ColumnApiModule,
   colorSchemeDark,
   colorSchemeLight,
   ModuleRegistry,
+  RowSelectionModule,
   themeQuartz,
 } from "ag-grid-community";
-import {
-  deleteCompany,
-  getCompaniesPage,
-  isCompaniesSortField,
-} from "@/api/companies";
-import AgGridTable from "@/components/ui/AgGridTable.vue";
+import { deleteCompany, getCompaniesPage, isCompaniesSortField } from "@/api/companies";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
-import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal.vue";
+import PartsPagination from "@/components/parts/PartsPagination.vue";
+import AgGridTable from "@/components/ui/AgGridTable.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
-import PartsPagination from "@/components/parts/PartsPagination.vue";
 import { useCompanySearch } from "@/composables/useCompanySearch";
+import { useGridColumnSettings } from "@/composables/useGridColumnSettings";
 import { usePagination } from "@/composables/usePagination";
-import { notifyApiError } from "@/lib/notifications";
+import { useTheme } from "@/composables/useTheme";
 import {
   createCompanyColumnDefs,
   companyColumnOptions,
   companyDefaultColDef,
   companySelectionColumnDef,
 } from "@/lib/companiesGrid";
-import { useGridColumnSettings } from "@/composables/useGridColumnSettings";
-import { useTheme } from "@/composables/useTheme";
+import { notifyApiError } from "@/lib/notifications";
 import { useCompanyOptionsStore } from "@/stores/companyOptions";
 
 import type { Company } from "@/lib/schemas/company";
 import type { SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
-ModuleRegistry.registerModules([AllCommunityModule]);
+const modules = [ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
+ModuleRegistry.registerModules(modules);
 
-const modules = [AllCommunityModule];
+const DeleteConfirmationModal = defineAsyncComponent(
+  () => import("@/components/ui/DeleteConfirmationModal.vue"),
+);
+
 const companyOptionsStore = useCompanyOptionsStore();
 const companies = ref<Company[]>([]);
 const totalCompanies = ref(0);
 const selectedCompanies = ref<Company[]>([]);
 const isDeleting = ref(false);
 const deleteItems = ref<{ id: number; label: string }[]>([]);
-const skipDeleteConfirmation = ref(localStorage.getItem("izzi-skip-delete-confirmation") === "true");
-const {
-  companyUrlQuery,
-  isWritingUrl,
-  searchQuery,
-  sort,
-  syncQueryToUrl,
-  updateFromUrl,
-} = useCompanySearch();
+const skipDeleteConfirmation = ref(
+  localStorage.getItem("izzi-skip-delete-confirmation") === "true",
+);
+const { companyUrlQuery, isWritingUrl, searchQuery, sort, syncQueryToUrl, updateFromUrl } =
+  useCompanySearch();
 const selectedCompanyCount = ref(0);
 const errorMessage = ref<string | null>(null);
 const isLoading = ref(true);
@@ -283,9 +280,7 @@ function handleSortChanged(event: SortChangedEvent<Company>): void {
     .filter((column): column is typeof column & { sort: "asc" | "desc" } => column.sort !== null)
     .sort((left, right) => (left.sortIndex ?? 0) - (right.sortIndex ?? 0))
     .flatMap((column) =>
-      isCompaniesSortField(column.colId)
-        ? [{ field: column.colId, direction: column.sort }]
-        : [],
+      isCompaniesSortField(column.colId) ? [{ field: column.colId, direction: column.sort }] : [],
     );
 
   void syncQueryToUrl().then(() => loadCompanies());

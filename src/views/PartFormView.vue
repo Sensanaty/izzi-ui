@@ -214,13 +214,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, defineAsyncComponent, onMounted, reactive, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { createCompany } from "@/api/companies";
 import { createPart, getPart, updatePart } from "@/api/parts";
 import CompanyFormFields from "@/components/companies/CompanyFormFields.vue";
-import PartVersionsDialog from "@/components/parts/PartVersionsDialog.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziDropdown from "@/components/ui/IzziDropdown.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
@@ -232,6 +231,10 @@ import { useNotificationStore } from "@/stores/notification";
 
 import type { CompanyFormState } from "@/components/companies/CompanyFormFields.vue";
 import type { Part } from "@/lib/schemas/part";
+
+const PartVersionsDialog = defineAsyncComponent(
+  () => import("@/components/parts/PartVersionsDialog.vue"),
+);
 
 const quoteTypes = ["OUTRIGHT SALE", "FLAT RATE EXCHANGE", "EXCHANGE + COST"] as const;
 type QuoteType = (typeof quoteTypes)[number];
