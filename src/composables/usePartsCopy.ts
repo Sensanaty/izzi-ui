@@ -39,9 +39,14 @@ const partFields: PartField[] = [
 const quoteExcludedFields = new Set<keyof Part>([
   "id",
   "company_name",
+  "reserved",
+  "sold",
   "min_cost",
+  "min_order",
   "med_cost",
+  "med_order",
   "max_cost",
+  "max_order",
   "internal_note",
   "created_at",
   "updated_at",
@@ -49,21 +54,38 @@ const quoteExcludedFields = new Set<keyof Part>([
 
 type CopyType = "quote" | "full";
 
-function formatPartDetails(part: Part, fields: PartField[]): string {
-  return fields
-    .map(({ key, label }) => {
-      const value = part[key];
-      const displayValue = value ? value : "N/A";
+type QuotePriceKey = "min_price" | "med_price" | "max_price";
 
-      return `${label}: ${displayValue}`;
+function displayPartValue(value: Part[keyof Part]): string {
+  return value ? String(value) : "N/A";
+}
+
+function formatPartDetails(part: Part, fields: PartField[]): string {
+  return fields.map(({ key, label }) => `${label}: ${displayPartValue(part[key])}`).join("\n");
+}
+
+function formatQuotePrice(part: Part, priceKey: QuotePriceKey): string {
+  const orderKey =
+    priceKey === "min_price" ? "min_order" : priceKey === "med_price" ? "med_order" : "max_order";
+
+  return `Price ${displayPartValue(part[priceKey])} for Minimum Order Quantity ${displayPartValue(part[orderKey])}`;
+}
+
+function formatQuoteDetails(part: Part): string {
+  return partFields
+    .filter(({ key }) => !quoteExcludedFields.has(key))
+    .map(({ key, label }) => {
+      if (key === "min_price" || key === "med_price" || key === "max_price") {
+        return formatQuotePrice(part, key);
+      }
+
+      return `${label}: ${displayPartValue(part[key])}`;
     })
     .join("\n");
 }
 
-function getFieldsForCopy(type: CopyType): PartField[] {
-  if (type === "full") return partFields;
-
-  return partFields.filter(({ key }) => !quoteExcludedFields.has(key));
+function formatDetails(part: Part, type: CopyType): string {
+  return type === "quote" ? formatQuoteDetails(part) : formatPartDetails(part, partFields);
 }
 
 export function usePartsCopy() {
@@ -71,10 +93,8 @@ export function usePartsCopy() {
   const { createNotification } = useNotificationStore();
 
   async function copyDetailsForParts(partsToCopy: Part[], type: CopyType): Promise<void> {
-    const fields = getFieldsForCopy(type);
-
     const clipboardText = partsToCopy
-      .map((part) => formatPartDetails(part, fields))
+      .map((part) => formatDetails(part, type))
       .filter(Boolean)
       .join("\n\n==========\n\n");
 
