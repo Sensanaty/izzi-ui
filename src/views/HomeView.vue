@@ -140,12 +140,14 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, ref, watch } from "vue";
 import {
+  CellStyleModule,
   ClientSideRowModelModule,
   ColumnApiModule,
   colorSchemeDark,
   colorSchemeLight,
   CsvExportModule,
   ModuleRegistry,
+  RowAutoHeightModule,
   RowSelectionModule,
   themeQuartz,
 } from "ag-grid-community";
@@ -173,9 +175,11 @@ import type { Part } from "@/lib/schemas/part";
 import type { SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
 const gridModules = [
+  CellStyleModule,
   ClientSideRowModelModule,
   ColumnApiModule,
   CsvExportModule,
+  RowAutoHeightModule,
   RowSelectionModule,
 ];
 ModuleRegistry.registerModules(gridModules);

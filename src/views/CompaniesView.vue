@@ -112,6 +112,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, ref, watch } from "vue";
 import {
+  CellStyleModule,
   ClientSideRowModelModule,
   ColumnApiModule,
   colorSchemeDark,
@@ -142,7 +143,7 @@ import { useCompanyOptionsStore } from "@/stores/companyOptions";
 import type { Company } from "@/lib/schemas/company";
 import type { SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
-const modules = [ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
+const modules = [CellStyleModule, ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
 ModuleRegistry.registerModules(modules);
 
 const DeleteConfirmationModal = defineAsyncComponent(
