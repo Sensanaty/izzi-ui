@@ -1,4 +1,4 @@
-import { ref, shallowRef, triggerRef } from "vue";
+import { ref } from "vue";
 import type { Ref } from "vue";
 
 import type { AdvancedSearchCondition } from "@/lib/advancedSearch";
@@ -54,7 +54,7 @@ export function useAdvancedSearch<Field extends string, Operator extends string>
 
   const nextId = ref(1);
   const validationMessage = ref<string | null>(null);
-  const conditions: Ref<QueryConditionDraft<Field, Operator>[]> = shallowRef([]);
+  const conditions: Ref<QueryConditionDraft<Field, Operator>[]> = ref([]);
   const initialDrafts = initialConditions.length ? initialConditions : [createCondition()];
 
   conditions.value = initialDrafts.map((condition) => ({
@@ -100,7 +100,6 @@ export function useAdvancedSearch<Field extends string, Operator extends string>
 
     condition.value = "";
     condition.secondValue = undefined;
-    triggerRef(conditions);
   }
 
   function addCondition(): void {
