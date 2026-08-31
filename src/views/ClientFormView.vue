@@ -70,9 +70,11 @@ const clientId = computed(() => Number(route.params.id));
 const form = reactive<ClientFormState>({ name: "", address: "", number: "", email: "" });
 const companyId = ref("");
 const companies = ref<Company[]>([]);
+
 const companyOptions = computed(() =>
   companies.value.map((company) => ({ value: String(company.id), label: company.name })),
 );
+
 const fieldErrors = ref<Record<string, string[]>>({});
 const loadError = ref<string | null>(null);
 const isLoading = ref(false);
@@ -141,7 +143,10 @@ async function submitForm(): Promise<void> {
 
     await router.replace({ path: RoutePath.CLIENTS, query: route.query });
   } catch (error) {
-    const details = notifyApiError(error, isEditing.value ? "Unable to update contact" : "Unable to create contact");
+    const details = notifyApiError(
+      error,
+      isEditing.value ? "Unable to update contact" : "Unable to create contact",
+    );
     fieldErrors.value = details.fieldErrors;
   } finally {
     isSaving.value = false;
