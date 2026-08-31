@@ -4,11 +4,11 @@
   >
     <nav aria-label="Main navigation" class="flex items-center gap-3">
       <RouterLink
-        class="text-lg font-bold text-text hover:text-accent"
+        class="inline-flex items-center text-lg font-bold text-text hover:text-accent"
         exact-active-class="!text-accent"
         :to="RoutePath.HOME"
       >
-        PARTS
+        <Package aria-hidden="true" class="mr-2 size-5" /> Parts
       </RouterLink>
 
       <RouterLink
@@ -16,15 +16,15 @@
         exact-active-class="!text-accent"
         :to="RoutePath.PART_NEW"
       >
-        <PackagePlus aria-hidden="true" class="mr-2 size-4" />Part
+        <PackagePlus aria-hidden="true" class="mr-2 size-4" /> New Part
       </RouterLink>
 
       <RouterLink
-        class="border-border ml-8 border-l pl-3 text-lg font-bold text-text hover:text-accent"
+        class="border-border ml-8 inline-flex items-center border-l pl-3 text-lg font-bold text-text hover:text-accent"
         exact-active-class="!text-accent"
         :to="RoutePath.COMPANIES"
       >
-        COMPANIES
+        <Building2 aria-hidden="true" class="mr-2 size-5" /> Companies
       </RouterLink>
 
       <RouterLink
@@ -32,15 +32,15 @@
         exact-active-class="!text-accent"
         :to="RoutePath.COMPANY_NEW"
       >
-        <Hospital aria-hidden="true" class="mr-2 size-4" />Company
+        <Hospital aria-hidden="true" class="mr-2 size-4" /> New Company
       </RouterLink>
 
       <RouterLink
-        class="ml-8 border-l pl-3 text-lg font-bold text-text hover:text-accent"
+        class="ml-8 inline-flex items-center border-l pl-3 text-lg font-bold text-text hover:text-accent"
         exact-active-class="!text-accent"
         :to="RoutePath.CLIENTS"
       >
-        CONTACTS
+        <ContactRound aria-hidden="true" class="mr-2 size-5" /> Contacts
       </RouterLink>
 
       <RouterLink
@@ -48,7 +48,7 @@
         exact-active-class="!text-accent"
         :to="RoutePath.CLIENT_NEW"
       >
-        <UserPlus aria-hidden="true" class="mr-2 size-4" />Contact
+        <UserPlus aria-hidden="true" class="mr-2 size-4" />New Contact
       </RouterLink>
     </nav>
 
@@ -82,7 +82,15 @@
 </template>
 
 <script setup lang="ts">
-import { Crown, Hospital, PackagePlus, UserPlus } from "@lucide/vue";
+import {
+  Building2,
+  ContactRound,
+  Crown,
+  Hospital,
+  Package,
+  PackagePlus,
+  UserPlus,
+} from "@lucide/vue";
 import { RouterLink, useRouter } from "vue-router";
 import ThemeToggle from "@/components/ui/ThemeToggle.vue";
 import { notifyApiErrorDetails } from "@/lib/notifications";
