@@ -8,10 +8,26 @@ export const companySchema = z.object({
   country: z.string().nullable().optional(),
   website: z.string().nullable().optional(),
   subscription: z.string().nullable().optional(),
+  parts_count: z.number().optional(),
 });
 
 export const companiesResponseSchema = z.object({
   data: z.array(companySchema),
 });
 
+export const paginatedCompaniesResponseSchema = z.object({
+  data: z.array(companySchema),
+  metadata: z
+    .object({
+      count: z.number(),
+      total: z.number(),
+      page: z.number(),
+      last: z.number(),
+      next: z.number().nullable(),
+      prev: z.number().nullable(),
+    })
+    .passthrough(),
+});
+
 export type Company = z.infer<typeof companySchema>;
+export type PaginatedCompaniesResponse = z.infer<typeof paginatedCompaniesResponseSchema>;

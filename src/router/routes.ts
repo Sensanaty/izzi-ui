@@ -34,10 +34,22 @@ const appRoutes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, title: "Edit part" } satisfies RouteMeta,
   },
   {
+    path: RoutePath.COMPANIES,
+    name: Route.COMPANIES,
+    component: () => import("@/views/CompaniesView.vue"),
+    meta: { requiresAuth: true, title: "Companies" } satisfies RouteMeta,
+  },
+  {
     path: RoutePath.COMPANY_NEW,
     name: Route.COMPANY_NEW,
     component: () => import("@/views/CompanyFormView.vue"),
     meta: { requiresAuth: true, title: "New company" } satisfies RouteMeta,
+  },
+  {
+    path: RoutePath.COMPANY_EDIT,
+    name: Route.COMPANY_EDIT,
+    component: () => import("@/views/CompanyFormView.vue"),
+    meta: { requiresAuth: true, title: "Edit company" } satisfies RouteMeta,
   },
   {
     path: RoutePath.USERS,
