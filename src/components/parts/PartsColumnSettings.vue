@@ -46,10 +46,13 @@
 <script setup lang="ts">
 import IzziButton from "@/components/ui/IzziButton.vue";
 
-import type { ColumnOption } from "@/lib/partsGrid";
+type ColumnOption = {
+  field: string;
+  label: string;
+};
 
 type Props = {
-  columnOptions: ColumnOption[];
+  columnOptions: readonly ColumnOption[];
   visibleColumns: Record<string, boolean>;
   pinnedColumns: Record<string, "" | "left" | "right">;
 };

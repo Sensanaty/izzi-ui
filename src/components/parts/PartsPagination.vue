@@ -3,7 +3,7 @@
     class="text-text-muted flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between"
   >
     <div class="flex flex-wrap items-center gap-2">
-      <span>{{ selectedPartCount }} selected · {{ totalParts }} total</span>
+      <span>{{ selectedCount }} selected · {{ totalItems }} total {{ itemLabel }}</span>
 
       <label class="flex items-center gap-2" :for="`${idPrefix}-page-size`">
         Fetch
@@ -79,8 +79,9 @@ defineProps<{
   pageInput: number;
   pageSize: number;
   pageSizeOptions: number[];
-  selectedPartCount: number;
-  totalParts: number;
+  selectedCount: number;
+  totalItems: number;
+  itemLabel: string;
   hasPreviousPage: boolean;
   hasNextPage: boolean;
   disabled: boolean;
