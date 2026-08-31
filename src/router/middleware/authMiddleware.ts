@@ -5,7 +5,10 @@ import type { RouteLocationNormalizedGeneric } from "vue-router";
 
 export async function authMiddleware(to: RouteLocationNormalizedGeneric) {
   const auth = useAuthStore();
-  await auth.restoreSession();
+
+  if (to.meta?.requiresAuth) {
+    await auth.restoreSession();
+  }
 
   if (to.meta?.requiresAuth && !auth.isAuthenticated) {
     if (to.path === RoutePath.LOGIN) {

@@ -28,6 +28,4 @@ export const initializeAuth = (pinia: Pinia, router: Router): void => {
       }
     },
   });
-
-  void auth.restoreSession();
 };
