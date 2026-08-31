@@ -215,8 +215,9 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { RouterLink, useRoute, useRouter } from "vue-router";
-import { createCompany, getCompanies } from "@/api/companies";
+import { createCompany } from "@/api/companies";
 import { createPart, getPart, updatePart } from "@/api/parts";
 import CompanyFormFields from "@/components/companies/CompanyFormFields.vue";
 import PartVersionsDialog from "@/components/parts/PartVersionsDialog.vue";
@@ -226,10 +227,10 @@ import IzziInput from "@/components/ui/IzziInput.vue";
 import IzziTextArea from "@/components/ui/IzziTextArea.vue";
 import { notifyApiError } from "@/lib/notifications";
 import { RoutePath } from "@/router/constants";
+import { useCompanyOptionsStore } from "@/stores/companyOptions";
 import { useNotificationStore } from "@/stores/notification";
 
 import type { CompanyFormState } from "@/components/companies/CompanyFormFields.vue";
-import type { Company } from "@/lib/schemas/company";
 import type { Part } from "@/lib/schemas/part";
 
 const quoteTypes = ["OUTRIGHT SALE", "FLAT RATE EXCHANGE", "EXCHANGE + COST"] as const;
@@ -305,9 +306,8 @@ const router = useRouter();
 const { createNotification } = useNotificationStore();
 
 const form = reactive<FormState>(emptyForm());
-const companies = ref<Company[]>([]);
-
-const companiesLoading = ref(true);
+const companyOptionsStore = useCompanyOptionsStore();
+const { companies, isLoading: companiesLoading } = storeToRefs(companyOptionsStore);
 const isCreatingCompany = ref(false);
 const isSavingCompany = ref(false);
 const companyFieldErrors = ref<Record<string, string[]>>({});
@@ -430,7 +430,7 @@ async function load(): Promise<void> {
   const requestedPath = route.fullPath;
 
   try {
-    const companyPromise = getCompanies();
+    const companyPromise = companyOptionsStore.loadCompanies();
     const partPromise = isEditing.value ? getPart(partId.value) : Promise.resolve(null);
     const [loadedCompanies, loadedPart] = await Promise.all([companyPromise, partPromise]);
 
@@ -477,7 +477,7 @@ async function createQuickCompany(): Promise<void> {
       subscription: newCompanyForm.subscription.trim() || null,
     });
 
-    companies.value = [company, ...companies.value];
+    companyOptionsStore.upsertCompany(company);
     form.company_id = String(company.id);
     isCreatingCompany.value = false;
 

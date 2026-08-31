@@ -52,17 +52,17 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from "vue";
+import { storeToRefs } from "pinia";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { createClient, getClient, updateClient } from "@/api/clients";
-import { getCompanies } from "@/api/companies";
 import ClientFormFields from "@/components/clients/ClientFormFields.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziDropdown from "@/components/ui/IzziDropdown.vue";
 import { notifyApiError } from "@/lib/notifications";
 import { Route, RoutePath } from "@/router/constants";
+import { useCompanyOptionsStore } from "@/stores/companyOptions";
 
 import type { ClientFormState } from "@/components/clients/ClientFormFields.vue";
-import type { Company } from "@/lib/schemas/company";
 
 const route = useRoute();
 const router = useRouter();
@@ -70,7 +70,8 @@ const isEditing = computed(() => route.name === Route.CLIENT_EDIT);
 const clientId = computed(() => Number(route.params.id));
 const form = reactive<ClientFormState>({ name: "", address: "", number: "", email: "" });
 const companyId = ref("");
-const companies = ref<Company[]>([]);
+const companyOptionsStore = useCompanyOptionsStore();
+const { companies } = storeToRefs(companyOptionsStore);
 
 const companyOptions = computed(() =>
   companies.value.map((company) => ({ value: String(company.id), label: company.name })),
@@ -92,7 +93,7 @@ async function load(): Promise<void> {
 
   try {
     const [options, client] = await Promise.all([
-      getCompanies(),
+      companyOptionsStore.loadCompanies(),
       isEditing.value ? getClient(clientId.value) : Promise.resolve(null),
     ]);
     companies.value = options;

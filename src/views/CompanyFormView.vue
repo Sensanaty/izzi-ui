@@ -43,6 +43,7 @@ import CompanyFormFields from "@/components/companies/CompanyFormFields.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import { notifyApiError } from "@/lib/notifications";
 import { Route, RoutePath } from "@/router/constants";
+import { useCompanyOptionsStore } from "@/stores/companyOptions";
 import { useNotificationStore } from "@/stores/notification";
 
 import type { CompanyPayload } from "@/api/companies";
@@ -51,6 +52,7 @@ import type { CompanyFormState } from "@/components/companies/CompanyFormFields.
 const route = useRoute();
 const router = useRouter();
 const { createNotification } = useNotificationStore();
+const companyOptionsStore = useCompanyOptionsStore();
 const companyId = computed(() => Number(route.params.id));
 const isEditing = computed(() => route.name === Route.COMPANY_EDIT);
 const isLoading = ref(false);
@@ -146,12 +148,11 @@ async function submitForm(): Promise<void> {
   fieldErrors.value = {};
 
   try {
-    if (isEditing.value) {
-      await updateCompany(companyId.value, payload());
-    } else {
-      await createCompany(payload());
-    }
+    const company = isEditing.value
+      ? await updateCompany(companyId.value, payload())
+      : await createCompany(payload());
 
+    companyOptionsStore.upsertCompany(company);
     createNotification(isEditing.value ? "Company updated" : "Company created");
     await router.replace(RoutePath.COMPANIES);
   } catch (error) {

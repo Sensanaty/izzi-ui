@@ -140,6 +140,7 @@ import {
 } from "@/lib/companiesGrid";
 import { useGridColumnSettings } from "@/composables/useGridColumnSettings";
 import { useTheme } from "@/composables/useTheme";
+import { useCompanyOptionsStore } from "@/stores/companyOptions";
 
 import type { Company } from "@/lib/schemas/company";
 import type { SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
@@ -147,6 +148,7 @@ import type { SelectionChangedEvent, SortChangedEvent } from "ag-grid-community"
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const modules = [AllCommunityModule];
+const companyOptionsStore = useCompanyOptionsStore();
 const companies = ref<Company[]>([]);
 const totalCompanies = ref(0);
 const selectedCompanies = ref<Company[]>([]);
@@ -227,6 +229,7 @@ async function confirmDelete(dontAskAgain: boolean): Promise<void> {
 
   try {
     await Promise.all(deleteItems.value.map(({ id }) => deleteCompany(id)));
+    deleteItems.value.forEach(({ id }) => companyOptionsStore.removeCompany(id));
     deleteItems.value = [];
     selectedCompanies.value = [];
     await loadCompanies();
