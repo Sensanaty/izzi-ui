@@ -123,7 +123,11 @@
 
         <IzziInput v-model="form.lead_time" label="Lead time" :error="fieldError('lead_time')" />
 
-        <IzziInput v-model="form.added" label="Added" type="date" :error="fieldError('added')" />
+        <IzziInput v-model="form.added" label="Updated" type="date" :error="fieldError('added')" />
+
+        <IzziInput v-if="isEditing" v-model="form.updated_at" label="Updated At" readonly />
+
+        <IzziInput v-if="isEditing" v-model="form.created_at" label="Created At" readonly />
       </div>
 
       <IzziTextArea
@@ -277,8 +281,19 @@ type FormState = {
   tag: string;
   internal_note: string;
   added: string;
+  created_at: string;
+  updated_at: string;
   company_id: string;
 };
+
+function currentDate(): string {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
 
 const emptyForm = (): FormState => ({
   part_number: "",
@@ -300,7 +315,9 @@ const emptyForm = (): FormState => ({
   quote_type: quoteTypes[0],
   tag: "",
   internal_note: "",
-  added: "",
+  added: currentDate(),
+  created_at: "",
+  updated_at: "",
   company_id: "",
 });
 
@@ -391,8 +408,12 @@ function numberValue(value: string): number {
 }
 
 function payload() {
+  const { created_at, updated_at, ...editableForm } = form;
+  void created_at;
+  void updated_at;
+
   return {
-    ...form,
+    ...editableForm,
     available: numberValue(form.available),
     reserved: numberValue(form.reserved),
     sold: numberValue(form.sold),
@@ -425,6 +446,8 @@ function fillForm(part: Part): void {
     lead_time: part.lead_time ?? "",
     internal_note: part.internal_note ?? "",
     added: part.added ?? "",
+    created_at: part.created_at,
+    updated_at: part.updated_at,
     company_id: String(part.company_id ?? ""),
   });
 }
