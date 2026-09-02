@@ -140,13 +140,13 @@ const describedBy = computed(() => {
   return ids.filter((value): value is string => Boolean(value)).join(" ") || undefined;
 });
 
-const clearInput = (): void => {
+function clearInput() {
   model.value = "";
   inputElement.value?.focus();
   emit("clear");
-};
+}
 
-async function togglePasswordVisibility(): Promise<void> {
+async function togglePasswordVisibility() {
   showPassword.value = !showPassword.value;
 
   await nextTick();

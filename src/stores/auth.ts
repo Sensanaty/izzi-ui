@@ -10,6 +10,7 @@ import type { User } from "@/lib/schemas/user";
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<User | null>(null);
   const accessToken = ref<string | null>(null);
+
   const isInitialized = ref(false);
   const isLoading = ref(false);
   const error = ref<ApiErrorDetails | null>(null);

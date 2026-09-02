@@ -20,6 +20,7 @@ export function useUrlQuery<QueryState>(
 ): UrlQueryState<QueryState> {
   const route = useRoute();
   const router = useRouter();
+
   const state: Ref<QueryState> = shallowRef(codec.parse(route.query));
 
   watch(

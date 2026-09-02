@@ -5,6 +5,7 @@
       @keydown.esc="close"
     >
       <div class="absolute inset-0 bg-black/60" aria-hidden="true" @click="close" />
+
       <section
         class="bg-background border-border relative flex max-h-full w-full max-w-7xl flex-col overflow-hidden rounded-sm border-2 shadow-lg"
         role="dialog"
@@ -23,6 +24,7 @@
               Select a version to review changes, or restore an individual field
             </p>
           </div>
+
           <IzziButton size="sm" aria-label="Close past versions" @click="close">Close</IzziButton>
         </header>
 
@@ -30,12 +32,15 @@
           <p v-if="isLoading" class="text-text-muted py-12 text-center" role="status">
             Loading version history...
           </p>
+
           <p v-else-if="errorMessage" class="text-danger py-8 text-center" role="alert">
             {{ errorMessage }}
           </p>
+
           <p v-else-if="!versions.length" class="text-text-muted py-12 text-center">
             No previous versions of this part found
           </p>
+
           <template v-else-if="selectedVersion">
             <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div class="flex items-center gap-2">
@@ -48,9 +53,11 @@
                 >
                   Newer
                 </IzziButton>
+
                 <span class="font-mono text-sm"
                   >Version {{ selectedIndex + 1 }} of {{ versions.length }}</span
                 >
+
                 <IzziButton
                   variant="secondary"
                   size="sm"
@@ -61,6 +68,7 @@
                   Older
                 </IzziButton>
               </div>
+
               <div class="flex flex-wrap items-center gap-3">
                 <label
                   class="text-text-muted inline-flex cursor-pointer items-center gap-2 text-sm"
@@ -68,9 +76,11 @@
                   <input v-model="hideIdentical" class="accent-primary size-4" type="checkbox" />
                   Hide identical values
                 </label>
+
                 <span class="text-text-muted font-mono text-sm">{{
                   formatDate(selectedVersion.created_at)
                 }}</span>
+
                 <IzziButton size="sm" :disabled="changedFields.length === 0" @click="restoreAll">
                   Restore version
                 </IzziButton>
@@ -83,15 +93,18 @@
             >
               All fields match the selected version
             </p>
+
             <div v-else class="border-border grid overflow-hidden rounded-sm border md:grid-cols-2">
               <div
                 class="border-border bg-surface-hover border-b p-3 font-bold md:border-r md:border-b-0"
               >
                 Current values
               </div>
+
               <div class="border-border bg-surface-hover border-b p-3 font-bold md:border-b-0">
                 Version values
               </div>
+
               <template v-for="field in visibleFields" :key="field.key">
                 <div
                   class="border-border border-b p-3 md:border-r"
@@ -100,10 +113,12 @@
                   <span class="text-text-muted block text-xs font-bold tracking-wide uppercase">{{
                     field.label
                   }}</span>
+
                   <span class="font-mono break-words">{{
                     displayValue(field.key, currentValues[field.key])
                   }}</span>
                 </div>
+
                 <button
                   class="border-border border-b p-3 text-left md:cursor-default"
                   :class="{
@@ -118,9 +133,11 @@
                   <span class="text-text-muted block text-xs font-bold tracking-wide uppercase">{{
                     field.label
                   }}</span>
+
                   <span class="font-mono break-words">{{
                     displayValue(field.key, selectedVersion.object[field.key])
                   }}</span>
+
                   <span v-if="isChanged(field.key)" class="text-accent mt-1 block text-xs font-bold"
                     >Click to restore</span
                   >
@@ -299,7 +316,7 @@ function restoreAll(): void {
   emit("restoreAll", values);
 }
 
-async function deleteHistory(): Promise<void> {
+async function deleteHistory() {
   if (!window.confirm("Delete all past versions for this part? This cannot be undone")) return;
 
   isDeleting.value = true;
@@ -314,7 +331,7 @@ async function deleteHistory(): Promise<void> {
   }
 }
 
-async function loadVersions(): Promise<void> {
+async function loadVersions() {
   try {
     versions.value = (await getPartVersions(props.partId)).data;
   } catch (error) {
@@ -324,5 +341,7 @@ async function loadVersions(): Promise<void> {
   }
 }
 
-onMounted(() => void loadVersions());
+onMounted(async () => {
+  await loadVersions();
+});
 </script>

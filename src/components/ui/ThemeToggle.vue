@@ -16,5 +16,6 @@ import { Moon, Sun } from "@lucide/vue";
 import { useTheme } from "@/composables/useTheme";
 
 const { theme, toggleTheme } = useTheme();
+
 const nextTheme = computed(() => (theme.value === "light" ? "dark" : "light"));
 </script>

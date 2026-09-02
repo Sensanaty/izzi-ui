@@ -18,6 +18,7 @@ type PartsDataOptions = {
 
 export function usePartsData(options: PartsDataOptions) {
   const parts = ref<Part[]>([]);
+
   const isLoading = ref(false);
   const errorMessage = ref<string | null>(null);
 

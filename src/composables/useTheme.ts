@@ -4,13 +4,13 @@ export type Theme = "light" | "dark";
 
 const themeStorageKey = "izzi-theme";
 
-const getStoredTheme = (): Theme | null => {
+function getStoredTheme(): Theme | null {
   const storedTheme = localStorage.getItem(themeStorageKey);
 
   return storedTheme === "light" || storedTheme === "dark" ? storedTheme : null;
-};
+}
 
-const getInitialTheme = (): Theme => {
+function getInitialTheme(): Theme {
   const storedTheme = getStoredTheme();
 
   if (storedTheme) {
@@ -18,14 +18,14 @@ const getInitialTheme = (): Theme => {
   }
 
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-};
+}
 
 const theme = ref<Theme>(getInitialTheme());
 
-const applyTheme = (selectedTheme: Theme): void => {
+function applyTheme(selectedTheme: Theme) {
   document.documentElement.dataset.theme = selectedTheme;
   document.documentElement.style.colorScheme = selectedTheme;
-};
+}
 
 watch(
   theme,
@@ -36,10 +36,10 @@ watch(
   { immediate: true },
 );
 
-export const useTheme = () => {
-  const toggleTheme = (): void => {
+export function useTheme() {
+  function toggleTheme() {
     theme.value = theme.value === "light" ? "dark" : "light";
-  };
+  }
 
   return { theme, toggleTheme };
-};
+}

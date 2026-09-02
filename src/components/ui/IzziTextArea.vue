@@ -63,6 +63,7 @@ const props = withDefaults(defineProps<IzziTextAreaProps>(), {
 
 const model = defineModel<string>({ default: "" });
 const attrs = useAttrs();
+
 const textareaElement = useTemplateRef<HTMLTextAreaElement>("textareaElement");
 const textareaId = computed(() => props.id ?? `izzi-textarea-${useId()}`);
 const descriptionId = computed(() => `${textareaId.value}-description`);

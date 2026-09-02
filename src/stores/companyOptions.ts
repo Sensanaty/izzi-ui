@@ -6,6 +6,7 @@ import type { Company } from "@/lib/schemas/company";
 
 export const useCompanyOptionsStore = defineStore("companyOptions", () => {
   const companies = ref<Company[]>([]);
+
   const isLoading = ref(false);
   const hasLoaded = ref(false);
 

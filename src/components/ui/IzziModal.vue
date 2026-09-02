@@ -69,7 +69,7 @@ const dialogElement = ref<HTMLDialogElement | null>(null);
 const titleId = `izzi-modal-title-${Math.random().toString(36).slice(2)}`;
 let returnFocusElement: HTMLElement | null = null;
 
-function showDialog(): void {
+async function showDialog() {
   const dialog = dialogElement.value;
 
   if (!dialog || dialog.open) return;
@@ -77,7 +77,8 @@ function showDialog(): void {
   returnFocusElement =
     document.activeElement instanceof HTMLElement ? document.activeElement : null;
   dialog.showModal();
-  void nextTick(() => focusFirstElement(dialog));
+  await nextTick();
+  focusFirstElement(dialog);
 }
 
 function closeDialog(): void {
@@ -108,13 +109,13 @@ function focusFirstElement(dialog: HTMLDialogElement): void {
   focusableElement?.focus();
 }
 
-watch(isOpen, (open) => {
-  if (open) showDialog();
+watch(isOpen, async (open) => {
+  if (open) await showDialog();
   else closeDialog();
 });
 
-onMounted(() => {
-  if (isOpen.value) showDialog();
+onMounted(async () => {
+  if (isOpen.value) await showDialog();
 });
 
 onBeforeUnmount(() => {

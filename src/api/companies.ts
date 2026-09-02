@@ -17,12 +17,6 @@ export type CompanyPayload = {
   subscription: string | null;
 };
 
-export async function getCompanies(): Promise<Company[]> {
-  const response = await api.get("/companies/options", companiesResponseSchema);
-
-  return response.data;
-}
-
 export const companiesSortFields = [
   "id",
   "name",
@@ -42,6 +36,12 @@ export type CompaniesSort = {
 
 export function isCompaniesSortField(value: string): value is CompaniesSortField {
   return companiesSortFields.some((field) => field === value);
+}
+
+export async function getCompanies(): Promise<Company[]> {
+  const response = await api.get("/companies/options", companiesResponseSchema);
+
+  return response.data;
 }
 
 export type CompaniesQuery = {

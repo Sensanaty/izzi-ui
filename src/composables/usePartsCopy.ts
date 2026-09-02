@@ -83,8 +83,12 @@ function hasQuoteValue(value: string | number | null | undefined): value is stri
 }
 
 function formatQuotePrice(part: Part, priceKey: QuotePriceKey): string | null {
-  const orderKey: QuoteOrderKey =
-    priceKey === "min_price" ? "min_order" : priceKey === "med_price" ? "med_order" : "max_order";
+  let orderKey: QuoteOrderKey;
+
+  if (priceKey === "min_price") orderKey = "min_order";
+  else if (priceKey === "med_price") orderKey = "med_order";
+  else orderKey = "max_order";
+
   const price = part[priceKey];
   const orderQuantity = part[orderKey];
 

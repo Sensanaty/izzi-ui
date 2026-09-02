@@ -14,6 +14,7 @@
   </div>
 
   <p v-if="loadError" class="text-danger" role="alert">{{ loadError }}</p>
+
   <p v-else-if="isLoadingUser" class="text-text-muted" role="status">Loading user...</p>
 
   <form
@@ -72,7 +73,7 @@
 
     <div class="flex gap-2">
       <IzziButton type="submit" :disabled="isSaving">
-        {{ isSaving ? "Saving..." : isEditing ? "Save user" : "Create user" }}
+        {{ submitLabel }}
       </IzziButton>
 
       <IzziButton variant="secondary" :disabled="isSaving" @click="cancel">Cancel</IzziButton>
@@ -112,6 +113,11 @@ const fieldErrors = ref<Record<string, string[]>>({});
 const isLoadingUser = ref(isEditing.value);
 const isSaving = ref(false);
 const loadError = ref<string | null>(null);
+const submitLabel = computed(() => {
+  if (isSaving.value) return "Saving...";
+
+  return isEditing.value ? "Save user" : "Create user";
+});
 
 function fieldError(field: "username" | "email" | "password"): string | null {
   return fieldErrors.value[field]?.join(", ") ?? null;
@@ -133,7 +139,7 @@ function validateForm(): boolean {
   return false;
 }
 
-async function loadUser(): Promise<void> {
+async function loadUser() {
   if (!isEditing.value) return;
 
   if (userId.value === null) {
@@ -156,7 +162,7 @@ async function loadUser(): Promise<void> {
   }
 }
 
-async function submitForm(): Promise<void> {
+async function submitForm() {
   if (!validateForm()) return;
 
   fieldErrors.value = {};
@@ -193,11 +199,11 @@ async function submitForm(): Promise<void> {
   }
 }
 
-function cancel(): void {
-  void router.push(RoutePath.USERS);
+async function cancel() {
+  await router.push(RoutePath.USERS);
 }
 
-onMounted(() => {
-  void loadUser();
+onMounted(async () => {
+  await loadUser();
 });
 </script>

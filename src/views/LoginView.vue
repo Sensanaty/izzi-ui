@@ -31,11 +31,8 @@
           type="password"
         />
 
-        <p id="login-error" v-if="validationError" class="text-danger" role="alert">
-          {{ validationError }}
-        </p>
-        <p id="login-error" v-else-if="auth.error" class="text-danger" role="alert">
-          {{ auth.error.message }}
+        <p v-if="validationError || auth.error" id="login-error" class="text-danger" role="alert">
+          {{ validationError ?? auth.error?.message }}
         </p>
 
         <IzziButton class="mt-2 w-full" type="submit" :disabled="auth.isLoading">
@@ -69,28 +66,30 @@ const auth = useAuthStore();
 const { createNotification } = useNotificationStore();
 const route = useRoute();
 const router = useRouter();
+
 const username = ref("");
 const password = ref("");
 const validationError = ref<string | null>(null);
+
 const loginErrorDescriptionId = computed(() =>
   validationError.value || auth.error ? "login-error" : undefined,
 );
 
-const getSafeRedirect = (): string => {
+function getSafeRedirect() {
   const redirect = route.query.redirect;
 
   return typeof redirect === "string" && redirect.startsWith("/") && !redirect.startsWith("//")
     ? redirect
     : RoutePath.HOME;
-};
+}
 
-async function redirectAfterLogin(loggedIn: boolean): Promise<void> {
+async function redirectAfterLogin(loggedIn: boolean) {
   if (loggedIn) {
     await router.replace(getSafeRedirect());
   }
 }
 
-async function submitLogin(): Promise<void> {
+async function submitLogin() {
   validationError.value = null;
 
   if (!username.value.trim() || !password.value) {
@@ -110,7 +109,7 @@ async function submitLogin(): Promise<void> {
   await redirectAfterLogin(loggedIn);
 }
 
-async function submitAutoLogin(): Promise<void> {
+async function submitAutoLogin() {
   validationError.value = null;
   await redirectAfterLogin(await auth.autoLogin());
 }

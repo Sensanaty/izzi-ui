@@ -46,6 +46,7 @@
           <span class="text-text-muted"
             >{{ visibleCount }} of {{ columnOptions.length }} columns visible</span
           >
+
           <div class="flex gap-2">
             <IzziButton size="xs" variant="ghost" @click="showAllColumns">Show all</IzziButton>
 
@@ -142,8 +143,10 @@ const emit = defineEmits<{
 }>();
 
 const searchQuery = ref("");
+
 const detailsElement = useTemplateRef<HTMLDetailsElement>("detailsElement");
 const columnSearchInput = useTemplateRef<InstanceType<typeof IzziInput>>("columnSearchInput");
+
 const visibleCount = computed(
   () => props.columnOptions.filter(({ field }) => props.visibleColumns[field]).length,
 );

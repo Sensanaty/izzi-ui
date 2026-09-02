@@ -22,6 +22,7 @@
           {{ selectedOption?.label ?? placeholder }}
         </slot>
       </span>
+
       <ChevronDown class="size-4 shrink-0" aria-hidden="true" />
     </button>
 
@@ -98,6 +99,7 @@
             </div>
           </div>
         </template>
+
         <div
           v-else
           v-for="(option, index) in filteredOptions"

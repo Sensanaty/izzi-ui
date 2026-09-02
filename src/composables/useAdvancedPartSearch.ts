@@ -28,6 +28,7 @@ const textOperators: readonly AdvancedSearchOperatorDefinition<PartsQueryOperato
   { value: "contains", label: "contains" },
   { value: "eq", label: "is" },
 ];
+
 const numericOperators: readonly AdvancedSearchOperatorDefinition<PartsQueryOperator>[] = [
   { value: "eq", label: "is" },
   { value: "gt", label: "greater than" },
@@ -36,9 +37,11 @@ const numericOperators: readonly AdvancedSearchOperatorDefinition<PartsQueryOper
   { value: "lte", label: "at most" },
   { value: "between", label: "between" },
 ];
+
 const enumOperators: readonly AdvancedSearchOperatorDefinition<PartsQueryOperator>[] = [
   { value: "eq", label: "is" },
 ];
+
 const quoteTypeOptions: readonly AdvancedSearchEnumOption[] = [
   { value: "OUTRIGHT SALE", label: "Outright Sale" },
   { value: "FLAT RATE EXCHANGE", label: "Flat Rate Exchange" },

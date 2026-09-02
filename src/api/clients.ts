@@ -16,16 +16,16 @@ export const clientsSortFields = [
 export type ClientsSortField = (typeof clientsSortFields)[number];
 export type ClientsSort = { field: ClientsSortField; direction: "asc" | "desc" };
 
-export function isClientsSortField(value: string): value is ClientsSortField {
-  return clientsSortFields.some((field) => field === value);
-}
-
 export type ClientsQuery = {
   page?: number;
   count?: number;
   query?: string;
   sort?: ClientsSort[];
 };
+
+export function isClientsSortField(value: string): value is ClientsSortField {
+  return clientsSortFields.some((field) => field === value);
+}
 
 export async function getClients(query: ClientsQuery = {}) {
   const searchParams = new URLSearchParams();

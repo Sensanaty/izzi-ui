@@ -17,7 +17,9 @@ import { useNotificationStore } from "@/stores/notification";
 import type { Notification } from "@/stores/notification";
 
 const props = defineProps<{ notification: Notification }>();
+
 const { removeNotification } = useNotificationStore();
+
 let autoHideTimeout: number | undefined;
 
 onMounted(() => {

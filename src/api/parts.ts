@@ -27,15 +27,14 @@ export const partsSortFields = [
 ] as const satisfies readonly PartField[];
 
 export type PartsSortField = (typeof partsSortFields)[number];
-
-export function isPartsSortField(value: string): value is PartsSortField {
-  return partsSortFields.some((field) => field === value);
-}
-
 export type PartsSort = {
   field: PartsSortField;
   direction: "asc" | "desc";
 };
+
+export function isPartsSortField(value: string): value is PartsSortField {
+  return partsSortFields.some((field) => field === value);
+}
 
 export const partsQueryFields = [
   "part_number",

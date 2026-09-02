@@ -14,11 +14,13 @@ type PaginationOptions = {
 
 export function usePagination(options: PaginationOptions) {
   const pageSizeOptions = [...options.pageSizeOptions];
+
   const pageSize = ref(getInitialPageSize(options));
   const pageInput = ref(1);
   const currentPage = ref(1);
   const lastPage = ref(1);
   const totalItems = ref(0);
+
   const hasPreviousPage = computed(() => currentPage.value > 1);
   const hasNextPage = computed(() => currentPage.value < lastPage.value);
 

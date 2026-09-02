@@ -250,6 +250,7 @@ const {
 const advancedSearch = useTemplateRef<AdvancedPartSearchInstance>("advancedSearch");
 const selectedPartCount = ref(0);
 const selectedParts = ref<Part[]>([]);
+
 const isGridReady = ref(false);
 const isExporting = ref(false);
 const isDeleting = ref(false);
@@ -268,10 +269,10 @@ const columnDefs = createPartsColumnDefs(
   requestDelete,
 );
 
-function requestDelete(part: Part) {
+async function requestDelete(part: Part) {
   deleteItems.value = [{ id: part.id, label: part.part_number }];
 
-  if (skipDeleteConfirmation.value) confirmDelete(false);
+  if (skipDeleteConfirmation.value) await confirmDelete(false);
 }
 
 function requestBulkDelete() {
@@ -325,17 +326,17 @@ const {
   isGridReady.value = true;
 });
 
-function toggleColumn(field: string, visible: boolean): void {
+function toggleColumn(field: string, visible: boolean) {
   visibleColumns.value[field] = visible;
   setColumnVisibility(field);
 }
 
-function changePinnedColumn(field: string, pinned: "" | "left" | "right"): void {
+function changePinnedColumn(field: string, pinned: "" | "left" | "right") {
   pinnedColumns.value[field] = pinned;
   setPinnedColumn(field);
 }
 
-function copySelectedDetails(type: "quote" | "full"): Promise<void> {
+function copySelectedDetails(type: "quote" | "full") {
   return copyDetails(selectedParts.value, type);
 }
 
@@ -349,7 +350,7 @@ function createPartsFilename(): string {
   return `parts_${timestamp}.csv`;
 }
 
-function downloadBlob(blob: Blob, filename: string): void {
+function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -358,12 +359,12 @@ function downloadBlob(blob: Blob, filename: string): void {
   URL.revokeObjectURL(url);
 }
 
-function exportSelectedParts(): void {
+function exportSelectedParts() {
   exportCsv(true);
   actionMessage.value = "Selected parts exported";
 }
 
-async function exportAllParts(): Promise<void> {
+async function exportAllParts() {
   isExporting.value = true;
   actionMessage.value = null;
 
@@ -386,17 +387,16 @@ async function exportAllParts(): Promise<void> {
 
 watch(
   partsUrlQuery.state,
-  (state) => {
+  async (state) => {
     if (isWritingUrl.value) return;
 
     updateFromUrl(state);
-
-    void loadParts();
+    await loadParts();
   },
   { flush: "sync" },
 );
 
-function handleAdvancedSearchToggle(event: Event): void {
+async function handleAdvancedSearchToggle(event: Event) {
   const details = event.currentTarget;
 
   if (!(details instanceof HTMLDetailsElement)) return;
@@ -405,23 +405,26 @@ function handleAdvancedSearchToggle(event: Event): void {
 
   if (details.open) {
     isAdvancedSearchLoaded.value = true;
-    void nextTick(() => advancedSearch.value?.focusLastUnfilledField());
+    await nextTick();
+    advancedSearch.value?.focusLastUnfilledField();
   }
 }
 
-function searchParts(): void {
+async function searchParts() {
   conditions.value = [];
-  void syncQueryToUrl().then(() => loadParts());
+  await syncQueryToUrl();
+  await loadParts();
 }
 
-function applyAdvancedConditions(nextConditions: PartsCondition[]): void {
+async function applyAdvancedConditions(nextConditions: PartsCondition[]) {
   searchQuery.value = "";
   conditions.value = nextConditions;
 
-  void syncQueryToUrl().then(() => loadParts());
+  await syncQueryToUrl();
+  await loadParts();
 }
 
-function handleSortChanged(event: SortChangedEvent<Part>): void {
+async function handleSortChanged(event: SortChangedEvent<Part>) {
   sort.value = event.api
     .getColumnState()
     .filter((column): column is typeof column & { sort: "asc" | "desc" } => column.sort !== null)
@@ -430,19 +433,20 @@ function handleSortChanged(event: SortChangedEvent<Part>): void {
       isPartsSortField(column.colId) ? [{ field: column.colId, direction: column.sort }] : [],
     );
 
-  void syncQueryToUrl().then(() => loadParts());
+  await syncQueryToUrl();
+  await loadParts();
 }
 
-function goToPage(page: number): void {
-  void loadParts(getBoundedPage(page));
+async function goToPage(page: number) {
+  await loadParts(getBoundedPage(page));
 }
 
-function changePageSize(size: number): void {
+async function changePageSize(size: number) {
   setPageSize(size);
-  goToPage(1);
+  await goToPage(1);
 }
 
-function handleSelectionChanged(event: SelectionChangedEvent<Part>): void {
+function handleSelectionChanged(event: SelectionChangedEvent<Part>) {
   selectedParts.value = event.api.getSelectedRows();
   selectedPartCount.value = selectedParts.value.length;
   actionMessage.value = null;

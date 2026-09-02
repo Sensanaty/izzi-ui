@@ -23,6 +23,7 @@ export type ClientFormState = {
 const props = withDefaults(defineProps<{ errors?: Record<string, string[]> }>(), {
   errors: () => ({}),
 });
+
 const form = defineModel<ClientFormState>({ required: true });
 
 function fieldError(field: keyof ClientFormState): string | null {

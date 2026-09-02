@@ -200,7 +200,7 @@
 
     <div class="flex flex-wrap gap-2">
       <IzziButton type="submit" :disabled="isSaving || companiesLoading">
-        {{ isSaving ? "Saving..." : isEditing ? "Save changes" : "Create part" }}
+        {{ submitLabel }}
       </IzziButton>
 
       <IzziButton variant="secondary" :disabled="isSaving" @click="cancel">Cancel</IzziButton>
@@ -343,6 +343,11 @@ const newCompanyForm = reactive<CompanyFormState>({
 
 const isSaving = ref(false);
 const isVersionsOpen = ref(false);
+const submitLabel = computed(() => {
+  if (isSaving.value) return "Saving...";
+
+  return isEditing.value ? "Save changes" : "Create part";
+});
 
 const loadError = ref<string | null>(null);
 const fieldErrors = ref<Record<string, string[]>>({});
@@ -452,7 +457,7 @@ function fillForm(part: Part): void {
   });
 }
 
-async function load(): Promise<void> {
+async function load() {
   const requestedPath = route.fullPath;
 
   try {
@@ -488,7 +493,7 @@ function validateCompanyForm(): boolean {
   return false;
 }
 
-async function createQuickCompany(): Promise<void> {
+async function createQuickCompany() {
   if (!validateCompanyForm()) return;
 
   isSavingCompany.value = true;
@@ -555,7 +560,7 @@ function validateForm(): boolean {
   return false;
 }
 
-async function submitForm(): Promise<void> {
+async function submitForm() {
   if (!validateForm()) return;
 
   fieldErrors.value = {};

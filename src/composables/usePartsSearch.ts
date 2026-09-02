@@ -39,9 +39,11 @@ export function usePartsSearch() {
   const searchQuery = ref(partsUrlQuery.state.value.partNumber);
   const conditions = ref<PartsCondition[]>(partsUrlQuery.state.value.conditions);
   const sort = ref<PartsSort[]>(partsUrlQuery.state.value.sort);
+
   const isAdvancedSearchOpen = ref(conditions.value.length > 0);
   const isAdvancedSearchLoaded = ref(isAdvancedSearchOpen.value);
   const isWritingUrl = ref(false);
+
   const advancedSearchKey = computed(() => JSON.stringify(conditions.value));
 
   async function syncQueryToUrl(): Promise<void> {

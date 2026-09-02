@@ -22,6 +22,7 @@ export function useCompanySearch() {
         state.sort.map(({ field, direction }) => `${field}:${direction}`).join(",") || undefined,
     }),
   });
+
   const searchQuery = ref(companyUrlQuery.state.value.query);
   const sort = ref<CompaniesSort[]>(companyUrlQuery.state.value.sort);
   const isWritingUrl = ref(false);

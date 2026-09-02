@@ -27,6 +27,7 @@
       >
         First
       </IzziButton>
+
       <IzziButton
         variant="outline"
         :disabled="!hasPreviousPage || disabled"
@@ -48,6 +49,7 @@
           @input="updatePageInput"
           @change="goToPage"
         />
+
         <span>of {{ lastPage }}</span>
       </form>
 
@@ -58,6 +60,7 @@
       >
         Next
       </IzziButton>
+
       <IzziButton
         variant="outline"
         :disabled="!hasNextPage || disabled"

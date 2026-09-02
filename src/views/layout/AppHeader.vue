@@ -48,7 +48,7 @@
         exact-active-class="!text-accent"
         :to="RoutePath.CLIENT_NEW"
       >
-        <UserPlus aria-hidden="true" class="mr-2 size-4" />New Contact
+        <UserPlus aria-hidden="true" class="mr-2 size-4" /> New Contact
       </RouterLink>
     </nav>
 

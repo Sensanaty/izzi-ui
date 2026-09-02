@@ -28,8 +28,9 @@
 
     <div class="flex gap-2">
       <IzziButton type="submit" :disabled="isSaving || isLoading">
-        {{ isSaving ? "Saving..." : isEditing ? "Save changes" : "Create company" }}
+        {{ submitLabel }}
       </IzziButton>
+
       <IzziButton variant="secondary" :disabled="isSaving" @click="cancel">Cancel</IzziButton>
     </div>
   </form>
@@ -53,6 +54,7 @@ const route = useRoute();
 const router = useRouter();
 const { createNotification } = useNotificationStore();
 const companyOptionsStore = useCompanyOptionsStore();
+
 const companyId = computed(() => Number(route.params.id));
 const isEditing = computed(() => route.name === Route.COMPANY_EDIT);
 const isLoading = ref(false);
@@ -60,6 +62,12 @@ const isSaving = ref(false);
 const loadError = ref<string | null>(null);
 const fieldErrors = ref<Record<string, string[]>>({});
 const form = reactive<CompanyFormState>(emptyForm());
+
+const submitLabel = computed(() => {
+  if (isSaving.value) return "Saving...";
+
+  return isEditing.value ? "Save changes" : "Create company";
+});
 
 function emptyForm(): CompanyFormState {
   return { name: "", address: "", city: "", country: "", website: "", subscription: "" };
@@ -166,15 +174,15 @@ async function submitForm(): Promise<void> {
   }
 }
 
-function cancel(): void {
-  void router.push(RoutePath.COMPANIES);
+async function cancel() {
+  await router.push(RoutePath.COMPANIES);
 }
 
 watch(
   () => [route.name, route.params.id],
-  () => {
+  async () => {
     resetForm();
-    void loadCompany();
+    await loadCompany();
   },
   { immediate: true },
 );

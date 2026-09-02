@@ -16,6 +16,7 @@
           @clear="searchCompanies"
         />
       </div>
+
       <IzziButton type="submit" class="my-auto" :disabled="isLoading">Search</IzziButton>
     </form>
 
@@ -154,6 +155,7 @@ const companyOptionsStore = useCompanyOptionsStore();
 const companies = ref<Company[]>([]);
 const totalCompanies = ref(0);
 const selectedCompanies = ref<Company[]>([]);
+
 const isDeleting = ref(false);
 const deleteItems = ref<{ id: number; label: string }[]>([]);
 const skipDeleteConfirmation = ref(
@@ -162,6 +164,7 @@ const skipDeleteConfirmation = ref(
 const { companyUrlQuery, isWritingUrl, searchQuery, sort, syncQueryToUrl, updateFromUrl } =
   useCompanySearch();
 const selectedCompanyCount = ref(0);
+
 const errorMessage = ref<string | null>(null);
 const isLoading = ref(true);
 const isGridReady = ref(false);
@@ -204,10 +207,10 @@ const {
   updateMetadata,
 } = pagination;
 
-function requestDelete(company: Company): void {
+async function requestDelete(company: Company) {
   deleteItems.value = [{ id: company.id, label: company.name }];
 
-  if (skipDeleteConfirmation.value) void confirmDelete(false);
+  if (skipDeleteConfirmation.value) await confirmDelete(false);
 }
 
 function requestBulkDelete(): void {
@@ -217,7 +220,7 @@ function requestBulkDelete(): void {
   }));
 }
 
-async function confirmDelete(dontAskAgain: boolean): Promise<void> {
+async function confirmDelete(dontAskAgain: boolean) {
   if (dontAskAgain) {
     skipDeleteConfirmation.value = true;
     localStorage.setItem("izzi-skip-delete-confirmation", "true");
@@ -238,7 +241,7 @@ async function confirmDelete(dontAskAgain: boolean): Promise<void> {
   }
 }
 
-async function loadCompanies(page = currentPage.value): Promise<void> {
+async function loadCompanies(page = currentPage.value) {
   isLoading.value = true;
   errorMessage.value = null;
 
@@ -262,20 +265,21 @@ async function loadCompanies(page = currentPage.value): Promise<void> {
   }
 }
 
-function searchCompanies(): void {
-  void syncQueryToUrl().then(() => loadCompanies());
+async function searchCompanies() {
+  await syncQueryToUrl();
+  await loadCompanies();
 }
 
-function goToPage(page: number): void {
-  void loadCompanies(getBoundedPage(page));
+async function goToPage(page: number) {
+  await loadCompanies(getBoundedPage(page));
 }
 
-function changePageSize(size: number): void {
+async function changePageSize(size: number) {
   setPageSize(size);
-  goToPage(1);
+  await goToPage(1);
 }
 
-function handleSortChanged(event: SortChangedEvent<Company>): void {
+async function handleSortChanged(event: SortChangedEvent<Company>) {
   sort.value = event.api
     .getColumnState()
     .filter((column): column is typeof column & { sort: "asc" | "desc" } => column.sort !== null)
@@ -284,34 +288,37 @@ function handleSortChanged(event: SortChangedEvent<Company>): void {
       isCompaniesSortField(column.colId) ? [{ field: column.colId, direction: column.sort }] : [],
     );
 
-  void syncQueryToUrl().then(() => loadCompanies());
+  await syncQueryToUrl();
+  await loadCompanies();
 }
 
-function toggleColumn(field: string, visible: boolean): void {
+function toggleColumn(field: string, visible: boolean) {
   visibleColumns.value[field] = visible;
   setColumnVisibility(field);
 }
 
-function changePinnedColumn(field: string, pinned: "" | "left" | "right"): void {
+function changePinnedColumn(field: string, pinned: "" | "left" | "right") {
   pinnedColumns.value[field] = pinned;
   setPinnedColumn(field);
 }
 
-function handleSelectionChanged(event: SelectionChangedEvent<Company>): void {
+function handleSelectionChanged(event: SelectionChangedEvent<Company>) {
   selectedCompanies.value = event.api.getSelectedRows();
   selectedCompanyCount.value = selectedCompanies.value.length;
 }
 
 watch(
   companyUrlQuery.state,
-  (state) => {
+  async (state) => {
     if (isWritingUrl.value) return;
 
     updateFromUrl(state);
-    void loadCompanies();
+    await loadCompanies();
   },
   { flush: "sync" },
 );
 
-onMounted(() => void loadCompanies());
+onMounted(async () => {
+  await loadCompanies();
+});
 </script>

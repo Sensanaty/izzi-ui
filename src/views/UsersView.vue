@@ -9,7 +9,9 @@
   </div>
 
   <p v-if="errorMessage" class="text-danger" role="alert">{{ errorMessage }}</p>
+
   <p v-else-if="isLoading" class="text-text-muted" role="status">Loading users...</p>
+
   <p v-else-if="!users.length" class="text-text-muted">No users found</p>
 
   <div v-else class="overflow-x-auto">
@@ -54,13 +56,7 @@
               :disabled="updatingUserId === user.id"
               @click="toggleAdmin(user)"
             >
-              {{
-                updatingUserId === user.id
-                  ? "Saving..."
-                  : user.admin
-                    ? "Remove admin"
-                    : "Make admin"
-              }}
+              {{ userActionLabels.get(user.id) }}
             </IzziButton>
           </td>
         </tr>
@@ -70,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { RouterLink } from "vue-router";
 import { getUsers, updateUser } from "@/api/users";
 import IzziButton from "@/components/ui/IzziButton.vue";
@@ -80,11 +76,22 @@ import { Route, RoutePath } from "@/router/constants";
 import type { User } from "@/lib/schemas/user";
 
 const users = ref<User[]>([]);
+
 const errorMessage = ref<string | null>(null);
 const isLoading = ref(true);
 const updatingUserId = ref<number | null>(null);
 
-async function loadUsers(): Promise<void> {
+const userActionLabels = computed(
+  () => new Map(users.value.map((user) => [user.id, getUserActionLabel(user)])),
+);
+
+function getUserActionLabel(user: User) {
+  if (updatingUserId.value === user.id) return "Saving...";
+
+  return user.admin ? "Remove admin" : "Make admin";
+}
+
+async function loadUsers() {
   isLoading.value = true;
   errorMessage.value = null;
 
@@ -92,13 +99,14 @@ async function loadUsers(): Promise<void> {
     users.value = await getUsers();
   } catch (error) {
     const details = notifyApiError(error, "Unable to load users");
+
     errorMessage.value = details.message;
   } finally {
     isLoading.value = false;
   }
 }
 
-async function toggleAdmin(user: User): Promise<void> {
+async function toggleAdmin(user: User) {
   updatingUserId.value = user.id;
 
   try {
@@ -113,7 +121,7 @@ async function toggleAdmin(user: User): Promise<void> {
   }
 }
 
-onMounted(() => {
-  void loadUsers();
+onMounted(async () => {
+  await loadUsers();
 });
 </script>

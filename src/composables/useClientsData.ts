@@ -17,6 +17,7 @@ type ClientsDataOptions = {
 
 export function useClientsData(options: ClientsDataOptions) {
   const clients = ref<Client[]>([]);
+
   const isLoading = ref(false);
   const errorMessage = ref<string | null>(null);
 

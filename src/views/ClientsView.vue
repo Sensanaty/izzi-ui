@@ -121,6 +121,7 @@ const DeleteConfirmationModal = defineAsyncComponent(
 
 const selectedClients = ref<Client[]>([]);
 const selectedClientCount = ref(0);
+
 const isDeleting = ref(false);
 const deleteItems = ref<{ id: number; label: string }[]>([]);
 
@@ -177,20 +178,20 @@ const {
   },
 });
 
-function toggleColumn(field: string, visible: boolean): void {
+function toggleColumn(field: string, visible: boolean) {
   visibleColumns.value[field] = visible;
   setColumnVisibility(field);
 }
 
-function changePinnedColumn(field: string, pinned: "" | "left" | "right"): void {
+function changePinnedColumn(field: string, pinned: "" | "left" | "right") {
   pinnedColumns.value[field] = pinned;
   setPinnedColumn(field);
 }
 
-function requestDelete(client: Client): void {
+async function requestDelete(client: Client) {
   deleteItems.value = [{ id: client.id, label: client.name }];
 
-  if (skipDeleteConfirmation.value) void confirmDelete(false);
+  if (skipDeleteConfirmation.value) await confirmDelete(false);
 }
 
 function requestBulkDelete(): void {
@@ -200,7 +201,7 @@ function requestBulkDelete(): void {
   }));
 }
 
-async function confirmDelete(dontAskAgain: boolean): Promise<void> {
+async function confirmDelete(dontAskAgain: boolean) {
   if (dontAskAgain) {
     skipDeleteConfirmation.value = true;
     localStorage.setItem("izzi-skip-delete-confirmation", "true");
@@ -232,20 +233,21 @@ const { clients, errorMessage, isLoading, loadClients } = useClientsData({
   },
 });
 
-function searchContacts(): void {
-  void syncQueryToUrl().then(() => loadClients());
+async function searchContacts() {
+  await syncQueryToUrl();
+  await loadClients();
 }
 
-function goToPage(page: number): void {
-  void loadClients(getBoundedPage(page));
+async function goToPage(page: number) {
+  await loadClients(getBoundedPage(page));
 }
 
-function changePageSize(size: number): void {
+async function changePageSize(size: number) {
   setPageSize(size);
-  goToPage(1);
+  await goToPage(1);
 }
 
-function handleSortChanged(event: SortChangedEvent<Client>): void {
+async function handleSortChanged(event: SortChangedEvent<Client>) {
   sort.value = event.api
     .getColumnState()
     .filter((column): column is typeof column & { sort: "asc" | "desc" } => column.sort !== null)
@@ -253,23 +255,27 @@ function handleSortChanged(event: SortChangedEvent<Client>): void {
     .flatMap((column) =>
       isClientsSortField(column.colId) ? [{ field: column.colId, direction: column.sort }] : [],
     );
-  void syncQueryToUrl().then(() => loadClients());
+
+  await syncQueryToUrl();
+  await loadClients();
 }
 
-function handleSelectionChanged(event: SelectionChangedEvent<Client>): void {
+function handleSelectionChanged(event: SelectionChangedEvent<Client>) {
   selectedClients.value = event.api.getSelectedRows();
   selectedClientCount.value = selectedClients.value.length;
 }
 
 watch(
   clientUrlQuery.state,
-  (state) => {
+  async (state) => {
     if (isWritingUrl.value) return;
 
     updateFromUrl(state);
-    void loadClients();
+    await loadClients();
   },
   { flush: "sync" },
 );
-onMounted(() => void loadClients());
+onMounted(async () => {
+  await loadClients();
+});
 </script>

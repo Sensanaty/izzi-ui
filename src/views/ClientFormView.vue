@@ -4,10 +4,12 @@
       <h1 class="font-bold text-3xl">
         {{ isEditing ? `Edit contact ${clientId}` : "New contact" }}
       </h1>
+
       <p class="text-text-muted">
         {{ isEditing ? "Update the contact record" : "Add a contact to a company" }}
       </p>
     </div>
+
     <RouterLink class="text-accent underline" :to="{ path: RoutePath.CLIENTS, query: route.query }">
       Back to contacts
     </RouterLink>
@@ -18,11 +20,13 @@
   <form class="grid gap-6" novalidate @submit.prevent="submitForm">
     <section class="bg-surface-raised border-border grid gap-4 rounded-sm border-2 p-4">
       <h2 class="font-bold text-xl">Contact details</h2>
+
       <ClientFormFields v-model="form" :errors="fieldErrors" />
       <div class="grid content-start gap-1">
         <span id="client-company-label" class="font-bold">
           Company <sup aria-hidden="true">*</sup><span class="sr-only">(required)</span>
         </span>
+
         <IzziDropdown
           id="client-company"
           v-model="companyId"
@@ -35,6 +39,7 @@
           :disabled="isSaving || isLoading"
           :error="fieldErrors.company_id?.join(', ') ?? null"
         />
+
         <span v-if="!isLoading && !companies.length" class="text-danger" role="alert">
           No companies are available
         </span>
@@ -43,8 +48,9 @@
 
     <div class="flex flex-wrap gap-2">
       <IzziButton type="submit" :disabled="isSaving || isLoading">
-        {{ isSaving ? "Saving..." : isEditing ? "Save changes" : "Create contact" }}
+        {{ submitLabel }}
       </IzziButton>
+
       <IzziButton variant="secondary" :disabled="isSaving" @click="cancel">Cancel</IzziButton>
     </div>
   </form>
@@ -66,6 +72,7 @@ import type { ClientFormState } from "@/components/clients/ClientFormFields.vue"
 
 const route = useRoute();
 const router = useRouter();
+
 const isEditing = computed(() => route.name === Route.CLIENT_EDIT);
 const clientId = computed(() => Number(route.params.id));
 const form = reactive<ClientFormState>({ name: "", address: "", number: "", email: "" });
@@ -81,8 +88,13 @@ const fieldErrors = ref<Record<string, string[]>>({});
 const loadError = ref<string | null>(null);
 const isLoading = ref(false);
 const isSaving = ref(false);
+const submitLabel = computed(() => {
+  if (isSaving.value) return "Saving...";
 
-async function load(): Promise<void> {
+  return isEditing.value ? "Save changes" : "Create contact";
+});
+
+async function load() {
   if (isEditing.value && (!Number.isInteger(clientId.value) || clientId.value < 1)) {
     loadError.value = "Invalid contact ID";
 
@@ -114,7 +126,7 @@ async function load(): Promise<void> {
   }
 }
 
-async function submitForm(): Promise<void> {
+async function submitForm() {
   fieldErrors.value = {};
 
   if (!form.name.trim()) fieldErrors.value.name = ["is required"];
@@ -155,9 +167,11 @@ async function submitForm(): Promise<void> {
   }
 }
 
-function cancel(): void {
-  void router.push({ path: RoutePath.CLIENTS, query: route.query });
+async function cancel() {
+  await router.push({ path: RoutePath.CLIENTS, query: route.query });
 }
 
-onMounted(() => void load());
+onMounted(async () => {
+  await load();
+});
 </script>
