@@ -79,6 +79,10 @@ const emit = defineEmits<{
   align-items: center;
 }
 
+:deep(.ag-header-cell-text) {
+  @apply select-none;
+}
+
 :deep(.ag-cell[col-id="description"] .ag-cell-value),
 :deep(.ag-cell[col-id="company_name"] .ag-cell-value),
 :deep(.ag-cell[col-id="tag"] .ag-cell-value) {
