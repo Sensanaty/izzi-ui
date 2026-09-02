@@ -6,7 +6,7 @@
       <RouterLink
         class="inline-flex items-center text-lg font-bold text-text hover:text-accent"
         exact-active-class="!text-accent"
-        :to="RoutePath.HOME"
+        :to="{ path: RoutePath.HOME, query: route.query }"
       >
         <Package aria-hidden="true" class="mr-2 size-5" /> Parts
       </RouterLink>
@@ -14,7 +14,7 @@
       <RouterLink
         class="border-border inline-flex items-center border-l pl-3 text-sm font-semibold text-text hover:text-accent"
         exact-active-class="!text-accent"
-        :to="RoutePath.PART_NEW"
+        :to="{ path: RoutePath.PART_NEW, query: route.query }"
       >
         <PackagePlus aria-hidden="true" class="mr-2 size-4" /> New Part
       </RouterLink>
@@ -91,13 +91,14 @@ import {
   PackagePlus,
   UserPlus,
 } from "@lucide/vue";
-import { RouterLink, useRouter } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import ThemeToggle from "@/components/ui/ThemeToggle.vue";
 import { notifyApiErrorDetails } from "@/lib/notifications";
 import { RoutePath } from "@/router/constants";
 import { useAuthStore } from "@/stores/auth";
 
 const auth = useAuthStore();
+const route = useRoute();
 const router = useRouter();
 
 async function signOut(): Promise<void> {

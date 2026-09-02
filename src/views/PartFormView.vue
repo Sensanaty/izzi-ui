@@ -574,6 +574,7 @@ async function submitForm() {
     }
 
     createNotification(isEditing.value ? "Part updated" : "Part created");
+    await router.replace({ path: RoutePath.HOME, query: route.query });
   } catch (error) {
     const details = notifyApiError(
       error,
