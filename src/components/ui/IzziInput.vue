@@ -33,7 +33,7 @@
         :aria-errormessage="error ? errorId : undefined"
         :aria-invalid="Boolean(error) || props.invalid"
         :aria-required="required || undefined"
-        class="bg-input focus:ring-focus-ring w-full rounded-sm border-2 px-3 py-2 outline-none focus:ring-2 disabled:cursor-not-allowed disabled:text-text-muted"
+        class="bg-input focus:ring-focus-ring read-only:cursor-not-allowed read-only:text-text-muted read-only:focus:ring-0 w-full rounded-sm border-2 px-3 py-2 outline-none focus:ring-2 disabled:cursor-not-allowed disabled:text-text-muted"
         :class="{
           'border-border!': !error && !props.invalid,
           'border-danger!': Boolean(error) || props.invalid,
