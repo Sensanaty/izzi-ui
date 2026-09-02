@@ -105,6 +105,10 @@ function formatQuoteDetails(part: Part): string {
         return `${label}: ${quoteTypeLabels[part.quote_type] ?? displayPartValue(part.quote_type)}`;
       }
 
+      if (key === "available") {
+        return `${label}: ${displayPartValue(part[key])} EA`;
+      }
+
       return `${label}: ${displayPartValue(part[key])}`;
     })
     .filter((line): line is string => line !== null)
@@ -118,6 +122,19 @@ function formatDetails(part: Part, type: CopyType): string {
 export function usePartsCopy() {
   const actionMessage = ref<string | null>(null);
   const { createNotification } = useNotificationStore();
+
+  async function copyPartNumbers(partsToCopy: Part[]): Promise<void> {
+    const clipboardText = partsToCopy.map(({ part_number }) => part_number).join("\n");
+
+    try {
+      await navigator.clipboard.writeText(clipboardText);
+      const message = "Part number copied to clipboard";
+      actionMessage.value = message;
+      createNotification(message);
+    } catch (error) {
+      actionMessage.value = notifyApiError(error, "Unable to copy part number").message;
+    }
+  }
 
   async function copyDetailsForParts(partsToCopy: Part[], type: CopyType): Promise<void> {
     const clipboardText = partsToCopy
@@ -141,5 +158,5 @@ export function usePartsCopy() {
     return copyDetailsForParts(partsToCopy, type);
   }
 
-  return { actionMessage, copyDetails, copyDetailsForParts };
+  return { actionMessage, copyDetails, copyDetailsForParts, copyPartNumbers };
 }

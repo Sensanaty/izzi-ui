@@ -110,11 +110,11 @@
     :default-col-def="defaultColDef"
     :is-grid-ready="isGridReady"
     :loading="isLoading"
-    :modules="modules"
+    :modules="gridModules"
     :parts="parts"
     :row-selection="rowSelection"
     :selection-column-def="selectionColumnDef"
-    :theme="theme"
+    :theme="gridTheme"
     :current-page="currentPage"
     :last-page="lastPage"
     :page-input="pageInput"
@@ -191,6 +191,11 @@ const DeleteConfirmationModal = defineAsyncComponent(
   () => import("@/components/ui/DeleteConfirmationModal.vue"),
 );
 
+const { theme } = useTheme();
+const gridTheme = computed(() =>
+  themeQuartz.withPart(theme.value === "dark" ? colorSchemeDark : colorSchemeLight),
+);
+
 const {
   advancedSearchKey,
   conditions,
@@ -204,12 +209,6 @@ const {
   updateFromUrl,
 } = usePartsSearch();
 
-const pagination = usePagination({
-  pageSizeOptions: [5, 10, 25, 50, 100],
-  defaultPageSize: 25,
-  storageKey: "izzi-parts-page-size",
-});
-
 const {
   currentPage,
   getBoundedPage,
@@ -222,36 +221,44 @@ const {
   setPageSize,
   totalItems: totalParts,
   updateMetadata,
-} = pagination;
+} = usePagination({
+  pageSizeOptions: [5, 10, 25, 50, 100],
+  defaultPageSize: 25,
+  storageKey: "izzi-parts-page-size",
+});
 
 const selectedPartCount = ref(0);
 const selectedParts = ref<Part[]>([]);
+
 const isGridReady = ref(false);
 const isExporting = ref(false);
 const isDeleting = ref(false);
+
 const deleteItems = ref<{ id: number; label: string }[]>([]);
-const skipDeleteConfirmation = ref(localStorage.getItem("izzi-skip-delete-confirmation") === "true");
 
-const modules = gridModules;
-const { theme: appTheme } = useTheme();
-const theme = computed(() =>
-  themeQuartz.withPart(appTheme.value === "dark" ? colorSchemeDark : colorSchemeLight),
+const skipDeleteConfirmation = ref(
+  localStorage.getItem("izzi-skip-delete-confirmation") === "true",
 );
-const rowSelection = { mode: "multiRow", enableClickSelection: false } as const;
-const { actionMessage, copyDetails, copyDetailsForParts } = usePartsCopy();
-const columnDefs = createPartsColumnDefs(copyDetailsForParts, requestDelete);
 
-function requestDelete(part: Part): void {
+const rowSelection = { mode: "multiRow", enableClickSelection: false } as const;
+const { actionMessage, copyDetails, copyDetailsForParts, copyPartNumbers } = usePartsCopy();
+const columnDefs = createPartsColumnDefs(
+  copyDetailsForParts,
+  (part) => copyPartNumbers([part]),
+  requestDelete,
+);
+
+function requestDelete(part: Part) {
   deleteItems.value = [{ id: part.id, label: part.part_number }];
 
-  if (skipDeleteConfirmation.value) void confirmDelete(false);
+  if (skipDeleteConfirmation.value) confirmDelete(false);
 }
 
-function requestBulkDelete(): void {
+function requestBulkDelete() {
   deleteItems.value = selectedParts.value.map((part) => ({ id: part.id, label: part.part_number }));
 }
 
-async function confirmDelete(dontAskAgain: boolean): Promise<void> {
+async function confirmDelete(dontAskAgain: boolean) {
   if (dontAskAgain) {
     skipDeleteConfirmation.value = true;
     localStorage.setItem("izzi-skip-delete-confirmation", "true");
@@ -345,7 +352,9 @@ async function exportAllParts(): Promise<void> {
       conditions: conditions.value,
       sort: sort.value,
     });
+
     downloadBlob(blob, createPartsFilename());
+
     actionMessage.value = "All parts exported";
   } catch (error: unknown) {
     notifyApiError(error, "Unable to export parts", { skipAuthenticationErrors: true });

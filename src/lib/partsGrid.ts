@@ -4,13 +4,14 @@ import type { PartsGridActionsParams } from "@/components/parts/PartsGridActions
 import type { Part, PartField } from "@/lib/schemas/part";
 import type { ColDef } from "ag-grid-community";
 
-export type PartColumnField = Exclude<PartField, "id" | "created_at" | "company_id">;
+export type PartColumnField = Exclude<PartField, "id" | "company_id">;
 export type ColumnOption = {
   field: "actions" | PartColumnField;
   label: string;
 };
 
 export type CopyDetailsForParts = (parts: Part[], type: "quote" | "full") => Promise<void>;
+export type CopyPartNumber = (part: Part) => Promise<void>;
 
 export const columnOptions: ColumnOption[] = [
   { field: "actions", label: "Actions" },
@@ -21,13 +22,18 @@ export const columnOptions: ColumnOption[] = [
   { field: "reserved", label: "Reserved" },
   { field: "sold", label: "Sold" },
   { field: "condition", label: "Condition" },
+  { field: "min_cost", label: "Min Cost" },
   { field: "min_price", label: "Min Price" },
+  { field: "med_cost", label: "Med Cost" },
   { field: "med_price", label: "Med Price" },
+  { field: "max_cost", label: "Max Cost" },
   { field: "max_price", label: "Max Price" },
   { field: "lead_time", label: "Lead Time" },
   { field: "quote_type", label: "Quote Type" },
   { field: "tag", label: "Tag" },
-  { field: "updated_at", label: "Updated" },
+  { field: "added", label: "Date Added" },
+  { field: "updated_at", label: "Updated At" },
+  { field: "created_at", label: "Created At" },
 ];
 
 export const selectionColumnDef = {
@@ -58,6 +64,7 @@ const dateFormatter = (params: { value: string | null | undefined }): string => 
 
 export function createPartsColumnDefs(
   copyDetailsForParts: CopyDetailsForParts,
+  copyPartNumber: CopyPartNumber,
   onDelete: (part: Part) => void,
 ): ColDef<Part>[] {
   return [
@@ -65,7 +72,11 @@ export function createPartsColumnDefs(
       colId: "actions",
       headerName: "",
       cellRenderer: PartsGridActions,
-      cellRendererParams: { copyDetailsForParts, onDelete } satisfies Partial<PartsGridActionsParams>,
+      cellRendererParams: {
+        copyDetailsForParts,
+        copyPartNumber,
+        onDelete,
+      } satisfies Partial<PartsGridActionsParams>,
       sortable: false,
       filter: false,
       suppressHeaderMenuButton: true,
@@ -74,9 +85,22 @@ export function createPartsColumnDefs(
       maxWidth: 50,
       resizable: false,
     },
-    { field: "part_number", headerName: "Part Number", minWidth: 180 },
-    { field: "description", headerName: "Description", flex: 2, minWidth: 220 },
-    { field: "company_name", headerName: "Company", minWidth: 180 },
+    { field: "part_number", headerName: "Part Number", minWidth: 110 },
+    {
+      field: "description",
+      headerName: "Description",
+      flex: 2,
+      minWidth: 220,
+      wrapText: true,
+      autoHeight: true,
+    },
+    {
+      field: "company_name",
+      headerName: "Company",
+      minWidth: 180,
+      wrapText: true,
+      autoHeight: true,
+    },
     {
       field: "available",
       headerName: "Available",
@@ -85,10 +109,17 @@ export function createPartsColumnDefs(
     {
       field: "reserved",
       headerName: "Reserved",
+      hide: true,
       cellClass: "font-mono font-bold",
     },
-    { field: "sold", headerName: "Sold", cellClass: "font-mono font-bold" },
+    { field: "sold", headerName: "Sold", hide: true, cellClass: "font-mono font-bold" },
     { field: "condition", headerName: "Condition" },
+    {
+      field: "min_cost",
+      headerName: "Min Cost",
+      valueFormatter: currencyFormatter,
+      cellClass: "font-mono font-bold",
+    },
     {
       field: "min_price",
       headerName: "Min Price",
@@ -96,8 +127,20 @@ export function createPartsColumnDefs(
       cellClass: "font-mono font-bold",
     },
     {
+      field: "med_cost",
+      headerName: "Med Cost",
+      valueFormatter: currencyFormatter,
+      cellClass: "font-mono font-bold",
+    },
+    {
       field: "med_price",
       headerName: "Med Price",
+      valueFormatter: currencyFormatter,
+      cellClass: "font-mono font-bold",
+    },
+    {
+      field: "max_cost",
+      headerName: "Max Cost",
       valueFormatter: currencyFormatter,
       cellClass: "font-mono font-bold",
     },
@@ -110,6 +153,8 @@ export function createPartsColumnDefs(
     { field: "lead_time", headerName: "Lead Time", cellClass: "font-mono" },
     { field: "quote_type", headerName: "Quote Type", minWidth: 190, cellClass: "font-mono" },
     { field: "tag", headerName: "Tag", wrapText: true, autoHeight: true },
+    { field: "added", headerName: "Date Added", valueFormatter: dateFormatter, minWidth: 160 },
+    { field: "created_at", headerName: "Created", valueFormatter: dateFormatter, minWidth: 160 },
     { field: "updated_at", headerName: "Updated", valueFormatter: dateFormatter, minWidth: 160 },
   ];
 }

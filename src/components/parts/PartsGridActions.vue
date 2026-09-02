@@ -18,7 +18,7 @@
     <Teleport to="body">
       <div
         v-if="isMenuOpen"
-        ref="menuElement"
+        ref="menuElementRef"
         class="bg-surface-raised border-border fixed z-50 grid w-max gap-1 rounded-sm border p-2 shadow-md"
         role="menu"
         tabindex="-1"
@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, ref } from "vue";
+import { nextTick, onBeforeUnmount, ref, useTemplateRef } from "vue";
 import { Settings } from "@lucide/vue";
 import { useRoute, useRouter } from "vue-router";
 import IzziButton from "@/components/ui/IzziButton.vue";
@@ -51,6 +51,7 @@ import type { ICellRendererParams } from "ag-grid-community";
 
 export type PartsGridActionsParams = ICellRendererParams<Part> & {
   copyDetailsForParts: (parts: Part[], type: "quote" | "full") => Promise<void>;
+  copyPartNumber: (part: Part) => Promise<void>;
   onDelete: (part: Part) => void;
 };
 
@@ -58,25 +59,31 @@ type Props = {
   params: PartsGridActionsParams;
 };
 
-type ActionType = "edit" | "quote" | "full" | "delete";
+type ActionType = "edit" | "quote" | "full" | "part-number" | "delete";
 
 type Action = {
   label: string;
   type: ActionType;
 };
 
+const props = defineProps<Props>();
+
+const route = useRoute();
+const router = useRouter();
+
 const actions: Action[] = [
   { label: "Edit part", type: "edit" },
+  { label: "Copy part number", type: "part-number" },
   { label: "Copy quote details", type: "quote" },
   { label: "Copy full details", type: "full" },
   { label: "Delete part", type: "delete" },
 ];
 
-const route = useRoute();
-const router = useRouter();
 const isMenuOpen = ref(false);
-const menuElement = ref<HTMLDivElement | null>(null);
+
+const menuElement = useTemplateRef<HTMLDivElement>("menuElementRef");
 const menuStyle = ref({ left: "0px", top: "0px" });
+
 let triggerElement: HTMLButtonElement | null = null;
 
 function toggleMenu(event: MouseEvent): void {
@@ -103,33 +110,41 @@ function toggleMenu(event: MouseEvent): void {
   void nextTick(() => menuElement.value?.focus());
 }
 
-function closeMenu(): void {
+function closeMenu() {
   isMenuOpen.value = false;
   triggerElement = null;
+
   document.removeEventListener("click", closeMenu);
 }
 
-function runAction(type: ActionType): void {
+async function runAction(type: ActionType) {
   const part = props.params.data;
 
   if (!part) return;
 
-  if (type === "edit") {
-    void router.push({
-      name: Route.PART_EDIT,
-      params: { id: part.id },
-      query: route.query,
-    });
-  } else if (type === "delete") {
-    props.params.onDelete(part);
-  } else {
-    void props.params.copyDetailsForParts([part], type);
+  switch (type) {
+    case "edit":
+      await router.push({
+        name: Route.PART_EDIT,
+        params: { id: part.id },
+        query: route.query,
+      });
+      break;
+    case "part-number":
+      void props.params.copyPartNumber(part);
+      break;
+    case "full":
+    case "quote":
+      props.params.copyDetailsForParts([part], type);
+      break;
+    case "delete":
+    default:
+      props.params.onDelete(part);
+      break;
   }
 
   closeMenu();
 }
-
-const props = defineProps<Props>();
 
 onBeforeUnmount(closeMenu);
 </script>
