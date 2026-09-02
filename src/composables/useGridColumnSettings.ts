@@ -16,18 +16,19 @@ const columnStateSchema = z.array(
     flex: z.number().nullable().optional(),
     sort: z.enum(["asc", "desc"]).nullable().optional(),
     sortIndex: z.number().nullable().optional(),
-    pinned: z.union([z.literal("left"), z.literal("right"), z.boolean()]).nullable().optional(),
+    pinned: z
+      .union([z.literal("left"), z.literal("right"), z.boolean()])
+      .nullable()
+      .optional(),
   }),
 );
 
-export function useGridColumnSettings<TRow extends object>(
-  options: {
-    columnOptions: readonly ColumnOption[];
-    storageKey: string;
-    onReady: GridReadyCallback;
-    autoSizeColumns?: string[];
-  },
-) {
+export function useGridColumnSettings<TRow extends object>(options: {
+  columnOptions: readonly ColumnOption[];
+  storageKey: string;
+  onReady: GridReadyCallback;
+  autoSizeColumns?: string[];
+}) {
   const gridApi = ref<GridApi<TRow> | null>(null);
   const visibleColumns = ref<Record<string, boolean>>(
     Object.fromEntries(options.columnOptions.map(({ field }) => [field, true])),

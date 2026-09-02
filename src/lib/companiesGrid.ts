@@ -33,25 +33,24 @@ export const companyDefaultColDef: ColDef<Company> = {
 
 export function createCompanyColumnDefs(onDelete: (company: Company) => void): ColDef<Company>[] {
   return [
-  
-  {
-    colId: "actions",
-    headerName: "",
-    cellRenderer: CompanyGridActions,
-    cellRendererParams: { onDelete },
-    sortable: false,
-    suppressHeaderMenuButton: true,
-    width: 70,
-    minWidth: 70,
-    maxWidth: 70,
-    resizable: false,
-  },
-  { field: "name", headerName: "Name", flex: 2, minWidth: 220 },
-  { field: "address", headerName: "Address", flex: 2, minWidth: 200 },
-  { field: "city", headerName: "City" },
-  { field: "country", headerName: "Country" },
-  { field: "website", headerName: "Website", flex: 2, minWidth: 180 },
-  { field: "subscription", headerName: "Subscription" },
+    {
+      colId: "actions",
+      headerName: "",
+      cellRenderer: CompanyGridActions,
+      cellRendererParams: { onDelete },
+      sortable: false,
+      suppressHeaderMenuButton: true,
+      width: 70,
+      minWidth: 70,
+      maxWidth: 70,
+      resizable: false,
+    },
+    { field: "name", headerName: "Name", flex: 2, minWidth: 220 },
+    { field: "address", headerName: "Address", flex: 2, minWidth: 200 },
+    { field: "city", headerName: "City" },
+    { field: "country", headerName: "Country" },
+    { field: "website", headerName: "Website", flex: 2, minWidth: 180 },
+    { field: "subscription", headerName: "Subscription" },
     { field: "parts_count", headerName: "Parts", cellClass: "font-mono font-bold" },
   ];
 }

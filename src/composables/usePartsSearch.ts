@@ -86,4 +86,3 @@ function queryValue(query: LocationQuery, key: string): string {
 
   return typeof value === "string" ? value : "";
 }
-

@@ -2,10 +2,14 @@
   <div class="flex items-center justify-between gap-3">
     <div>
       <h1 class="font-bold text-3xl">{{ isEditing ? "Edit User" : "New User" }}</h1>
+
       <p class="text-text-muted">
-        {{ isEditing ? "Update this IZZICUP user's access" : "Create an account for an IZZICUP user" }}
+        {{
+          isEditing ? "Update this IZZICUP user's access" : "Create an account for an IZZICUP user"
+        }}
       </p>
     </div>
+
     <RouterLink class="text-accent underline" :to="RoutePath.USERS">Back to users</RouterLink>
   </div>
 
@@ -28,6 +32,7 @@
         :error="fieldError('username')"
         required
       />
+
       <IzziInput
         id="user-email"
         v-model="form.email"
@@ -38,11 +43,14 @@
         type="email"
         required
       />
+
       <IzziInput
         id="user-password"
         v-model="form.password"
         autocomplete="new-password"
-        :description="isEditing ? 'Leave blank to keep the current password' : 'Use at least 9 characters'"
+        :description="
+          isEditing ? 'Leave blank to keep the current password' : 'Use at least 9 characters'
+        "
         label="Password"
         :disabled="isSaving"
         :error="fieldError('password')"
@@ -52,7 +60,13 @@
     </div>
 
     <label class="flex items-center gap-2 font-bold" for="user-admin">
-      <input id="user-admin" v-model="form.admin" class="size-4" type="checkbox" :disabled="isSaving" />
+      <input
+        id="user-admin"
+        v-model="form.admin"
+        class="size-4"
+        type="checkbox"
+        :disabled="isSaving"
+      />
       Administrator access
     </label>
 
@@ -60,6 +74,7 @@
       <IzziButton type="submit" :disabled="isSaving">
         {{ isSaving ? "Saving..." : isEditing ? "Save user" : "Create user" }}
       </IzziButton>
+
       <IzziButton variant="secondary" :disabled="isSaving" @click="cancel">Cancel</IzziButton>
     </div>
   </form>
@@ -168,7 +183,10 @@ async function submitForm(): Promise<void> {
 
     await router.replace(RoutePath.USERS);
   } catch (error) {
-    const details = notifyApiError(error, isEditing.value ? "Unable to update user" : "Unable to create user");
+    const details = notifyApiError(
+      error,
+      isEditing.value ? "Unable to update user" : "Unable to create user",
+    );
     fieldErrors.value = details.fieldErrors;
   } finally {
     isSaving.value = false;

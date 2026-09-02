@@ -74,7 +74,8 @@ function showDialog(): void {
 
   if (!dialog || dialog.open) return;
 
-  returnFocusElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  returnFocusElement =
+    document.activeElement instanceof HTMLElement ? document.activeElement : null;
   dialog.showModal();
   void nextTick(() => focusFirstElement(dialog));
 }

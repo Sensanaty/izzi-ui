@@ -58,8 +58,8 @@
 </template>
 
 <script setup lang="ts">
-import AgGridTable from "@/components/ui/AgGridTable.vue";
 import PartsPagination from "@/components/parts/PartsPagination.vue";
+import AgGridTable from "@/components/ui/AgGridTable.vue";
 
 import type { Part } from "@/lib/schemas/part";
 import type {

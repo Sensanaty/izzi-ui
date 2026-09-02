@@ -49,7 +49,9 @@ describe("parsePartsConditions", () => {
     expect(parsePartsConditions(JSON.stringify(conditions))).toHaveLength(20);
     expect(parsePartsConditions(JSON.stringify([...conditions, conditions[0]]))).toEqual([]);
     expect(
-      parsePartsConditions(JSON.stringify([{ field: "available", operator: "eq", value: "not-a-number" }])),
+      parsePartsConditions(
+        JSON.stringify([{ field: "available", operator: "eq", value: "not-a-number" }]),
+      ),
     ).toEqual([{ field: "available", operator: "eq", value: "not-a-number" }]);
   });
 });
