@@ -100,6 +100,19 @@ export function usePartsGrid(onReady: GridReadyCallback) {
     gridApi.value?.setColumnsPinned([field], pinnedValue);
   }
 
+  function compactColumnWidths(): void {
+    if (!gridApi.value) return;
+
+    const widths = gridApi.value.getColumns()?.map((column) => ({
+      key: column.getColId(),
+      newWidth: column.getColDef().minWidth ?? 120,
+    }));
+
+    if (widths?.length) gridApi.value.setColumnWidths(widths);
+
+    persistColumnState();
+  }
+
   function exportCsv(onlySelected = false): void {
     gridApi.value?.exportDataAsCsv({
       fileName: createPartsFilename(),
@@ -119,6 +132,7 @@ export function usePartsGrid(onReady: GridReadyCallback) {
 
   return {
     changePinnedColumn,
+    compactColumnWidths,
     exportCsv,
     handleGridReady,
     pinnedColumns,

@@ -8,7 +8,7 @@
       aria-label="Open row actions"
       @click.stop="toggleMenu"
     >
-      <Settings
+      <TableOfContents
         class="size-4 transition-colors"
         :class="{ 'text-accent': isMenuOpen }"
         aria-hidden="true"
@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref, useTemplateRef } from "vue";
-import { Settings } from "@lucide/vue";
+import { TableOfContents } from "@lucide/vue";
 import { useRoute, useRouter } from "vue-router";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import { Route } from "@/router/constants";

@@ -146,7 +146,9 @@ withDefaults(defineProps<IzziButtonProps>(), {
   }
 
   &:is(.izzi-button--ghost) {
-    @apply border-transparent bg-transparent;
+    @apply border-0 bg-transparent;
+    box-shadow: none;
+    transform: none;
 
     &:not(:disabled) {
       &:hover,

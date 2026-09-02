@@ -5,35 +5,37 @@ import type { Part, PartField } from "@/lib/schemas/part";
 import type { ColDef } from "ag-grid-community";
 
 export type PartColumnField = Exclude<PartField, "id" | "company_id">;
+export type ColumnGroup = "General" | "Inventory" | "Pricing" | "Dates";
 export type ColumnOption = {
   field: "actions" | PartColumnField;
   label: string;
+  group: ColumnGroup;
 };
 
 export type CopyDetailsForParts = (parts: Part[], type: "quote" | "full") => Promise<void>;
 export type CopyPartNumber = (part: Part) => Promise<void>;
 
 export const columnOptions: ColumnOption[] = [
-  { field: "actions", label: "Actions" },
-  { field: "part_number", label: "Part Number" },
-  { field: "description", label: "Description" },
-  { field: "company_name", label: "Company" },
-  { field: "available", label: "Available" },
-  { field: "reserved", label: "Reserved" },
-  { field: "sold", label: "Sold" },
-  { field: "condition", label: "Condition" },
-  { field: "min_cost", label: "Min Cost" },
-  { field: "min_price", label: "Min Price" },
-  { field: "med_cost", label: "Med Cost" },
-  { field: "med_price", label: "Med Price" },
-  { field: "max_cost", label: "Max Cost" },
-  { field: "max_price", label: "Max Price" },
-  { field: "lead_time", label: "Lead Time" },
-  { field: "quote_type", label: "Quote Type" },
-  { field: "tag", label: "Tag" },
-  { field: "added", label: "Date Added" },
-  { field: "updated_at", label: "Updated At" },
-  { field: "created_at", label: "Created At" },
+  { field: "actions", label: "Actions", group: "General" },
+  { field: "part_number", label: "Part Number", group: "General" },
+  { field: "description", label: "Description", group: "General" },
+  { field: "company_name", label: "Company", group: "General" },
+  { field: "condition", label: "Condition", group: "General" },
+  { field: "quote_type", label: "Quote Type", group: "General" },
+  { field: "tag", label: "Tag", group: "General" },
+  { field: "available", label: "Available", group: "Inventory" },
+  { field: "reserved", label: "Reserved", group: "Inventory" },
+  { field: "sold", label: "Sold", group: "Inventory" },
+  { field: "lead_time", label: "Lead Time", group: "Inventory" },
+  { field: "min_cost", label: "Min Cost", group: "Pricing" },
+  { field: "min_price", label: "Min Price", group: "Pricing" },
+  { field: "med_cost", label: "Med Cost", group: "Pricing" },
+  { field: "med_price", label: "Med Price", group: "Pricing" },
+  { field: "max_cost", label: "Max Cost", group: "Pricing" },
+  { field: "max_price", label: "Max Price", group: "Pricing" },
+  { field: "added", label: "Date Added", group: "Dates" },
+  { field: "updated_at", label: "Updated At", group: "Dates" },
+  { field: "created_at", label: "Created At", group: "Dates" },
 ];
 
 export const selectionColumnDef = {
@@ -73,6 +75,7 @@ export function createPartsColumnDefs(
     {
       colId: "actions",
       headerName: "",
+      pinned: "left",
       cellRenderer: PartsGridActions,
       cellRendererParams: {
         copyDetailsForParts,
@@ -168,7 +171,7 @@ export function createPartsColumnDefs(
     },
     { field: "lead_time", headerName: "Lead Time", cellClass: "font-mono", minWidth: 100 },
     { field: "quote_type", headerName: "Quote Type", minWidth: 125, cellClass: "font-mono" },
-    { field: "tag", headerName: "Tag", wrapText: true, autoHeight: true },
+    { field: "tag", headerName: "Tag", wrapText: true, autoHeight: true, minWidth: 165 },
     { field: "added", headerName: "Date Added", valueFormatter: dateFormatter, minWidth: 130 },
     { field: "created_at", headerName: "Created", valueFormatter: dateFormatter, minWidth: 130 },
     { field: "updated_at", headerName: "Updated", valueFormatter: dateFormatter, minWidth: 130 },

@@ -9,6 +9,7 @@
           v-model="searchQuery"
           aria-label="Search part number"
           placeholder="Search part number"
+          :autofocus="!isAdvancedSearchOpen && !conditions.length"
           type="search"
           clearable
           @clear="searchParts"
@@ -27,7 +28,9 @@
 
       <AdvancedPartSearch
         v-if="isAdvancedSearchLoaded"
+        ref="advancedSearch"
         :key="advancedSearchKey"
+        :autofocus="isAdvancedSearchOpen"
         :initial-conditions="conditions"
         @apply="applyAdvancedConditions"
       />
@@ -38,6 +41,7 @@
       :pinned-columns="pinnedColumns"
       :visible-columns="visibleColumns"
       @change-pinned-column="changePinnedColumn"
+      @compact-widths="compactColumnWidths"
       @reset-settings="resetColumnSettings"
       @toggle-column="toggleColumn"
     />
@@ -138,11 +142,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, onMounted, ref, watch } from "vue";
+import {
+  computed,
+  defineAsyncComponent,
+  nextTick,
+  onMounted,
+  ref,
+  useTemplateRef,
+  watch,
+} from "vue";
 import {
   CellStyleModule,
   ClientSideRowModelModule,
   ColumnApiModule,
+  ColumnAutoSizeModule,
   colorSchemeDark,
   colorSchemeLight,
   CsvExportModule,
@@ -152,7 +165,6 @@ import {
   themeQuartz,
 } from "ag-grid-community";
 import { deletePart, exportParts, isPartsSortField } from "@/api/parts";
-import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
 import PartsGrid from "@/components/parts/PartsGrid.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
@@ -178,15 +190,23 @@ const gridModules = [
   CellStyleModule,
   ClientSideRowModelModule,
   ColumnApiModule,
+  ColumnAutoSizeModule,
   CsvExportModule,
   RowAutoHeightModule,
   RowSelectionModule,
 ];
 ModuleRegistry.registerModules(gridModules);
 
+const PartsColumnSettings = defineAsyncComponent(
+  () => import("@/components/parts/PartsColumnSettings.vue"),
+);
 const AdvancedPartSearch = defineAsyncComponent(
   () => import("@/components/parts/AdvancedPartSearch.vue"),
 );
+
+type AdvancedPartSearchInstance = {
+  focusLastUnfilledField: () => void;
+};
 const DeleteConfirmationModal = defineAsyncComponent(
   () => import("@/components/ui/DeleteConfirmationModal.vue"),
 );
@@ -227,9 +247,9 @@ const {
   storageKey: "izzi-parts-page-size",
 });
 
+const advancedSearch = useTemplateRef<AdvancedPartSearchInstance>("advancedSearch");
 const selectedPartCount = ref(0);
 const selectedParts = ref<Part[]>([]);
-
 const isGridReady = ref(false);
 const isExporting = ref(false);
 const isDeleting = ref(false);
@@ -299,6 +319,7 @@ const {
   resetColumnSettings,
   toggleColumn: setColumnVisibility,
   changePinnedColumn: setPinnedColumn,
+  compactColumnWidths,
   visibleColumns,
 } = usePartsGrid(() => {
   isGridReady.value = true;
@@ -382,7 +403,10 @@ function handleAdvancedSearchToggle(event: Event): void {
 
   isAdvancedSearchOpen.value = details.open;
 
-  if (details.open) isAdvancedSearchLoaded.value = true;
+  if (details.open) {
+    isAdvancedSearchLoaded.value = true;
+    void nextTick(() => advancedSearch.value?.focusLastUnfilledField());
+  }
 }
 
 function searchParts(): void {

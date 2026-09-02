@@ -77,6 +77,7 @@ const emit = defineEmits<{
 :deep(.ag-cell) {
   display: flex;
   align-items: center;
+  @apply py-0.5;
 }
 
 :deep(.ag-header-cell-text) {
