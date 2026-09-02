@@ -1,9 +1,10 @@
 <template>
-  <form class="mt-3 grid gap-3" @submit.prevent="apply">
+  <form ref="searchForm" class="mt-3 grid gap-3" @submit.prevent="apply">
     <p class="text-text-muted text-sm">
       Conditions are evaluated from top to bottom. Each connector combines the result of all prior
       conditions with the next one.
     </p>
+
     <p v-if="validationMessage" class="text-danger text-sm" role="alert">{{ validationMessage }}</p>
 
     <div v-for="(condition, index) in conditions" :key="condition.id" class="grid gap-2">
@@ -21,6 +22,7 @@
       <div class="advanced-search-row grid gap-2">
         <div class="grid gap-1">
           <span class="font-bold">Field</span>
+
           <IzziDropdown
             v-model="condition.field"
             :options="fieldOptions"
@@ -32,6 +34,7 @@
             <template #option="{ option, selected, active, hovered }">
               <span class="flex min-w-0 items-center justify-between gap-2">
                 <span class="min-w-0 break-words">{{ option.label }}</span>
+
                 <span
                   class="min-w-0 break-all text-right font-mono text-sm"
                   :class="selected && !active && !hovered ? 'text-on-primary' : 'text-text-muted'"
@@ -45,6 +48,7 @@
 
         <div class="grid gap-1">
           <span class="font-bold">Condition</span>
+
           <IzziDropdown
             v-model="condition.operator"
             :options="operatorsFor(condition.field)"
@@ -55,6 +59,7 @@
 
         <div class="grid gap-1">
           <span class="font-bold">Value</span>
+
           <IzziDropdown
             v-if="isEnumField(condition.field)"
             v-model="condition.value"
@@ -67,7 +72,8 @@
           >
             <template #option="{ option, selected, active, hovered }">
               <span class="grid min-w-0 gap-0.5">
-                <span class="break-words">{{ option.label }}</span>
+                <span class="wrap-break-word">{{ option.label }}</span>
+
                 <span
                   class="break-all font-mono text-sm"
                   :class="selected && !active && !hovered ? 'text-on-primary' : 'text-text-muted'"
@@ -77,6 +83,7 @@
               </span>
             </template>
           </IzziDropdown>
+
           <IzziInput
             v-else
             v-model="condition.value"
@@ -86,6 +93,7 @@
             maxlength="100"
             :aria-label="`${fieldLabel(condition.field)} value`"
           />
+
           <IzziInput
             v-if="condition.operator === 'between'"
             v-model="condition.secondValue"
@@ -122,8 +130,10 @@
       >
         Add condition
       </IzziButton>
+
       <div class="flex flex-wrap justify-end gap-2">
         <IzziButton type="submit" class="h-10">Search</IzziButton>
+
         <IzziButton type="button" variant="outline" class="h-10" @click="clear">
           Clear all
         </IzziButton>
@@ -133,6 +143,7 @@
 </template>
 
 <script setup lang="ts">
+import { nextTick, onMounted, useTemplateRef } from "vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziDropdown from "@/components/ui/IzziDropdown.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
@@ -142,10 +153,13 @@ import type { PartsCondition } from "@/api/parts";
 
 const props = defineProps<{
   initialConditions?: PartsCondition[];
+  autofocus?: boolean;
 }>();
+
 const emit = defineEmits<{
   apply: [conditions: PartsCondition[]];
 }>();
+
 const {
   addCondition,
   clear: clearConditions,
@@ -177,6 +191,47 @@ function clear(): void {
   clearConditions();
   emit("apply", []);
 }
+
+function focusLastUnfilledField(): void {
+  const form = searchForm.value;
+
+  if (!form) return;
+
+  const inputs = [
+    ...form.querySelectorAll<HTMLInputElement>('input[type="text"], input[type="number"]'),
+  ];
+  let inputIndex = inputs.length - 1;
+
+  for (let conditionIndex = conditions.value.length - 1; conditionIndex >= 0; conditionIndex -= 1) {
+    const condition = conditions.value[conditionIndex];
+
+    if (!condition || isEnumField(condition.field)) continue;
+
+    if (condition.operator === "between" && !condition.secondValue?.trim()) {
+      inputs[inputIndex]?.focus();
+
+      return;
+    }
+
+    if (!condition.value.trim()) {
+      inputs[inputIndex - (condition.operator === "between" ? 1 : 0)]?.focus();
+
+      return;
+    }
+
+    inputIndex -= condition.operator === "between" ? 2 : 1;
+  }
+
+  inputs.at(-1)?.focus();
+}
+
+const searchForm = useTemplateRef<HTMLFormElement>("searchForm");
+
+defineExpose({ focusLastUnfilledField });
+
+onMounted(() => {
+  if (props.autofocus) void nextTick(focusLastUnfilledField);
+});
 </script>
 
 <style scoped>
