@@ -74,19 +74,24 @@ const emit = defineEmits<{
   min-height: 0 !important;
 }
 
-:deep(.ag-cell-wrapper) {
+:deep(.ag-cell) {
+  display: flex;
   align-items: center;
 }
 
+:deep(.ag-cell[col-id="description"] .ag-cell-value),
+:deep(.ag-cell[col-id="company_name"] .ag-cell-value),
 :deep(.ag-cell[col-id="tag"] .ag-cell-value) {
-  @apply leading-tight;
+  line-height: 1.3;
 }
 
 :deep(.ag-cell[col-id="actions"]) {
   align-items: center;
+  justify-content: center;
 }
 
 :deep(.ag-cell[col-id="actions"] .ag-cell-wrapper) {
+  justify-content: center;
   height: 100%;
   min-height: 100%;
 }

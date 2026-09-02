@@ -5,7 +5,7 @@ import { columnOptions } from "@/lib/partsGrid";
 import type { Part } from "@/lib/schemas/part";
 import type { ColumnPinnedType, ColumnState, GridApi, GridReadyEvent } from "ag-grid-community";
 
-const columnStateStorageKey = "izzi-parts-grid-column-state-v4";
+const columnStateStorageKey = "izzi-parts-grid-column-state-v6";
 const selectionColumnId = "ag-Grid-SelectionColumn";
 
 function createPartsFilename(): string {
