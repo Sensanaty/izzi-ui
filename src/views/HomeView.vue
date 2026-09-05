@@ -7,8 +7,8 @@
         <IzziInput
           id="part-search"
           v-model="searchQuery"
-          aria-label="Search part number"
-          placeholder="Search part number"
+          aria-label="Search parts"
+          placeholder="Search parts"
           :autofocus="!isAdvancedSearchOpen && !conditions.length"
           type="search"
           clearable

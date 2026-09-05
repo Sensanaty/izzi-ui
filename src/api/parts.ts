@@ -90,7 +90,7 @@ function buildPartsQuery(query: PartsQuery): string {
 
   if (query.page !== undefined) searchParams.set("page", String(query.page));
   if (query.count !== undefined) searchParams.set("count", String(query.count));
-  if (query.query) searchParams.set("filter[part_number][contains]", query.query);
+  if (query.query) searchParams.set("query", query.query);
 
   const filterParameterMap: Record<keyof PartsFilters, [string, string]> = {
     partNumberContainsAny: ["part_number", "contains_any"],
