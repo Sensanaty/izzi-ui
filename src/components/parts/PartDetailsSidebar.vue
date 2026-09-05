@@ -31,6 +31,7 @@
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h3 id="part-summary-heading" class="font-bold text-lg">{{ part.part_number }}</h3>
+
             <p class="text-text break-words">{{ display(part.description) }}</p>
           </div>
 
@@ -55,6 +56,7 @@
         <dl class="grid gap-2 text-sm sm:grid-cols-3">
           <div v-for="field in inventoryFields" :key="field.label">
             <dt class="text-text">{{ field.label }}</dt>
+
             <dd class="font-mono font-bold">{{ display(field.value) }}</dd>
           </div>
         </dl>
@@ -71,8 +73,11 @@
             <thead class="border-border border-b">
               <tr>
                 <th class="p-2">Tier</th>
+
                 <th class="p-2">Cost</th>
+
                 <th class="p-2">Price</th>
+
                 <th class="p-2">Minimum order</th>
               </tr>
             </thead>
@@ -83,8 +88,11 @@
                 class="border-border border-b last:border-b-0"
               >
                 <th class="p-2 font-normal">{{ tier.label }}</th>
+
                 <td class="p-2 font-mono">{{ display(tier.cost) }}</td>
+
                 <td class="p-2 font-mono">{{ display(tier.price) }}</td>
+
                 <td class="p-2 font-mono">{{ display(tier.order) }}</td>
               </tr>
             </tbody>
@@ -101,6 +109,7 @@
         <dl class="grid gap-2 text-sm sm:grid-cols-2">
           <div v-for="field in detailFields" :key="field.label">
             <dt class="text-text">{{ field.label }}</dt>
+
             <dd class="break-words">{{ display(field.value) }}</dd>
           </div>
         </dl>
@@ -111,6 +120,7 @@
         aria-labelledby="part-notes-heading"
       >
         <h3 id="part-notes-heading" class="font-bold text-lg">Internal note</h3>
+
         <p class="whitespace-pre-wrap break-words text-sm">{{ display(part.internal_note) }}</p>
       </section>
 
@@ -124,6 +134,7 @@
               · {{ part.versions_count ?? 0 }} versions</span
             >
           </h3>
+
           <span v-if="part.versions_count !== 0" class="inline-flex">
             <IzziButton
               size="sm"
@@ -135,6 +146,7 @@
             </IzziButton>
           </span>
         </div>
+
         <p class="text-text text-sm">Updated {{ formatDate(part.updated_at) }}</p>
       </section>
     </template>
@@ -142,11 +154,13 @@
     <div v-else-if="isLoading" class="grid gap-6" role="status" aria-label="Loading part details">
       <section class="grid gap-3">
         <div class="bg-surface-hover h-5 w-2/5 rounded-sm" />
+
         <div class="bg-surface-hover h-4 w-4/5 rounded-sm" />
       </section>
 
       <section class="border-border grid gap-3 border-t pt-4">
         <div class="bg-surface-hover h-5 w-1/4 rounded-sm" />
+
         <div class="grid gap-2 sm:grid-cols-3">
           <div v-for="field in 3" :key="field" class="bg-surface-hover h-10 rounded-sm" />
         </div>
@@ -154,11 +168,13 @@
 
       <section class="border-border grid gap-3 border-t pt-4">
         <div class="bg-surface-hover h-5 w-2/5 rounded-sm" />
+
         <div class="bg-surface-hover h-32 rounded-sm" />
       </section>
 
       <section class="border-border grid gap-3 border-t pt-4">
         <div class="bg-surface-hover h-5 w-1/4 rounded-sm" />
+
         <div class="grid gap-2 sm:grid-cols-2">
           <div v-for="field in 6" :key="field" class="bg-surface-hover h-10 rounded-sm" />
         </div>
