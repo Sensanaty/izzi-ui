@@ -28,11 +28,12 @@
         <button
           v-for="action in actions"
           :key="action.type"
-          class="text-text hover:bg-surface-hover rounded-sm px-2 py-1 text-left whitespace-nowrap"
+          class="text-text hover:bg-surface-hover flex items-center gap-2 rounded-sm px-2 py-1 text-left whitespace-nowrap"
           type="button"
           role="menuitem"
           @click="runAction(action.type)"
         >
+          <component :is="action.icon" class="size-4" aria-hidden="true" />
           {{ action.label }}
         </button>
       </div>
@@ -42,7 +43,8 @@
 
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref } from "vue";
-import { Logs } from "@lucide/vue";
+import type { Component } from "vue";
+import { Eye, Logs, Pencil, Trash2 } from "@lucide/vue";
 import { useRoute, useRouter } from "vue-router";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import { useExclusiveActionMenu } from "@/composables/useExclusiveActionMenu";
@@ -56,12 +58,12 @@ type Props = {
 };
 
 type ActionType = "view" | "edit" | "delete";
-type Action = { label: string; type: ActionType };
+type Action = { icon: Component; label: string; type: ActionType };
 
 const actions: Action[] = [
-  { label: "View company", type: "view" },
-  { label: "Edit company", type: "edit" },
-  { label: "Delete company", type: "delete" },
+  { icon: Eye, label: "View company", type: "view" },
+  { icon: Pencil, label: "Edit company", type: "edit" },
+  { icon: Trash2, label: "Delete company", type: "delete" },
 ];
 const props = defineProps<Props>();
 const route = useRoute();

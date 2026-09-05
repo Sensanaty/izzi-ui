@@ -28,11 +28,12 @@
         <button
           v-for="action in actions"
           :key="action.type"
-          class="text-text hover:bg-surface-hover rounded-sm px-2 py-1 text-left whitespace-nowrap"
+          class="text-text hover:bg-surface-hover flex items-center gap-2 rounded-sm px-2 py-1 text-left whitespace-nowrap"
           type="button"
           role="menuitem"
           @click="runAction(action.type)"
         >
+          <component :is="action.icon" class="size-4" aria-hidden="true" />
           {{ action.label }}
         </button>
       </div>
@@ -42,7 +43,8 @@
 
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref, useTemplateRef } from "vue";
-import { Logs } from "@lucide/vue";
+import type { Component } from "vue";
+import { ClipboardCopy, Copy, Eye, Logs, Pencil, Quote, Trash2 } from "@lucide/vue";
 import { useRoute, useRouter } from "vue-router";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import { useExclusiveActionMenu } from "@/composables/useExclusiveActionMenu";
@@ -64,6 +66,7 @@ type Props = {
 type ActionType = "view" | "edit" | "quote" | "full" | "part-number" | "delete";
 
 type Action = {
+  icon: Component;
   label: string;
   type: ActionType;
 };
@@ -74,12 +77,12 @@ const route = useRoute();
 const router = useRouter();
 
 const actions: Action[] = [
-  { label: "View part", type: "view" },
-  { label: "Edit part", type: "edit" },
-  { label: "Copy part number", type: "part-number" },
-  { label: "Copy quote details", type: "quote" },
-  { label: "Copy full details", type: "full" },
-  { label: "Delete part", type: "delete" },
+  { icon: Eye, label: "View part", type: "view" },
+  { icon: Pencil, label: "Edit part", type: "edit" },
+  { icon: Copy, label: "Copy part number", type: "part-number" },
+  { icon: Quote, label: "Copy quote details", type: "quote" },
+  { icon: ClipboardCopy, label: "Copy full details", type: "full" },
+  { icon: Trash2, label: "Delete part", type: "delete" },
 ];
 
 const isMenuOpen = ref(false);
