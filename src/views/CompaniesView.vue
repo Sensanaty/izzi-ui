@@ -45,11 +45,18 @@
 
   <DeleteConfirmationModal
     v-if="deleteItems.length"
-    item-label="companies"
+    item-label="company"
+    item-label-plural="companies"
     :items="deleteItems"
     :deleting="isDeleting"
     @cancel="deleteItems = []"
     @confirm="confirmDelete"
+  />
+
+  <CompanyDetailsSidebar
+    v-if="selectedCompanyId !== null"
+    v-model="isCompanySidebarOpen"
+    :company-id="selectedCompanyId"
   />
 
   <section aria-label="Companies">
@@ -112,6 +119,7 @@
 
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import {
   CellStyleModule,
   ClientSideRowModelModule,
@@ -123,6 +131,7 @@ import {
   themeQuartz,
 } from "ag-grid-community";
 import { deleteCompany, getCompaniesPage, isCompaniesSortField } from "@/api/companies";
+import CompanyDetailsSidebar from "@/components/companies/CompanyDetailsSidebar.vue";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
 import PartsPagination from "@/components/parts/PartsPagination.vue";
 import AgGridTable from "@/components/ui/AgGridTable.vue";
@@ -152,15 +161,26 @@ const DeleteConfirmationModal = defineAsyncComponent(
 );
 
 const companyOptionsStore = useCompanyOptionsStore();
+const route = useRoute();
+const router = useRouter();
+const selectedCompanyId = computed(() => {
+  const value = route.query.company;
+  const parsed = typeof value === "string" ? Number(value) : NaN;
+
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+});
+const isCompanySidebarOpen = computed({
+  get: () => selectedCompanyId.value !== null,
+  set: (isOpen: boolean) => {
+    if (!isOpen) void router.replace({ query: { ...route.query, company: undefined } });
+  },
+});
 const companies = ref<Company[]>([]);
 const totalCompanies = ref(0);
 const selectedCompanies = ref<Company[]>([]);
 
 const isDeleting = ref(false);
 const deleteItems = ref<{ id: number; label: string }[]>([]);
-const skipDeleteConfirmation = ref(
-  localStorage.getItem("izzi-skip-delete-confirmation") === "true",
-);
 const { companyUrlQuery, isWritingUrl, searchQuery, sort, syncQueryToUrl, updateFromUrl } =
   useCompanySearch();
 const selectedCompanyCount = ref(0);
@@ -207,10 +227,8 @@ const {
   updateMetadata,
 } = pagination;
 
-async function requestDelete(company: Company) {
+function requestDelete(company: Company) {
   deleteItems.value = [{ id: company.id, label: company.name }];
-
-  if (skipDeleteConfirmation.value) await confirmDelete(false);
 }
 
 function requestBulkDelete(): void {
@@ -220,12 +238,7 @@ function requestBulkDelete(): void {
   }));
 }
 
-async function confirmDelete(dontAskAgain: boolean) {
-  if (dontAskAgain) {
-    skipDeleteConfirmation.value = true;
-    localStorage.setItem("izzi-skip-delete-confirmation", "true");
-  }
-
+async function confirmDelete(): Promise<void> {
   isDeleting.value = true;
 
   try {

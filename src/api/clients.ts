@@ -20,6 +20,7 @@ export type ClientsQuery = {
   page?: number;
   count?: number;
   query?: string;
+  companyId?: number;
   sort?: ClientsSort[];
 };
 
@@ -33,6 +34,7 @@ export async function getClients(query: ClientsQuery = {}) {
   if (query.page !== undefined) searchParams.set("page", String(query.page));
   if (query.count !== undefined) searchParams.set("count", String(query.count));
   if (query.query) searchParams.set("query", query.query);
+  if (query.companyId !== undefined) searchParams.set("company_id", String(query.companyId));
 
   query.sort?.forEach((sort, index) => {
     searchParams.set(`sort[${index}][field]`, sort.field);

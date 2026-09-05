@@ -9,6 +9,7 @@ export const companySchema = z.object({
   website: z.string().nullable().optional(),
   subscription: z.string().nullable().optional(),
   parts_count: z.number().optional(),
+  clients_count: z.number().optional(),
 });
 
 export const companiesResponseSchema = z.object({

@@ -8,9 +8,10 @@
       aria-label="Open row actions"
       @click.stop="toggleMenu"
     >
-      <TableOfContents
+      <Logs
         class="size-4 transition-colors"
         :class="{ 'text-accent': isMenuOpen }"
+        :stroke-width="2.5"
         aria-hidden="true"
       />
     </IzziButton>
@@ -41,7 +42,7 @@
 
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref } from "vue";
-import { TableOfContents } from "@lucide/vue";
+import { Logs } from "@lucide/vue";
 import { useRouter } from "vue-router";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import { Route } from "@/router/constants";
@@ -53,10 +54,11 @@ type Props = {
   params: ICellRendererParams<Company> & { onDelete: (company: Company) => void };
 };
 
-type ActionType = "edit" | "delete";
+type ActionType = "view" | "edit" | "delete";
 type Action = { label: string; type: ActionType };
 
 const actions: Action[] = [
+  { label: "View company", type: "view" },
   { label: "Edit company", type: "edit" },
   { label: "Delete company", type: "delete" },
 ];
@@ -94,9 +96,13 @@ function runAction(type: ActionType): void {
 
   if (!company) return;
 
-  if (type === "edit") {
+  if (type === "view") {
+    void router.replace({
+      query: { ...router.currentRoute.value.query, company: String(company.id) },
+    });
+  } else if (type === "edit") {
     void router.push({ name: Route.COMPANY_EDIT, params: { id: company.id } });
-  } else {
+  } else if (type === "delete") {
     props.params.onDelete(company);
   }
 
