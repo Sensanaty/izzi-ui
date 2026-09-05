@@ -2,7 +2,7 @@ import PartsGridActions from "@/components/parts/PartsGridActions.vue";
 
 import type { PartsGridActionsParams } from "@/components/parts/PartsGridActions.vue";
 import type { Part, PartField } from "@/lib/schemas/part";
-import type { ColDef } from "ag-grid-community";
+import type { ColDef, ICellRendererParams } from "ag-grid-community";
 
 export type PartColumnField = Exclude<PartField, "id" | "company_id">;
 export type ColumnGroup = "General" | "Inventory" | "Pricing" | "Dates";
@@ -66,10 +66,51 @@ const dateFormatter = (params: { value: string | null | undefined }): string => 
 
 const numberWidth = 100;
 
+type SearchCellRendererParams = ICellRendererParams<Part, string | null | undefined>;
+
+function createSearchCellRenderer(getSearchQuery: () => string) {
+  return (params: SearchCellRendererParams): HTMLElement => {
+    const value = params.value ?? "";
+
+    const searchQuery = getSearchQuery();
+    const container = document.createElement("span");
+
+    if (!searchQuery) {
+      container.textContent = value;
+
+      return container;
+    }
+
+    const normalizedValue = value.toLocaleLowerCase();
+    const normalizedQuery = searchQuery.toLocaleLowerCase();
+    let matchStart = 0;
+
+    while (matchStart < value.length) {
+      const matchIndex = normalizedValue.indexOf(normalizedQuery, matchStart);
+
+      if (matchIndex === -1) {
+        container.append(document.createTextNode(value.slice(matchStart)));
+        break;
+      }
+
+      container.append(document.createTextNode(value.slice(matchStart, matchIndex)));
+
+      const match = document.createElement("span");
+      match.className = "text-accent font-semibold";
+      match.textContent = value.slice(matchIndex, matchIndex + searchQuery.length);
+      container.append(match);
+      matchStart = matchIndex + searchQuery.length;
+    }
+
+    return container;
+  };
+}
+
 export function createPartsColumnDefs(
   copyDetailsForParts: CopyDetailsForParts,
   copyPartNumber: CopyPartNumber,
   onDelete: (part: Part) => void,
+  getSearchQuery: () => string,
 ): ColDef<Part>[] {
   return [
     {
@@ -90,7 +131,12 @@ export function createPartsColumnDefs(
       maxWidth: 50,
       resizable: false,
     },
-    { field: "part_number", headerName: "Part Number", minWidth: 120 },
+    {
+      field: "part_number",
+      headerName: "Part Number",
+      minWidth: 120,
+      cellRenderer: createSearchCellRenderer(getSearchQuery),
+    },
     {
       field: "description",
       headerName: "Description",
@@ -98,6 +144,7 @@ export function createPartsColumnDefs(
       minWidth: 180,
       wrapText: true,
       autoHeight: true,
+      cellRenderer: createSearchCellRenderer(getSearchQuery),
     },
     {
       field: "company_name",
@@ -171,7 +218,14 @@ export function createPartsColumnDefs(
     },
     { field: "lead_time", headerName: "Lead Time", cellClass: "font-mono", minWidth: 100 },
     { field: "quote_type", headerName: "Quote Type", minWidth: 125, cellClass: "font-mono" },
-    { field: "tag", headerName: "Tag", wrapText: true, autoHeight: true, minWidth: 165 },
+    {
+      field: "tag",
+      headerName: "Tag",
+      wrapText: true,
+      autoHeight: true,
+      minWidth: 165,
+      cellRenderer: createSearchCellRenderer(getSearchQuery),
+    },
     { field: "added", headerName: "Date Added", valueFormatter: dateFormatter, minWidth: 130 },
     { field: "created_at", headerName: "Created", valueFormatter: dateFormatter, minWidth: 130 },
     { field: "updated_at", headerName: "Updated", valueFormatter: dateFormatter, minWidth: 130 },

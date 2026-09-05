@@ -267,6 +267,7 @@ const columnDefs = createPartsColumnDefs(
   copyDetailsForParts,
   (part) => copyPartNumbers([part]),
   requestDelete,
+  () => searchQuery.value.trim(),
 );
 
 async function requestDelete(part: Part) {
