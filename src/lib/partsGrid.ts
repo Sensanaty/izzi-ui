@@ -135,6 +135,7 @@ export function createPartsColumnDefs(
       field: "part_number",
       headerName: "Part Number",
       minWidth: 120,
+      cellClass: "cursor-pointer",
       cellRenderer: createSearchCellRenderer(getSearchQuery),
     },
     {

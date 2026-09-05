@@ -24,6 +24,7 @@
       @column-resized="emit('column-resized')"
       @column-visible="emit('column-visible')"
       @grid-ready="emit('grid-ready', $event)"
+      @row-clicked="emit('row-clicked', $event)"
       @selection-changed="emit('selection-changed', $event)"
       @sort-changed="emit('sort-changed', $event)"
     />
@@ -48,6 +49,7 @@ import type {
   ColDef,
   GridReadyEvent,
   Module,
+  RowClickedEvent,
   RowSelectionOptions,
   SelectionChangedEvent,
   SelectionColumnDef,
@@ -115,6 +117,7 @@ const emit = defineEmits<{
   "column-resized": [];
   "column-visible": [];
   "grid-ready": [event: GridReadyEvent<Client>];
+  "row-clicked": [event: RowClickedEvent<Client>];
   "selection-changed": [event: SelectionChangedEvent<Client>];
   "sort-changed": [event: SortChangedEvent<Client>];
   "go-to-page": [page: number];

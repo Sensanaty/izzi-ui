@@ -50,6 +50,12 @@
     @confirm="confirmDelete"
   />
 
+  <ClientDetailsSidebar
+    v-if="selectedClientId !== null"
+    v-model="isClientSidebarOpen"
+    :client-id="selectedClientId"
+  />
+
   <ClientsGrid
     :column-defs="columnDefs"
     :default-col-def="clientDefaultColDef"
@@ -77,6 +83,7 @@
     @column-resized="persistColumnState"
     @column-visible="persistColumnState"
     @grid-ready="handleGridReady"
+    @row-clicked="handleRowClicked"
     @selection-changed="handleSelectionChanged"
     @sort-changed="handleSortChanged"
   />
@@ -94,7 +101,9 @@ import {
   RowSelectionModule,
   themeQuartz,
 } from "ag-grid-community";
+import { useRoute, useRouter } from "vue-router";
 import { deleteClient, isClientsSortField } from "@/api/clients";
+import ClientDetailsSidebar from "@/components/clients/ClientDetailsSidebar.vue";
 import ClientsGrid from "@/components/clients/ClientsGrid.vue";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
@@ -112,7 +121,7 @@ import {
 import { notifyApiError } from "@/lib/notifications";
 
 import type { Client } from "@/lib/schemas/client";
-import type { SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
+import type { RowClickedEvent, SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
 const modules = [CellStyleModule, ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
 ModuleRegistry.registerModules(modules);
@@ -120,6 +129,20 @@ const DeleteConfirmationModal = defineAsyncComponent(
   () => import("@/components/ui/DeleteConfirmationModal.vue"),
 );
 
+const route = useRoute();
+const router = useRouter();
+const selectedClientId = computed(() => {
+  const value = route.query.contact;
+  const parsed = typeof value === "string" ? Number(value) : NaN;
+
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+});
+const isClientSidebarOpen = computed({
+  get: () => selectedClientId.value !== null,
+  set: (isOpen: boolean) => {
+    if (!isOpen) void router.replace({ query: { ...route.query, contact: undefined } });
+  },
+});
 const selectedClients = ref<Client[]>([]);
 const selectedClientCount = ref(0);
 
@@ -187,6 +210,12 @@ function changePinnedColumn(field: string, pinned: "" | "left" | "right") {
 
 function requestDelete(client: Client) {
   deleteItems.value = [{ id: client.id, label: client.name }];
+}
+
+function handleRowClicked(event: RowClickedEvent<Client>): void {
+  if (event.data) {
+    void router.replace({ query: { ...route.query, contact: String(event.data.id) } });
+  }
 }
 
 function requestBulkDelete(): void {

@@ -21,6 +21,7 @@
       @column-pinned="emit('column-pinned')"
       @column-resized="emit('column-resized')"
       @column-visible="emit('column-visible')"
+      @cell-clicked="emit('cell-clicked', $event)"
       @grid-ready="emit('grid-ready', $event)"
       @row-clicked="emit('row-clicked', $event)"
       @selection-changed="emit('selection-changed', $event)"
@@ -33,6 +34,7 @@
 import { AgGridVue } from "ag-grid-vue3";
 
 import type {
+  CellClickedEvent,
   ColDef,
   GridReadyEvent,
   Module,
@@ -62,6 +64,7 @@ const emit = defineEmits<{
   "column-pinned": [];
   "column-resized": [];
   "column-visible": [];
+  "cell-clicked": [event: CellClickedEvent<TRow>];
   "grid-ready": [event: GridReadyEvent<TRow>];
   "row-clicked": [event: RowClickedEvent<TRow>];
   "selection-changed": [event: SelectionChangedEvent<TRow>];

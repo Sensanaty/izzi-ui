@@ -110,6 +110,12 @@
     @confirm="confirmDelete"
   />
 
+  <PartDetailsSidebar
+    v-if="selectedPartId !== null"
+    v-model="isPartSidebarOpen"
+    :part-id="selectedPartId"
+  />
+
   <PartsGrid
     :column-defs="columnDefs"
     :default-col-def="defaultColDef"
@@ -136,9 +142,9 @@
     @column-pinned="persistColumnState"
     @column-resized="persistColumnState"
     @column-visible="persistColumnState"
+    @cell-clicked="handleCellClicked"
     @grid-ready="handleGridReady"
     @keydown="handleGridKeydown"
-    @row-clicked="handleRowClicked"
     @selection-changed="handleSelectionChanged"
     @sort-changed="handleSortChanged"
   />
@@ -167,7 +173,9 @@ import {
   RowSelectionModule,
   themeQuartz,
 } from "ag-grid-community";
+import { useRoute, useRouter } from "vue-router";
 import { deletePart, exportParts, isPartsSortField } from "@/api/parts";
+import PartDetailsSidebar from "@/components/parts/PartDetailsSidebar.vue";
 import PartsGrid from "@/components/parts/PartsGrid.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
@@ -187,11 +195,7 @@ import {
 
 import type { PartsCondition } from "@/api/parts";
 import type { Part } from "@/lib/schemas/part";
-import type {
-  RowClickedEvent,
-  SelectionChangedEvent,
-  SortChangedEvent,
-} from "ag-grid-community";
+import type { CellClickedEvent, SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
 const gridModules = [
   CellStyleModule,
@@ -217,6 +221,21 @@ type AdvancedPartSearchInstance = {
 const DeleteConfirmationModal = defineAsyncComponent(
   () => import("@/components/ui/DeleteConfirmationModal.vue"),
 );
+
+const route = useRoute();
+const router = useRouter();
+const selectedPartId = computed(() => {
+  const value = route.query.part;
+  const parsed = typeof value === "string" ? Number(value) : NaN;
+
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+});
+const isPartSidebarOpen = computed({
+  get: () => selectedPartId.value !== null,
+  set: (isOpen: boolean) => {
+    if (!isOpen) void router.replace({ query: { ...route.query, part: undefined } });
+  },
+});
 
 const { theme } = useTheme();
 const gridTheme = computed(() =>
@@ -338,8 +357,12 @@ function copySelectedDetails(type: "quote" | "full") {
   return copyDetails(selectedParts.value, type);
 }
 
-function handleRowClicked(event: RowClickedEvent<Part>): void {
+function handleCellClicked(event: CellClickedEvent<Part>): void {
   lastClickedPart.value = event.data ?? null;
+
+  if (event.colDef.field !== "part_number" || !event.data) return;
+
+  void router.replace({ query: { ...route.query, part: String(event.data.id) } });
 }
 
 async function handleGridKeydown(event: KeyboardEvent): Promise<void> {
