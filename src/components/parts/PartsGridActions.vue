@@ -45,6 +45,7 @@ import { nextTick, onBeforeUnmount, ref, useTemplateRef } from "vue";
 import { Logs } from "@lucide/vue";
 import { useRoute, useRouter } from "vue-router";
 import IzziButton from "@/components/ui/IzziButton.vue";
+import { useExclusiveActionMenu } from "@/composables/useExclusiveActionMenu";
 import { Route } from "@/router/constants";
 
 import type { Part } from "@/lib/schemas/part";
@@ -82,6 +83,7 @@ const actions: Action[] = [
 ];
 
 const isMenuOpen = ref(false);
+const { registerMenu, unregisterMenu } = useExclusiveActionMenu();
 
 const menuElement = useTemplateRef<HTMLDivElement>("menuElementRef");
 const menuStyle = ref({ left: "0px", top: "0px" });
@@ -107,16 +109,61 @@ function toggleMenu(event: MouseEvent): void {
   };
 
   isMenuOpen.value = true;
+  registerMenu(closeMenu);
   document.addEventListener("click", closeMenu);
+  document.addEventListener("scroll", updateMenuPosition, true);
+  window.addEventListener("resize", updateMenuPosition);
 
-  void nextTick(() => menuElement.value?.focus());
+  void nextTick(() => {
+    positionMenu(triggerBounds);
+    menuElement.value?.focus();
+  });
+}
+
+function positionMenu(triggerBounds: DOMRect): void {
+  const menu = menuElement.value;
+
+  if (!menu) return;
+
+  const menuBottom = triggerBounds.bottom + 4 + menu.offsetHeight;
+  const top =
+    menuBottom > window.innerHeight
+      ? Math.max(4, triggerBounds.top - menu.offsetHeight - 4)
+      : triggerBounds.bottom + 4;
+
+  menuStyle.value = {
+    left: `${triggerBounds.left}px`,
+    top: `${top}px`,
+  };
+}
+
+function updateMenuPosition(): void {
+  if (!isMenuOpen.value || !triggerElement) return;
+
+  const triggerBounds = triggerElement.getBoundingClientRect();
+
+  if (
+    triggerBounds.bottom < 0 ||
+    triggerBounds.top > window.innerHeight ||
+    triggerBounds.right < 0 ||
+    triggerBounds.left > window.innerWidth
+  ) {
+    closeMenu();
+
+    return;
+  }
+
+  positionMenu(triggerBounds);
 }
 
 function closeMenu() {
   isMenuOpen.value = false;
   triggerElement = null;
+  unregisterMenu(closeMenu);
 
   document.removeEventListener("click", closeMenu);
+  document.removeEventListener("scroll", updateMenuPosition, true);
+  window.removeEventListener("resize", updateMenuPosition);
 }
 
 async function runAction(type: ActionType) {

@@ -45,6 +45,7 @@ import { nextTick, onBeforeUnmount, ref } from "vue";
 import { Logs } from "@lucide/vue";
 import { useRoute, useRouter } from "vue-router";
 import IzziButton from "@/components/ui/IzziButton.vue";
+import { useExclusiveActionMenu } from "@/composables/useExclusiveActionMenu";
 import { Route } from "@/router/constants";
 
 import type { Company } from "@/lib/schemas/company";
@@ -66,8 +67,11 @@ const props = defineProps<Props>();
 const route = useRoute();
 const router = useRouter();
 const isMenuOpen = ref(false);
+const { registerMenu, unregisterMenu } = useExclusiveActionMenu();
 const menuElement = ref<HTMLDivElement | null>(null);
 const menuStyle = ref({ left: "0px", top: "0px" });
+
+let triggerElement: HTMLButtonElement | null = null;
 
 function toggleMenu(event: MouseEvent): void {
   if (isMenuOpen.value) {
@@ -76,20 +80,63 @@ function toggleMenu(event: MouseEvent): void {
     return;
   }
 
-  const trigger = event.currentTarget;
+  triggerElement = event.currentTarget instanceof HTMLButtonElement ? event.currentTarget : null;
 
-  if (!(trigger instanceof HTMLButtonElement)) return;
+  if (!triggerElement) return;
 
-  const bounds = trigger.getBoundingClientRect();
+  const bounds = triggerElement.getBoundingClientRect();
   menuStyle.value = { left: `${bounds.left}px`, top: `${bounds.bottom + 4}px` };
   isMenuOpen.value = true;
+  registerMenu(closeMenu);
   document.addEventListener("click", closeMenu);
-  void nextTick(() => menuElement.value?.focus());
+  document.addEventListener("scroll", updateMenuPosition, true);
+  window.addEventListener("resize", updateMenuPosition);
+  void nextTick(() => {
+    positionMenu(bounds);
+    menuElement.value?.focus();
+  });
+}
+
+function positionMenu(triggerBounds: DOMRect): void {
+  const menu = menuElement.value;
+
+  if (!menu) return;
+
+  const menuBottom = triggerBounds.bottom + 4 + menu.offsetHeight;
+  const top =
+    menuBottom > window.innerHeight
+      ? Math.max(4, triggerBounds.top - menu.offsetHeight - 4)
+      : triggerBounds.bottom + 4;
+
+  menuStyle.value = { left: `${triggerBounds.left}px`, top: `${top}px` };
+}
+
+function updateMenuPosition(): void {
+  if (!isMenuOpen.value || !triggerElement) return;
+
+  const triggerBounds = triggerElement.getBoundingClientRect();
+
+  if (
+    triggerBounds.bottom < 0 ||
+    triggerBounds.top > window.innerHeight ||
+    triggerBounds.right < 0 ||
+    triggerBounds.left > window.innerWidth
+  ) {
+    closeMenu();
+
+    return;
+  }
+
+  positionMenu(triggerBounds);
 }
 
 function closeMenu(): void {
   isMenuOpen.value = false;
+  triggerElement = null;
+  unregisterMenu(closeMenu);
   document.removeEventListener("click", closeMenu);
+  document.removeEventListener("scroll", updateMenuPosition, true);
+  window.removeEventListener("resize", updateMenuPosition);
 }
 
 function runAction(type: ActionType): void {
