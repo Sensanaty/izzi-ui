@@ -10,7 +10,9 @@
       </p>
     </div>
 
-    <RouterLink class="text-accent underline" :to="RoutePath.USERS">Back to users</RouterLink>
+    <RouterLink class="text-accent underline" :to="{ path: RoutePath.USERS, query: route.query }">
+      Back to users
+    </RouterLink>
   </div>
 
   <p v-if="loadError" class="text-danger" role="alert">{{ loadError }}</p>
@@ -87,6 +89,7 @@ import { RouterLink, useRoute, useRouter } from "vue-router";
 import { createUser, getUser, updateUser } from "@/api/users";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
+import { useEscapeNavigation } from "@/composables/useEscapeNavigation";
 import { notifyApiError } from "@/lib/notifications";
 import { Route, RoutePath } from "@/router/constants";
 import { useNotificationStore } from "@/stores/notification";
@@ -118,6 +121,8 @@ const submitLabel = computed(() => {
 
   return isEditing.value ? "Save user" : "Create user";
 });
+
+useEscapeNavigation(cancel);
 
 function fieldError(field: "username" | "email" | "password"): string | null {
   return fieldErrors.value[field]?.join(", ") ?? null;
@@ -187,7 +192,7 @@ async function submitForm() {
       createNotification("User created");
     }
 
-    await router.replace(RoutePath.USERS);
+    await router.replace({ path: RoutePath.USERS, query: route.query });
   } catch (error) {
     const details = notifyApiError(
       error,
@@ -200,7 +205,7 @@ async function submitForm() {
 }
 
 async function cancel() {
-  await router.push(RoutePath.USERS);
+  await router.push({ path: RoutePath.USERS, query: route.query });
 }
 
 onMounted(async () => {

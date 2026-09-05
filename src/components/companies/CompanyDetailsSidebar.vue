@@ -224,7 +224,11 @@ async function searchContacts(): Promise<void> {
 function editCompany(): void {
   if (!company.value) return;
 
-  void router.push({ name: Route.COMPANY_EDIT, params: { id: company.value.id } });
+  void router.push({
+    name: Route.COMPANY_EDIT,
+    params: { id: company.value.id },
+    query: router.currentRoute.value.query,
+  });
 }
 
 function addPart(): void {
@@ -238,13 +242,21 @@ function addContact(): void {
 function editPart(item: Part | Client): void {
   if (!("part_number" in item)) return;
 
-  void router.push({ name: Route.PART_EDIT, params: { id: item.id } });
+  void router.push({
+    name: Route.PART_EDIT,
+    params: { id: item.id },
+    query: router.currentRoute.value.query,
+  });
 }
 
 function editContact(item: Part | Client): void {
   if (!("name" in item)) return;
 
-  void router.push({ name: Route.CLIENT_EDIT, params: { id: item.id } });
+  void router.push({
+    name: Route.CLIENT_EDIT,
+    params: { id: item.id },
+    query: router.currentRoute.value.query,
+  });
 }
 
 function requestPartDelete(item: Part | Client): void {

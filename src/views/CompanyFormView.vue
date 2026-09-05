@@ -12,7 +12,10 @@
       </p>
     </div>
 
-    <RouterLink class="text-accent underline" :to="RoutePath.COMPANIES">
+    <RouterLink
+      class="text-accent underline"
+      :to="{ path: RoutePath.COMPANIES, query: route.query }"
+    >
       Back to companies
     </RouterLink>
   </div>
@@ -42,6 +45,7 @@ import { RouterLink, useRoute, useRouter } from "vue-router";
 import { createCompany, getCompany, updateCompany } from "@/api/companies";
 import CompanyFormFields from "@/components/companies/CompanyFormFields.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
+import { useEscapeNavigation } from "@/composables/useEscapeNavigation";
 import { notifyApiError } from "@/lib/notifications";
 import { Route, RoutePath } from "@/router/constants";
 import { useCompanyOptionsStore } from "@/stores/companyOptions";
@@ -68,6 +72,8 @@ const submitLabel = computed(() => {
 
   return isEditing.value ? "Save changes" : "Create company";
 });
+
+useEscapeNavigation(cancel);
 
 function emptyForm(): CompanyFormState {
   return { name: "", address: "", city: "", country: "", website: "", subscription: "" };
@@ -162,7 +168,7 @@ async function submitForm(): Promise<void> {
 
     companyOptionsStore.upsertCompany(company);
     createNotification(isEditing.value ? "Company updated" : "Company created");
-    await router.replace(RoutePath.COMPANIES);
+    await router.replace({ path: RoutePath.COMPANIES, query: route.query });
   } catch (error) {
     const details = notifyApiError(
       error,
@@ -175,7 +181,7 @@ async function submitForm(): Promise<void> {
 }
 
 async function cancel() {
-  await router.push(RoutePath.COMPANIES);
+  await router.push({ path: RoutePath.COMPANIES, query: route.query });
 }
 
 watch(

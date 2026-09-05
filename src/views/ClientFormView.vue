@@ -64,6 +64,7 @@ import { createClient, getClient, updateClient } from "@/api/clients";
 import ClientFormFields from "@/components/clients/ClientFormFields.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziDropdown from "@/components/ui/IzziDropdown.vue";
+import { useEscapeNavigation } from "@/composables/useEscapeNavigation";
 import { notifyApiError } from "@/lib/notifications";
 import { Route, RoutePath } from "@/router/constants";
 import { useCompanyOptionsStore } from "@/stores/companyOptions";
@@ -93,6 +94,8 @@ const submitLabel = computed(() => {
 
   return isEditing.value ? "Save changes" : "Create contact";
 });
+
+useEscapeNavigation(cancel);
 
 async function load() {
   if (isEditing.value && (!Number.isInteger(clientId.value) || clientId.value < 1)) {

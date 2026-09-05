@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref } from "vue";
 import { Logs } from "@lucide/vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import { Route } from "@/router/constants";
 
@@ -63,6 +63,7 @@ const actions: Action[] = [
   { label: "Delete company", type: "delete" },
 ];
 const props = defineProps<Props>();
+const route = useRoute();
 const router = useRouter();
 const isMenuOpen = ref(false);
 const menuElement = ref<HTMLDivElement | null>(null);
@@ -101,7 +102,7 @@ function runAction(type: ActionType): void {
       query: { ...router.currentRoute.value.query, company: String(company.id) },
     });
   } else if (type === "edit") {
-    void router.push({ name: Route.COMPANY_EDIT, params: { id: company.id } });
+    void router.push({ name: Route.COMPANY_EDIT, params: { id: company.id }, query: route.query });
   } else if (type === "delete") {
     props.params.onDelete(company);
   }

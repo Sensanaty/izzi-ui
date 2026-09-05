@@ -228,6 +228,7 @@ import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziDropdown from "@/components/ui/IzziDropdown.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
 import IzziTextArea from "@/components/ui/IzziTextArea.vue";
+import { useEscapeNavigation } from "@/composables/useEscapeNavigation";
 import { notifyApiError } from "@/lib/notifications";
 import { RoutePath } from "@/router/constants";
 import { useCompanyOptionsStore } from "@/stores/companyOptions";
@@ -348,6 +349,8 @@ const submitLabel = computed(() => {
 
   return isEditing.value ? "Save changes" : "Create part";
 });
+
+useEscapeNavigation(cancel);
 
 const loadError = ref<string | null>(null);
 const fieldErrors = ref<Record<string, string[]>>({});
@@ -586,8 +589,8 @@ async function submitForm() {
   }
 }
 
-function cancel(): void {
-  void router.push({ path: RoutePath.HOME, query: route.query });
+async function cancel(): Promise<void> {
+  await router.push({ path: RoutePath.HOME, query: route.query });
 }
 
 function resetForRoute(): void {
