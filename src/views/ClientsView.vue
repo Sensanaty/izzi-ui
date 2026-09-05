@@ -82,8 +82,8 @@
     @column-pinned="persistColumnState"
     @column-resized="persistColumnState"
     @column-visible="persistColumnState"
+    @cell-clicked="handleCellClicked"
     @grid-ready="handleGridReady"
-    @row-clicked="handleRowClicked"
     @selection-changed="handleSelectionChanged"
     @sort-changed="handleSortChanged"
   />
@@ -121,7 +121,7 @@ import {
 import { notifyApiError } from "@/lib/notifications";
 
 import type { Client } from "@/lib/schemas/client";
-import type { RowClickedEvent, SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
+import type { CellClickedEvent, SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
 const modules = [CellStyleModule, ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
 ModuleRegistry.registerModules(modules);
@@ -212,10 +212,17 @@ function requestDelete(client: Client) {
   deleteItems.value = [{ id: client.id, label: client.name }];
 }
 
-function handleRowClicked(event: RowClickedEvent<Client>): void {
-  if (event.data) {
-    void router.replace({ query: { ...route.query, contact: String(event.data.id) } });
+function handleCellClicked(event: CellClickedEvent<Client>): void {
+  if (
+    !(event.event instanceof MouseEvent) ||
+    !event.event.ctrlKey ||
+    event.column?.getColId() === "actions" ||
+    !event.data
+  ) {
+    return;
   }
+
+  void router.replace({ query: { ...route.query, contact: String(event.data.id) } });
 }
 
 function requestBulkDelete(): void {
@@ -285,10 +292,11 @@ function handleSelectionChanged(event: SelectionChangedEvent<Client>) {
 }
 
 watch(
-  clientUrlQuery.state,
-  async (state) => {
+  [() => route.query.query, () => route.query.sort],
+  async () => {
     if (isWritingUrl.value) return;
 
+    const state = clientUrlQuery.state.value;
     updateFromUrl(state);
     await loadClients();
   },

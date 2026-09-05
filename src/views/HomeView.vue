@@ -114,6 +114,7 @@
     v-if="selectedPartId !== null"
     v-model="isPartSidebarOpen"
     :part-id="selectedPartId"
+    :part-ids="parts.map(({ id }) => id)"
   />
 
   <PartsGrid
@@ -360,7 +361,14 @@ function copySelectedDetails(type: "quote" | "full") {
 function handleCellClicked(event: CellClickedEvent<Part>): void {
   lastClickedPart.value = event.data ?? null;
 
-  if (event.colDef.field !== "part_number" || !event.data) return;
+  if (
+    !(event.event instanceof MouseEvent) ||
+    !event.event.ctrlKey ||
+    event.column?.getColId() === "actions" ||
+    !event.data
+  ) {
+    return;
+  }
 
   void router.replace({ query: { ...route.query, part: String(event.data.id) } });
 }
@@ -370,11 +378,7 @@ async function handleGridKeydown(event: KeyboardEvent): Promise<void> {
 
   const target = event.target;
 
-  if (
-    target instanceof HTMLInputElement &&
-    target.type !== "checkbox" &&
-    target.type !== "radio"
-  ) {
+  if (target instanceof HTMLInputElement && target.type !== "checkbox" && target.type !== "radio") {
     return;
   }
 
@@ -436,10 +440,11 @@ async function exportAllParts() {
 }
 
 watch(
-  partsUrlQuery.state,
-  async (state) => {
+  [() => route.query.part_number, () => route.query.conditions, () => route.query.sort],
+  async () => {
     if (isWritingUrl.value) return;
 
+    const state = partsUrlQuery.state.value;
     updateFromUrl(state);
     await loadParts();
   },

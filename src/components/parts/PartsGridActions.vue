@@ -60,7 +60,7 @@ type Props = {
   params: PartsGridActionsParams;
 };
 
-type ActionType = "edit" | "quote" | "full" | "part-number" | "delete";
+type ActionType = "view" | "edit" | "quote" | "full" | "part-number" | "delete";
 
 type Action = {
   label: string;
@@ -73,6 +73,7 @@ const route = useRoute();
 const router = useRouter();
 
 const actions: Action[] = [
+  { label: "View part", type: "view" },
   { label: "Edit part", type: "edit" },
   { label: "Copy part number", type: "part-number" },
   { label: "Copy quote details", type: "quote" },
@@ -124,6 +125,9 @@ async function runAction(type: ActionType) {
   if (!part) return;
 
   switch (type) {
+    case "view":
+      await router.replace({ query: { ...route.query, part: String(part.id) } });
+      break;
     case "edit":
       await router.push({
         name: Route.PART_EDIT,

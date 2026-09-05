@@ -51,10 +51,11 @@ import type { Client } from "@/lib/schemas/client";
 import type { ICellRendererParams } from "ag-grid-community";
 
 type Props = { params: ICellRendererParams<Client> & { onDelete: (client: Client) => void } };
-type ActionType = "edit" | "delete";
+type ActionType = "view" | "edit" | "delete";
 type Action = { label: string; type: ActionType };
 
 const actions: Action[] = [
+  { label: "View contact", type: "view" },
   { label: "Edit contact", type: "edit" },
   { label: "Delete contact", type: "delete" },
 ];
@@ -95,7 +96,10 @@ function runAction(type: ActionType): void {
   const client = props.params.data;
 
   if (!client) return;
-  if (type === "edit")
+
+  if (type === "view")
+    void router.replace({ query: { ...route.query, contact: String(client.id) } });
+  else if (type === "edit")
     void router.push({ name: Route.CLIENT_EDIT, params: { id: client.id }, query: route.query });
   else props.params.onDelete(client);
 

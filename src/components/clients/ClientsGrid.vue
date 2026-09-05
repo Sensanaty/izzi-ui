@@ -23,8 +23,8 @@
       @column-pinned="emit('column-pinned')"
       @column-resized="emit('column-resized')"
       @column-visible="emit('column-visible')"
+      @cell-clicked="emit('cell-clicked', $event)"
       @grid-ready="emit('grid-ready', $event)"
-      @row-clicked="emit('row-clicked', $event)"
       @selection-changed="emit('selection-changed', $event)"
       @sort-changed="emit('sort-changed', $event)"
     />
@@ -46,10 +46,10 @@ import AgGridTable from "@/components/ui/AgGridTable.vue";
 
 import type { Client } from "@/lib/schemas/client";
 import type {
+  CellClickedEvent,
   ColDef,
   GridReadyEvent,
   Module,
-  RowClickedEvent,
   RowSelectionOptions,
   SelectionChangedEvent,
   SelectionColumnDef,
@@ -116,8 +116,8 @@ const emit = defineEmits<{
   "column-pinned": [];
   "column-resized": [];
   "column-visible": [];
+  "cell-clicked": [event: CellClickedEvent<Client>];
   "grid-ready": [event: GridReadyEvent<Client>];
-  "row-clicked": [event: RowClickedEvent<Client>];
   "selection-changed": [event: SelectionChangedEvent<Client>];
   "sort-changed": [event: SortChangedEvent<Client>];
   "go-to-page": [page: number];
