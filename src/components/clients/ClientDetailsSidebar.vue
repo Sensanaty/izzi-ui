@@ -1,12 +1,12 @@
 <template>
   <IzziSidebar v-model="isOpen" :title="sidebarTitle" @close="closeSidebar">
     <template #header-actions>
-      <IzziButton v-if="client" size="sm" @click="editClient">Edit</IzziButton>
+      <IzziButton v-if="client" size="sm" :disabled="isLoading" @click="editClient"
+        >Edit</IzziButton
+      >
     </template>
 
-    <p v-if="isLoading" class="text-text" role="status">Loading contact...</p>
-
-    <p v-else-if="errorMessage" class="text-danger" role="alert">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="text-danger" role="alert">{{ errorMessage }}</p>
 
     <template v-else-if="client">
       <section class="grid gap-3" aria-labelledby="contact-summary-heading">
@@ -42,7 +42,13 @@
         aria-labelledby="contact-company-heading"
       >
         <h3 id="contact-company-heading" class="font-bold text-lg">Company relationship</h3>
-        <p class="break-words">{{ display(client.company_name) }}</p>
+        <p class="break-words">
+          {{
+            isLoadingCompany
+              ? "Loading company..."
+              : display(companyName ?? `Company #${client.company_id}`)
+          }}
+        </p>
         <IzziButton
           v-if="client.company_id"
           class="w-fit"
@@ -71,6 +77,38 @@
         </dl>
       </section>
     </template>
+
+    <div
+      v-else-if="isLoading"
+      class="grid gap-6"
+      role="status"
+      aria-label="Loading contact details"
+    >
+      <section class="grid gap-3">
+        <div class="bg-surface-hover h-5 w-2/5 rounded-sm" />
+        <div class="bg-surface-hover h-4 w-1/3 rounded-sm" />
+      </section>
+
+      <section class="border-border grid gap-3 border-t pt-4">
+        <div class="bg-surface-hover h-5 w-2/5 rounded-sm" />
+        <div class="grid gap-3">
+          <div v-for="field in 3" :key="field" class="bg-surface-hover h-10 rounded-sm" />
+        </div>
+      </section>
+
+      <section class="border-border grid gap-3 border-t pt-4">
+        <div class="bg-surface-hover h-5 w-1/2 rounded-sm" />
+        <div class="bg-surface-hover h-5 w-3/5 rounded-sm" />
+        <div class="bg-surface-hover h-8 w-32 rounded-sm" />
+      </section>
+
+      <section class="border-border grid gap-3 border-t pt-4">
+        <div class="bg-surface-hover h-5 w-1/4 rounded-sm" />
+        <div class="grid gap-2 sm:grid-cols-2">
+          <div v-for="field in 2" :key="field" class="bg-surface-hover h-10 rounded-sm" />
+        </div>
+      </section>
+    </div>
   </IzziSidebar>
 </template>
 
@@ -78,6 +116,7 @@
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getClient } from "@/api/clients";
+import { getCompany } from "@/api/companies";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziSidebar from "@/components/ui/IzziSidebar.vue";
 import { notifyApiError } from "@/lib/notifications";
@@ -92,12 +131,16 @@ const router = useRouter();
 const isOpen = defineModel<boolean>({ required: true });
 
 const client = ref<Client | null>(null);
+const companyName = ref<string | null>(null);
 const isLoading = ref(false);
+const isLoadingCompany = ref(false);
 const errorMessage = ref<string | null>(null);
 
-const sidebarTitle = computed(() =>
-  client.value ? `Contact · ${client.value.name}` : "Contact details",
-);
+const sidebarTitle = computed(() => {
+  if (isLoading.value && !client.value) return "Loading contact...";
+
+  return client.value ? `Contact · ${client.value.name}` : "Contact details";
+});
 const contactFields = computed(() => [
   { label: "Email", value: client.value?.email },
   { label: "Phone", value: client.value?.number },
@@ -116,7 +159,9 @@ function formatDate(value: string): string {
 
 async function loadClient(): Promise<void> {
   isLoading.value = true;
+  isLoadingCompany.value = false;
   errorMessage.value = null;
+  companyName.value = null;
 
   try {
     client.value = await getClient(props.clientId);
@@ -124,6 +169,20 @@ async function loadClient(): Promise<void> {
     errorMessage.value = notifyApiError(error, "Unable to load contact").message;
   } finally {
     isLoading.value = false;
+  }
+
+  const loadedClient = client.value;
+
+  if (!loadedClient || errorMessage.value) return;
+
+  isLoadingCompany.value = true;
+
+  try {
+    companyName.value = (await getCompany(loadedClient.company_id)).name;
+  } catch {
+    companyName.value = null;
+  } finally {
+    isLoadingCompany.value = false;
   }
 }
 

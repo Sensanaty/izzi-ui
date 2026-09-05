@@ -1,15 +1,33 @@
 <template>
   <IzziSidebar v-model="isOpen" :title="sidebarTitle" @close="closeSidebar">
     <template #header-actions>
-      <IzziButton v-if="part" size="sm" @click="editPart">Edit</IzziButton>
+      <IzziButton v-if="part" size="sm" :disabled="isLoading" @click="editPart">Edit</IzziButton>
     </template>
 
-    <p v-if="isLoading" class="text-text" role="status">Loading part...</p>
-
-    <p v-else-if="errorMessage" class="text-danger" role="alert">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="text-danger" role="alert">{{ errorMessage }}</p>
 
     <template v-else-if="part">
       <section class="grid gap-3" aria-labelledby="part-summary-heading">
+        <div class="flex flex-wrap gap-2" aria-label="Navigate parts">
+          <IzziButton
+            size="sm"
+            variant="outline"
+            :disabled="isLoading || !hasPreviousPart"
+            @click="navigateToPart(-1)"
+          >
+            Previous part
+          </IzziButton>
+
+          <IzziButton
+            size="sm"
+            variant="outline"
+            :disabled="isLoading || !hasNextPart"
+            @click="navigateToPart(1)"
+          >
+            Next part
+          </IzziButton>
+        </div>
+
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h3 id="part-summary-heading" class="font-bold text-lg">{{ part.part_number }}</h3>
@@ -110,6 +128,32 @@
       </section>
     </template>
 
+    <div v-else-if="isLoading" class="grid gap-6" role="status" aria-label="Loading part details">
+      <section class="grid gap-3">
+        <div class="bg-surface-hover h-5 w-2/5 rounded-sm" />
+        <div class="bg-surface-hover h-4 w-4/5 rounded-sm" />
+      </section>
+
+      <section class="border-border grid gap-3 border-t pt-4">
+        <div class="bg-surface-hover h-5 w-1/4 rounded-sm" />
+        <div class="grid gap-2 sm:grid-cols-3">
+          <div v-for="field in 3" :key="field" class="bg-surface-hover h-10 rounded-sm" />
+        </div>
+      </section>
+
+      <section class="border-border grid gap-3 border-t pt-4">
+        <div class="bg-surface-hover h-5 w-2/5 rounded-sm" />
+        <div class="bg-surface-hover h-32 rounded-sm" />
+      </section>
+
+      <section class="border-border grid gap-3 border-t pt-4">
+        <div class="bg-surface-hover h-5 w-1/4 rounded-sm" />
+        <div class="grid gap-2 sm:grid-cols-2">
+          <div v-for="field in 6" :key="field" class="bg-surface-hover h-10 rounded-sm" />
+        </div>
+      </section>
+    </div>
+
     <PartVersionsDialog
       v-if="part && isVersionsOpen"
       :part-id="part.id"
@@ -135,7 +179,7 @@ const PartVersionsDialog = defineAsyncComponent(
   () => import("@/components/parts/PartVersionsDialog.vue"),
 );
 
-const props = defineProps<{ partId: number }>();
+const props = defineProps<{ partId: number; partIds: number[] }>();
 const emit = defineEmits<{ close: [] }>();
 const route = useRoute();
 const router = useRouter();
@@ -147,8 +191,15 @@ const isLoading = ref(false);
 const errorMessage = ref<string | null>(null);
 const isVersionsOpen = ref(false);
 
-const sidebarTitle = computed(() =>
-  part.value ? `Part · ${part.value.part_number}` : "Part details",
+const sidebarTitle = computed(() => {
+  if (isLoading.value && !part.value) return "Loading part...";
+
+  return part.value ? `Part · ${part.value.part_number}` : "Part details";
+});
+const currentPartIndex = computed(() => props.partIds.indexOf(props.partId));
+const hasPreviousPart = computed(() => currentPartIndex.value > 0);
+const hasNextPart = computed(
+  () => currentPartIndex.value >= 0 && currentPartIndex.value < props.partIds.length - 1,
 );
 const inventoryFields = computed(() => [
   { label: "Available", value: part.value?.available },
@@ -214,6 +265,14 @@ async function loadPart(): Promise<void> {
 
 async function copyDetails(type: "quote" | "full"): Promise<void> {
   if (part.value) await copyDetailsForParts([part.value], type);
+}
+
+function navigateToPart(offset: -1 | 1): void {
+  const nextPartId = props.partIds[currentPartIndex.value + offset];
+
+  if (nextPartId === undefined) return;
+
+  void router.replace({ query: { ...route.query, part: String(nextPartId) } });
 }
 
 function editPart(): void {
