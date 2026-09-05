@@ -380,6 +380,10 @@ function handleCellClicked(event: CellClickedEvent<Part>): void {
 async function handleGridKeydown(event: KeyboardEvent): Promise<void> {
   if (!event.ctrlKey || event.isComposing || event.key.toLowerCase() !== "c") return;
 
+  const selection = window.getSelection();
+
+  if (selection && !selection.isCollapsed) return;
+
   const target = event.target;
 
   if (target instanceof HTMLInputElement && target.type !== "checkbox" && target.type !== "radio") {
