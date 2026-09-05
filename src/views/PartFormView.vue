@@ -11,8 +11,14 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-3">
-      <IzziButton v-if="isEditing" variant="secondary" size="sm" @click="isVersionsOpen = true">
-        View past versions
+      <IzziButton
+        v-if="isEditing && versionCount !== 0"
+        variant="secondary"
+        size="sm"
+        :disabled="versionCount === null"
+        @click="isVersionsOpen = true"
+      >
+        {{ versionsButtonLabel }}
       </IzziButton>
 
       <RouterLink class="text-accent underline" :to="{ path: RoutePath.HOME, query: route.query }">
@@ -344,6 +350,14 @@ const newCompanyForm = reactive<CompanyFormState>({
 
 const isSaving = ref(false);
 const isVersionsOpen = ref(false);
+
+const versionCount = ref<number | null>(null);
+const versionsButtonLabel = computed(() => {
+  if (versionCount.value === null) return "Loading past versions...";
+
+  return `View ${versionCount.value} past version${versionCount.value === 1 ? "" : "s"}`;
+});
+
 const submitLabel = computed(() => {
   if (isSaving.value) return "Saving...";
 
@@ -471,6 +485,7 @@ async function load() {
     if (requestedPath !== route.fullPath) return;
 
     companies.value = loadedCompanies;
+    versionCount.value = loadedPart?.data.versions_count ?? null;
 
     if (loadedPart) fillForm(loadedPart.data);
   } catch (error) {
@@ -609,6 +624,7 @@ function resetForRoute(): void {
   companyFieldErrors.value = {};
   fieldErrors.value = {};
   loadError.value = null;
+  versionCount.value = null;
   companiesLoading.value = true;
   void load();
 }

@@ -28,6 +28,7 @@ export const partSchema = z.object({
   company_name: z.string(),
   created_at: z.string(),
   updated_at: z.string(),
+  versions_count: z.number().nullable().optional(),
 });
 
 export const partResponseSchema = z.object({

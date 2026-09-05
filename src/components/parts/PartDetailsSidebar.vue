@@ -119,10 +119,21 @@
         aria-labelledby="part-history-heading"
       >
         <div class="flex items-center justify-between gap-3">
-          <h3 id="part-history-heading" class="font-bold text-lg">History</h3>
-          <IzziButton size="sm" variant="secondary" @click="isVersionsOpen = true"
-            >View versions</IzziButton
-          >
+          <h3 id="part-history-heading" class="font-bold text-lg">
+            History<span v-if="part.versions_count !== undefined">
+              · {{ part.versions_count ?? 0 }} versions</span
+            >
+          </h3>
+          <span v-if="part.versions_count !== 0" class="inline-flex">
+            <IzziButton
+              size="sm"
+              variant="secondary"
+              :disabled="part.versions_count === undefined || part.versions_count === null"
+              @click="isVersionsOpen = true"
+            >
+              View versions
+            </IzziButton>
+          </span>
         </div>
         <p class="text-text text-sm">Updated {{ formatDate(part.updated_at) }}</p>
       </section>

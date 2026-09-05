@@ -2,7 +2,7 @@
   <Teleport to="body">
     <div
       class="fixed inset-0 z-50 flex items-center justify-center p-6 md:p-8"
-      @keydown.esc="close"
+      @keydown.esc.stop.prevent="close"
     >
       <div class="absolute inset-0 bg-black/60" aria-hidden="true" @click="close" />
 
@@ -166,7 +166,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { deletePartVersions, getPartVersions } from "@/api/parts";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import { notifyApiError } from "@/lib/notifications";
@@ -294,6 +294,14 @@ function close(): void {
   emit("close");
 }
 
+function handleEscape(event: KeyboardEvent): void {
+  if (event.key !== "Escape") return;
+
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  close();
+}
+
 function restoreField(key: FieldKey): void {
   const version = selectedVersion.value;
 
@@ -342,6 +350,11 @@ async function loadVersions() {
 }
 
 onMounted(async () => {
+  document.addEventListener("keydown", handleEscape, true);
   await loadVersions();
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("keydown", handleEscape, true);
 });
 </script>
