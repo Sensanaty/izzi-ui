@@ -74,16 +74,32 @@
 
       <ThemeToggle class="mr-2" />
 
+      <IzziButton
+        size="sm"
+        variant="ghost"
+        rounded
+        flat
+        aria-label="Open page help"
+        title="Page help (?)"
+        @click="isHelpOpen = true"
+      >
+        <CircleHelp aria-hidden="true" class="size-5" />
+      </IzziButton>
+
       <IzziButton size="sm" variant="outline" :disabled="auth.isLoading" @click="signOut">
         Sign out
       </IzziButton>
     </div>
   </header>
+
+  <PageHelpModal v-model="isHelpOpen" :route-name="route.name" :route-path="route.path" />
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import {
   Building2,
+  CircleHelp,
   ContactRound,
   Crown,
   Hospital,
@@ -92,6 +108,7 @@ import {
   UserPlus,
 } from "@lucide/vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
+import PageHelpModal from "@/components/ui/PageHelpModal.vue";
 import ThemeToggle from "@/components/ui/ThemeToggle.vue";
 import { notifyApiErrorDetails } from "@/lib/notifications";
 import { RoutePath } from "@/router/constants";
@@ -100,6 +117,7 @@ import { useAuthStore } from "@/stores/auth";
 const auth = useAuthStore();
 const route = useRoute();
 const router = useRouter();
+const isHelpOpen = ref(false);
 
 async function signOut(): Promise<void> {
   await auth.logout();
