@@ -2,6 +2,7 @@
   <div class="relative border-b py-3.5">
     <AgGridVue
       class="w-full"
+      @keydown="emit('keydown', $event)"
       :column-defs="columnDefs"
       :selection-column-def="selectionColumnDef"
       :animate-rows="false"
@@ -21,6 +22,7 @@
       @column-resized="emit('column-resized')"
       @column-visible="emit('column-visible')"
       @grid-ready="emit('grid-ready', $event)"
+      @row-clicked="emit('row-clicked', $event)"
       @selection-changed="emit('selection-changed', $event)"
       @sort-changed="emit('sort-changed', $event)"
     />
@@ -34,6 +36,7 @@ import type {
   ColDef,
   GridReadyEvent,
   Module,
+  RowClickedEvent,
   SelectionChangedEvent,
   SelectionColumnDef,
   RowSelectionOptions,
@@ -54,11 +57,13 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
+  keydown: [event: KeyboardEvent];
   "column-moved": [];
   "column-pinned": [];
   "column-resized": [];
   "column-visible": [];
   "grid-ready": [event: GridReadyEvent<TRow>];
+  "row-clicked": [event: RowClickedEvent<TRow>];
   "selection-changed": [event: SelectionChangedEvent<TRow>];
   "sort-changed": [event: SortChangedEvent<TRow>];
 }>();

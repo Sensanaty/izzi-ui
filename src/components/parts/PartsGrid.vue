@@ -29,10 +29,12 @@
       :selection-column-def="selectionColumnDef"
       :theme="theme"
       @column-moved="emit('column-moved')"
+      @keydown="emit('keydown', $event)"
       @column-pinned="emit('column-pinned')"
       @column-resized="emit('column-resized')"
       @column-visible="emit('column-visible')"
       @grid-ready="emit('grid-ready', $event)"
+      @row-clicked="emit('row-clicked', $event)"
       @selection-changed="emit('selection-changed', $event)"
       @sort-changed="emit('sort-changed', $event)"
     />
@@ -66,6 +68,7 @@ import type {
   ColDef,
   GridReadyEvent,
   Module,
+  RowClickedEvent,
   SelectionChangedEvent,
   SelectionColumnDef,
   RowSelectionOptions,
@@ -95,11 +98,13 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
+  keydown: [event: KeyboardEvent];
   "column-moved": [];
   "column-pinned": [];
   "column-resized": [];
   "column-visible": [];
   "grid-ready": [event: GridReadyEvent<Part>];
+  "row-clicked": [event: RowClickedEvent<Part>];
   "selection-changed": [event: SelectionChangedEvent<Part>];
   "sort-changed": [event: SortChangedEvent<Part>];
   "go-to-page": [page: number];

@@ -42,7 +42,8 @@
 
   <DeleteConfirmationModal
     v-if="deleteItems.length"
-    item-label="contacts"
+    item-label="contact"
+    item-label-plural="contacts"
     :items="deleteItems"
     :deleting="isDeleting"
     @cancel="deleteItems = []"
@@ -125,10 +126,6 @@ const selectedClientCount = ref(0);
 const isDeleting = ref(false);
 const deleteItems = ref<{ id: number; label: string }[]>([]);
 
-const skipDeleteConfirmation = ref(
-  localStorage.getItem("izzi-skip-delete-confirmation") === "true",
-);
-
 const { clientUrlQuery, isWritingUrl, searchQuery, sort, syncQueryToUrl, updateFromUrl } =
   useClientSearch();
 
@@ -188,10 +185,8 @@ function changePinnedColumn(field: string, pinned: "" | "left" | "right") {
   setPinnedColumn(field);
 }
 
-async function requestDelete(client: Client) {
+function requestDelete(client: Client) {
   deleteItems.value = [{ id: client.id, label: client.name }];
-
-  if (skipDeleteConfirmation.value) await confirmDelete(false);
 }
 
 function requestBulkDelete(): void {
@@ -201,12 +196,7 @@ function requestBulkDelete(): void {
   }));
 }
 
-async function confirmDelete(dontAskAgain: boolean) {
-  if (dontAskAgain) {
-    skipDeleteConfirmation.value = true;
-    localStorage.setItem("izzi-skip-delete-confirmation", "true");
-  }
-
+async function confirmDelete(): Promise<void> {
   isDeleting.value = true;
 
   try {

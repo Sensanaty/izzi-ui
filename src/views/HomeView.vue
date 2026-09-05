@@ -102,7 +102,8 @@
 
   <DeleteConfirmationModal
     v-if="deleteItems.length"
-    item-label="parts"
+    item-label="part"
+    item-label-plural="parts"
     :items="deleteItems"
     :deleting="isDeleting"
     @cancel="deleteItems = []"
@@ -136,6 +137,8 @@
     @column-resized="persistColumnState"
     @column-visible="persistColumnState"
     @grid-ready="handleGridReady"
+    @keydown="handleGridKeydown"
+    @row-clicked="handleRowClicked"
     @selection-changed="handleSelectionChanged"
     @sort-changed="handleSortChanged"
   />
@@ -184,7 +187,11 @@ import {
 
 import type { PartsCondition } from "@/api/parts";
 import type { Part } from "@/lib/schemas/part";
-import type { SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
+import type {
+  RowClickedEvent,
+  SelectionChangedEvent,
+  SortChangedEvent,
+} from "ag-grid-community";
 
 const gridModules = [
   CellStyleModule,
@@ -250,16 +257,13 @@ const {
 const advancedSearch = useTemplateRef<AdvancedPartSearchInstance>("advancedSearch");
 const selectedPartCount = ref(0);
 const selectedParts = ref<Part[]>([]);
+const lastClickedPart = ref<Part | null>(null);
 
 const isGridReady = ref(false);
 const isExporting = ref(false);
 const isDeleting = ref(false);
 
 const deleteItems = ref<{ id: number; label: string }[]>([]);
-
-const skipDeleteConfirmation = ref(
-  localStorage.getItem("izzi-skip-delete-confirmation") === "true",
-);
 
 const rowSelection = { mode: "multiRow", enableClickSelection: false } as const;
 const { actionMessage, copyDetails, copyDetailsForParts, copyPartNumbers } = usePartsCopy();
@@ -270,22 +274,15 @@ const columnDefs = createPartsColumnDefs(
   () => searchQuery.value.trim(),
 );
 
-async function requestDelete(part: Part) {
+function requestDelete(part: Part) {
   deleteItems.value = [{ id: part.id, label: part.part_number }];
-
-  if (skipDeleteConfirmation.value) await confirmDelete(false);
 }
 
 function requestBulkDelete() {
   deleteItems.value = selectedParts.value.map((part) => ({ id: part.id, label: part.part_number }));
 }
 
-async function confirmDelete(dontAskAgain: boolean) {
-  if (dontAskAgain) {
-    skipDeleteConfirmation.value = true;
-    localStorage.setItem("izzi-skip-delete-confirmation", "true");
-  }
-
+async function confirmDelete(): Promise<void> {
   isDeleting.value = true;
 
   try {
@@ -339,6 +336,35 @@ function changePinnedColumn(field: string, pinned: "" | "left" | "right") {
 
 function copySelectedDetails(type: "quote" | "full") {
   return copyDetails(selectedParts.value, type);
+}
+
+function handleRowClicked(event: RowClickedEvent<Part>): void {
+  lastClickedPart.value = event.data ?? null;
+}
+
+async function handleGridKeydown(event: KeyboardEvent): Promise<void> {
+  if (!event.ctrlKey || event.isComposing || event.key.toLowerCase() !== "c") return;
+
+  const target = event.target;
+
+  if (
+    target instanceof HTMLInputElement &&
+    target.type !== "checkbox" &&
+    target.type !== "radio"
+  ) {
+    return;
+  }
+
+  let partsToCopy = selectedParts.value;
+
+  if (!partsToCopy.length && lastClickedPart.value) {
+    partsToCopy = [lastClickedPart.value];
+  }
+
+  if (!partsToCopy.length) return;
+
+  event.preventDefault();
+  await copyDetails(partsToCopy, event.shiftKey ? "full" : "quote");
 }
 
 function createPartsFilename(): string {
