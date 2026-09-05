@@ -92,6 +92,7 @@
       @column-pinned="persistColumnState"
       @column-resized="persistColumnState"
       @column-visible="persistColumnState"
+      @cell-clicked="handleCellClicked"
       @grid-ready="handleGridReady"
       @selection-changed="handleSelectionChanged"
       @sort-changed="handleSortChanged"
@@ -119,7 +120,6 @@
 
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import {
   CellStyleModule,
   ClientSideRowModelModule,
@@ -130,6 +130,7 @@ import {
   RowSelectionModule,
   themeQuartz,
 } from "ag-grid-community";
+import { useRoute, useRouter } from "vue-router";
 import { deleteCompany, getCompaniesPage, isCompaniesSortField } from "@/api/companies";
 import CompanyDetailsSidebar from "@/components/companies/CompanyDetailsSidebar.vue";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
@@ -151,7 +152,7 @@ import { notifyApiError } from "@/lib/notifications";
 import { useCompanyOptionsStore } from "@/stores/companyOptions";
 
 import type { Company } from "@/lib/schemas/company";
-import type { SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
+import type { CellClickedEvent, SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
 const modules = [CellStyleModule, ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
 ModuleRegistry.registerModules(modules);
@@ -313,6 +314,19 @@ function toggleColumn(field: string, visible: boolean) {
 function changePinnedColumn(field: string, pinned: "" | "left" | "right") {
   pinnedColumns.value[field] = pinned;
   setPinnedColumn(field);
+}
+
+function handleCellClicked(event: CellClickedEvent<Company>): void {
+  if (
+    !(event.event instanceof MouseEvent) ||
+    !event.event.ctrlKey ||
+    event.column?.getColId() === "actions" ||
+    !event.data
+  ) {
+    return;
+  }
+
+  void router.replace({ query: { ...route.query, company: String(event.data.id) } });
 }
 
 function handleSelectionChanged(event: SelectionChangedEvent<Company>) {
