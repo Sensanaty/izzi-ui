@@ -148,9 +148,14 @@ export function usePartsCopy() {
 
     try {
       await navigator.clipboard.writeText(clipboardText);
-      const copyType = type === "quote" ? "Quote Details" : "Part Details";
-
-      const message = `${copyType} copied to clipboard`;
+      const copyType = type === "quote" ? "quote details" : "full details";
+      const partLabel =
+        partsToCopy.length < 5
+          ? `${partsToCopy.length === 1 ? "part" : "parts"} ${partsToCopy
+              .map(({ part_number }) => part_number)
+              .join(", ")}`
+          : `${partsToCopy.length} parts`;
+      const message = `Copied ${copyType} for ${partLabel}`;
       actionMessage.value = message;
       createNotification(message);
     } catch (error) {
