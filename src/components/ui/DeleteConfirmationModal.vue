@@ -13,15 +13,9 @@
 
     <template #footer>
       <div class="flex justify-end gap-2">
-        <label v-if="items.length === 1" class="mr-auto flex items-center gap-2">
-          <input v-model="dontAskAgain" type="checkbox" />
-
-          <span>Don't ask again</span>
-        </label>
-
         <IzziButton variant="secondary" :disabled="deleting" @click="cancel">Cancel</IzziButton>
 
-        <IzziButton variant="danger" :disabled="deleting" @click="confirmDeletion">
+        <IzziButton variant="danger" :disabled="deleting" @click="emit('confirm')">
           {{ deleting ? "Deleting..." : "Delete" }}
         </IzziButton>
       </div>
@@ -47,18 +41,13 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   cancel: [];
-  confirm: [dontAskAgain: boolean];
+  confirm: [];
 }>();
 
 const isOpen = ref(true);
-const dontAskAgain = ref(false);
 
 function cancel(): void {
   isOpen.value = false;
   emit("cancel");
-}
-
-function confirmDeletion(): void {
-  emit("confirm", props.items.length === 1 && dontAskAgain.value);
 }
 </script>
