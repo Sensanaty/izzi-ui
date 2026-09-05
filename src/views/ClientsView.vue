@@ -103,7 +103,6 @@ import {
 } from "ag-grid-community";
 import { useRoute, useRouter } from "vue-router";
 import { deleteClient, isClientsSortField } from "@/api/clients";
-import ClientDetailsSidebar from "@/components/clients/ClientDetailsSidebar.vue";
 import ClientsGrid from "@/components/clients/ClientsGrid.vue";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
@@ -123,11 +122,16 @@ import { notifyApiError } from "@/lib/notifications";
 import type { Client } from "@/lib/schemas/client";
 import type { CellClickedEvent, SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
-const modules = [CellStyleModule, ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
-ModuleRegistry.registerModules(modules);
+const ClientDetailsSidebar = defineAsyncComponent(
+  () => import("@/components/clients/ClientDetailsSidebar.vue"),
+);
+
 const DeleteConfirmationModal = defineAsyncComponent(
   () => import("@/components/ui/DeleteConfirmationModal.vue"),
 );
+
+const modules = [CellStyleModule, ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
+ModuleRegistry.registerModules(modules);
 
 const route = useRoute();
 const router = useRouter();

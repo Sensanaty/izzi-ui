@@ -176,7 +176,6 @@ import {
 } from "ag-grid-community";
 import { useRoute, useRouter } from "vue-router";
 import { deletePart, exportParts, isPartsSortField } from "@/api/parts";
-import PartDetailsSidebar from "@/components/parts/PartDetailsSidebar.vue";
 import PartsGrid from "@/components/parts/PartsGrid.vue";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import IzziInput from "@/components/ui/IzziInput.vue";
@@ -198,6 +197,18 @@ import type { PartsCondition } from "@/api/parts";
 import type { Part } from "@/lib/schemas/part";
 import type { CellClickedEvent, SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
+const PartDetailsSidebar = defineAsyncComponent(
+  () => import("@/components/parts/PartDetailsSidebar.vue"),
+);
+
+const PartsColumnSettings = defineAsyncComponent(
+  () => import("@/components/parts/PartsColumnSettings.vue"),
+);
+
+const AdvancedPartSearch = defineAsyncComponent(
+  () => import("@/components/parts/AdvancedPartSearch.vue"),
+);
+
 const gridModules = [
   CellStyleModule,
   ClientSideRowModelModule,
@@ -208,13 +219,6 @@ const gridModules = [
   RowSelectionModule,
 ];
 ModuleRegistry.registerModules(gridModules);
-
-const PartsColumnSettings = defineAsyncComponent(
-  () => import("@/components/parts/PartsColumnSettings.vue"),
-);
-const AdvancedPartSearch = defineAsyncComponent(
-  () => import("@/components/parts/AdvancedPartSearch.vue"),
-);
 
 type AdvancedPartSearchInstance = {
   focusLastUnfilledField: () => void;

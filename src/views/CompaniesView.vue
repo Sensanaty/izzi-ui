@@ -132,7 +132,6 @@ import {
 } from "ag-grid-community";
 import { useRoute, useRouter } from "vue-router";
 import { deleteCompany, getCompaniesPage, isCompaniesSortField } from "@/api/companies";
-import CompanyDetailsSidebar from "@/components/companies/CompanyDetailsSidebar.vue";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
 import PartsPagination from "@/components/parts/PartsPagination.vue";
 import AgGridTable from "@/components/ui/AgGridTable.vue";
@@ -154,12 +153,16 @@ import { useCompanyOptionsStore } from "@/stores/companyOptions";
 import type { Company } from "@/lib/schemas/company";
 import type { CellClickedEvent, SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
-const modules = [CellStyleModule, ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
-ModuleRegistry.registerModules(modules);
+const CompanyDetailsSidebar = defineAsyncComponent(
+  () => import("@/components/companies/CompanyDetailsSidebar.vue"),
+);
 
 const DeleteConfirmationModal = defineAsyncComponent(
   () => import("@/components/ui/DeleteConfirmationModal.vue"),
 );
+
+const modules = [CellStyleModule, ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
+ModuleRegistry.registerModules(modules);
 
 const companyOptionsStore = useCompanyOptionsStore();
 const route = useRoute();
