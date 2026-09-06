@@ -31,5 +31,23 @@ export const paginatedCompaniesResponseSchema = z.object({
     .passthrough(),
 });
 
+export const companyMergePreviewSchema = z.object({
+  data: z.object({
+    source_company_id: z.number(),
+    target_company_id: z.number(),
+    parts_count: z.number(),
+    clients_count: z.number(),
+  }),
+});
+
+export const companyMergeResponseSchema = z.object({
+  data: companySchema,
+  meta: z.object({
+    merged_company_id: z.number(),
+    parts_moved: z.number(),
+    clients_moved: z.number(),
+  }),
+});
+
 export type Company = z.infer<typeof companySchema>;
 export type PaginatedCompaniesResponse = z.infer<typeof paginatedCompaniesResponseSchema>;

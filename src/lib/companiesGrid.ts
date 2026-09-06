@@ -31,13 +31,16 @@ export const companyDefaultColDef: ColDef<Company> = {
   minWidth: 120,
 };
 
-export function createCompanyColumnDefs(onDelete: (company: Company) => void): ColDef<Company>[] {
+export function createCompanyColumnDefs(
+  onDelete: (company: Company) => void,
+  onMerge: (company: Company) => void,
+): ColDef<Company>[] {
   return [
     {
       colId: "actions",
       headerName: "",
       cellRenderer: CompanyGridActions,
-      cellRendererParams: { onDelete },
+      cellRendererParams: { onDelete, onMerge },
       sortable: false,
       suppressHeaderMenuButton: true,
       width: 70,

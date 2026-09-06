@@ -3,6 +3,8 @@ import { emptyResponseSchema } from "@/lib/schemas/common";
 import {
   companiesResponseSchema,
   companySchema,
+  companyMergePreviewSchema,
+  companyMergeResponseSchema,
   paginatedCompaniesResponseSchema,
 } from "@/lib/schemas/company";
 
@@ -86,4 +88,19 @@ export async function updateCompany(id: number, payload: CompanyPayload): Promis
 
 export async function deleteCompany(id: number): Promise<void> {
   await api.delete(`/companies/${id}`, emptyResponseSchema);
+}
+
+export async function getCompanyMergePreview(sourceCompanyId: number, targetCompanyId: number) {
+  return api.get(
+    `/companies/${sourceCompanyId}/merge_preview?target_company_id=${targetCompanyId}`,
+    companyMergePreviewSchema,
+  );
+}
+
+export async function mergeCompany(sourceCompanyId: number, targetCompanyId: number) {
+  return api.post(
+    `/companies/${sourceCompanyId}/merge`,
+    { target_company_id: targetCompanyId },
+    companyMergeResponseSchema,
+  );
 }

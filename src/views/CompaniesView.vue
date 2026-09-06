@@ -57,9 +57,20 @@
     item-label="company"
     item-label-plural="companies"
     :items="deleteItems"
+    warning="WARNING: Deleting a company will also delete ALL associated parts & contacts"
+    :confirmation-value="deleteConfirmationValue"
     :deleting="isDeleting"
     @cancel="deleteItems = []"
     @confirm="confirmDelete"
+  />
+
+  <CompanyMergeModal
+    v-if="mergeSourceCompany"
+    :source-company="mergeSourceCompany"
+    :companies="companyOptionsStore.companies"
+    :is-merging="isMerging"
+    @cancel="mergeSourceCompany = null"
+    @confirm="confirmMerge"
   />
 
   <DirtyRecordsModal
@@ -146,7 +157,12 @@ import {
   themeQuartz,
 } from "ag-grid-community";
 import { useRoute, useRouter } from "vue-router";
-import { deleteCompany, getCompaniesPage, isCompaniesSortField } from "@/api/companies";
+import {
+  deleteCompany,
+  getCompaniesPage,
+  isCompaniesSortField,
+  mergeCompany,
+} from "@/api/companies";
 import PartsColumnSettings from "@/components/parts/PartsColumnSettings.vue";
 import PartsPagination from "@/components/parts/PartsPagination.vue";
 import AgGridTable from "@/components/ui/AgGridTable.vue";
@@ -164,6 +180,7 @@ import {
 } from "@/lib/companiesGrid";
 import { notifyApiError } from "@/lib/notifications";
 import { useCompanyOptionsStore } from "@/stores/companyOptions";
+import { useNotificationStore } from "@/stores/notification";
 
 import type { Company } from "@/lib/schemas/company";
 import type { CellClickedEvent, SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
@@ -182,10 +199,15 @@ const DirtyRecordsModal = defineAsyncComponent(
   () => import("@/components/companies/DirtyRecordsModal.vue"),
 );
 
+const CompanyMergeModal = defineAsyncComponent(
+  () => import("@/components/companies/CompanyMergeModal.vue"),
+);
+
 const modules = [CellStyleModule, ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
 ModuleRegistry.registerModules(modules);
 
 const companyOptionsStore = useCompanyOptionsStore();
+const { createNotification } = useNotificationStore();
 const route = useRoute();
 const router = useRouter();
 const selectedCompanyId = computed(() => {
@@ -207,10 +229,17 @@ const needsCleanupOnly = ref(false);
 const isDirtyRecordsModalOpen = ref(false);
 
 const isDeleting = ref(false);
-const deleteItems = ref<{ id: number; label: string }[]>([]);
+const deleteItems = ref<{ id: number; label: string; partsCount: number }[]>([]);
+const isMerging = ref(false);
+const mergeSourceCompany = ref<Company | null>(null);
 const { companyUrlQuery, isWritingUrl, searchQuery, sort, syncQueryToUrl, updateFromUrl } =
   useCompanySearch();
 const selectedCompanyCount = ref(0);
+const deleteConfirmationValue = computed(() => {
+  const partsCount = deleteItems.value.reduce((total, company) => total + company.partsCount, 0);
+
+  return partsCount > 100 ? String(partsCount) : undefined;
+});
 
 const errorMessage = ref<string | null>(null);
 const isLoading = ref(true);
@@ -220,7 +249,7 @@ const theme = computed(() =>
   themeQuartz.withPart(appTheme.value === "dark" ? colorSchemeDark : colorSchemeLight),
 );
 const rowSelection = { mode: "multiRow", enableClickSelection: false } as const;
-const companyColumnDefs = createCompanyColumnDefs(requestDelete);
+const companyColumnDefs = createCompanyColumnDefs(requestDelete, requestMerge);
 const {
   handleGridReady,
   pinnedColumns,
@@ -254,14 +283,21 @@ const {
   updateMetadata,
 } = pagination;
 
-function requestDelete(company: Company) {
-  deleteItems.value = [{ id: company.id, label: company.name }];
+function requestDelete(company: Company): void {
+  deleteItems.value = [
+    { id: company.id, label: company.name, partsCount: company.parts_count ?? 0 },
+  ];
+}
+
+function requestMerge(company: Company): void {
+  mergeSourceCompany.value = company;
 }
 
 function requestBulkDelete(): void {
   deleteItems.value = selectedCompanies.value.map((company) => ({
     id: company.id,
     label: company.name,
+    partsCount: company.parts_count ?? 0,
   }));
 }
 
@@ -278,6 +314,26 @@ async function confirmDelete(): Promise<void> {
     notifyApiError(error, "Unable to delete companies");
   } finally {
     isDeleting.value = false;
+  }
+}
+
+async function confirmMerge(targetCompanyId: number): Promise<void> {
+  if (!mergeSourceCompany.value) return;
+
+  isMerging.value = true;
+
+  try {
+    const response = await mergeCompany(mergeSourceCompany.value.id, targetCompanyId);
+    companyOptionsStore.removeCompany(mergeSourceCompany.value.id);
+    mergeSourceCompany.value = null;
+    await loadCompanies();
+    createNotification(
+      `Merged ${response.meta.parts_moved} parts and ${response.meta.clients_moved} contacts`,
+    );
+  } catch (error) {
+    notifyApiError(error, "Unable to merge companies");
+  } finally {
+    isMerging.value = false;
   }
 }
 
@@ -384,6 +440,6 @@ watch(
 );
 
 onMounted(async () => {
-  await loadCompanies();
+  await Promise.all([loadCompanies(), companyOptionsStore.loadCompanies()]);
 });
 </script>

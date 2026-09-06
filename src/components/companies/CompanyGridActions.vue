@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref } from "vue";
 import type { Component } from "vue";
-import { Eye, Logs, Pencil, Trash2 } from "@lucide/vue";
+import { Eye, GitMerge, Logs, Pencil, Trash2 } from "@lucide/vue";
 import { useRoute, useRouter } from "vue-router";
 import IzziButton from "@/components/ui/IzziButton.vue";
 import { useExclusiveActionMenu } from "@/composables/useExclusiveActionMenu";
@@ -54,15 +54,19 @@ import type { Company } from "@/lib/schemas/company";
 import type { ICellRendererParams } from "ag-grid-community";
 
 type Props = {
-  params: ICellRendererParams<Company> & { onDelete: (company: Company) => void };
+  params: ICellRendererParams<Company> & {
+    onDelete: (company: Company) => void;
+    onMerge: (company: Company) => void;
+  };
 };
 
-type ActionType = "view" | "edit" | "delete";
+type ActionType = "view" | "edit" | "merge" | "delete";
 type Action = { icon: Component; label: string; type: ActionType };
 
 const actions: Action[] = [
   { icon: Eye, label: "View company", type: "view" },
   { icon: Pencil, label: "Edit company", type: "edit" },
+  { icon: GitMerge, label: "Merge duplicate company", type: "merge" },
   { icon: Trash2, label: "Delete company", type: "delete" },
 ];
 const props = defineProps<Props>();
@@ -152,6 +156,8 @@ function runAction(type: ActionType): void {
     });
   } else if (type === "edit") {
     void router.push({ name: Route.COMPANY_EDIT, params: { id: company.id }, query: route.query });
+  } else if (type === "merge") {
+    props.params.onMerge(company);
   } else if (type === "delete") {
     props.params.onDelete(company);
   }
