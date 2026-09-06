@@ -18,6 +18,15 @@
       </div>
 
       <IzziButton type="submit" class="my-auto" :disabled="isLoading">Search</IzziButton>
+
+      <IzziButton
+        class="my-auto"
+        :variant="needsCleanupOnly ? 'primary' : 'outline'"
+        :disabled="isLoading"
+        @click="handleDirtyRecordsClick"
+      >
+        Filter by dirty records
+      </IzziButton>
     </form>
 
     <PartsColumnSettings
@@ -51,6 +60,12 @@
     :deleting="isDeleting"
     @cancel="deleteItems = []"
     @confirm="confirmDelete"
+  />
+
+  <DirtyRecordsModal
+    v-if="isDirtyRecordsModalOpen"
+    v-model="isDirtyRecordsModalOpen"
+    :is-filtering="needsCleanupOnly"
   />
 
   <CompanyDetailsSidebar
@@ -153,12 +168,18 @@ import { useCompanyOptionsStore } from "@/stores/companyOptions";
 import type { Company } from "@/lib/schemas/company";
 import type { CellClickedEvent, SelectionChangedEvent, SortChangedEvent } from "ag-grid-community";
 
+const DIRTY_RECORDS_HELP_STORAGE_KEY = "izzi-companies-dirty-records-help-seen-v1";
+
 const CompanyDetailsSidebar = defineAsyncComponent(
   () => import("@/components/companies/CompanyDetailsSidebar.vue"),
 );
 
 const DeleteConfirmationModal = defineAsyncComponent(
   () => import("@/components/ui/DeleteConfirmationModal.vue"),
+);
+
+const DirtyRecordsModal = defineAsyncComponent(
+  () => import("@/components/companies/DirtyRecordsModal.vue"),
 );
 
 const modules = [CellStyleModule, ClientSideRowModelModule, ColumnApiModule, RowSelectionModule];
@@ -171,7 +192,7 @@ const selectedCompanyId = computed(() => {
   const value = route.query.company;
   const parsed = typeof value === "string" ? Number(value) : NaN;
 
-  return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+  return Number.isInteger(parsed) && parsed >= 0 ? parsed : null;
 });
 const isCompanySidebarOpen = computed({
   get: () => selectedCompanyId.value !== null,
@@ -182,6 +203,8 @@ const isCompanySidebarOpen = computed({
 const companies = ref<Company[]>([]);
 const totalCompanies = ref(0);
 const selectedCompanies = ref<Company[]>([]);
+const needsCleanupOnly = ref(false);
+const isDirtyRecordsModalOpen = ref(false);
 
 const isDeleting = ref(false);
 const deleteItems = ref<{ id: number; label: string }[]>([]);
@@ -267,6 +290,7 @@ async function loadCompanies(page = currentPage.value) {
       page,
       count: pageSize.value,
       query: searchQuery.value.trim(),
+      needsCleanup: needsCleanupOnly.value,
       sort: sort.value,
     });
     companies.value = response.data;
@@ -285,6 +309,17 @@ async function loadCompanies(page = currentPage.value) {
 async function searchCompanies() {
   await syncQueryToUrl();
   await loadCompanies();
+}
+
+async function handleDirtyRecordsClick(): Promise<void> {
+  needsCleanupOnly.value = !needsCleanupOnly.value;
+
+  if (localStorage.getItem(DIRTY_RECORDS_HELP_STORAGE_KEY) !== "true") {
+    isDirtyRecordsModalOpen.value = true;
+    localStorage.setItem(DIRTY_RECORDS_HELP_STORAGE_KEY, "true");
+  }
+
+  await loadCompanies(1);
 }
 
 async function goToPage(page: number) {

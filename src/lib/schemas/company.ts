@@ -8,6 +8,7 @@ export const companySchema = z.object({
   country: z.string().nullable().optional(),
   website: z.string().nullable().optional(),
   subscription: z.string().nullable().optional(),
+  needs_cleanup: z.boolean().default(false),
   parts_count: z.number().optional(),
   clients_count: z.number().optional(),
 });

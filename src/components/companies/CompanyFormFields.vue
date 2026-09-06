@@ -28,6 +28,7 @@ export type CompanyFormState = {
   country: string;
   website: string;
   subscription: string;
+  needsCleanup?: boolean;
 };
 
 type Props = {

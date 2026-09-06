@@ -29,6 +29,25 @@
   >
     <CompanyFormFields v-model="form" :errors="fieldErrors" />
 
+    <div
+      v-if="form.needsCleanup"
+      class="border-warning bg-warning/10 grid gap-2 rounded-sm border p-3"
+    >
+      <p class="font-semibold">This company needs cleanup</p>
+      <p class="text-text-muted text-sm">
+        Review the imported details before marking this record complete
+      </p>
+      <IzziButton
+        class="justify-self-start"
+        type="button"
+        variant="success"
+        :disabled="isSaving || isLoading"
+        @click="form.needsCleanup = false"
+      >
+        Mark cleanup complete
+      </IzziButton>
+    </div>
+
     <div class="flex gap-2">
       <IzziButton type="submit" :disabled="isSaving || isLoading">
         {{ submitLabel }}
@@ -76,7 +95,15 @@ const submitLabel = computed(() => {
 useEscapeNavigation(cancel);
 
 function emptyForm(): CompanyFormState {
-  return { name: "", address: "", city: "", country: "", website: "", subscription: "" };
+  return {
+    name: "",
+    address: "",
+    city: "",
+    country: "",
+    website: "",
+    subscription: "",
+    needsCleanup: false,
+  };
 }
 
 function setForm(company: Awaited<ReturnType<typeof getCompany>>): void {
@@ -87,6 +114,7 @@ function setForm(company: Awaited<ReturnType<typeof getCompany>>): void {
     country: company.country ?? "",
     website: company.website ?? "",
     subscription: company.subscription ?? "",
+    needsCleanup: company.needs_cleanup,
   });
 }
 
@@ -152,6 +180,7 @@ function payload(): CompanyPayload {
     country: form.country.trim() || null,
     website: form.website.trim() || null,
     subscription: form.subscription.trim() || null,
+    needs_cleanup: form.needsCleanup,
   };
 }
 

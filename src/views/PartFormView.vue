@@ -416,12 +416,9 @@ watch(form, (nextForm) => {
 
 watch(newCompanyForm, (nextForm) => {
   Object.keys(companyFieldErrors.value).forEach((field) => {
-    if (
-      typeof nextForm[field as keyof CompanyFormState] === "string" &&
-      nextForm[field as keyof CompanyFormState].trim()
-    ) {
-      delete companyFieldErrors.value[field];
-    }
+    const value = nextForm[field as keyof CompanyFormState];
+
+    if (typeof value === "string" && value.trim()) delete companyFieldErrors.value[field];
   });
 });
 

@@ -15,6 +15,7 @@ export type CompanyPayload = {
   country: string | null;
   website: string | null;
   subscription: string | null;
+  needs_cleanup?: boolean;
 };
 
 export const companiesSortFields = [
@@ -48,6 +49,7 @@ export type CompaniesQuery = {
   page?: number;
   count?: number;
   query?: string;
+  needsCleanup?: boolean;
   sort?: CompaniesSort[];
 };
 
@@ -57,6 +59,7 @@ export async function getCompaniesPage(query: CompaniesQuery = {}) {
   if (query.page !== undefined) searchParams.set("page", String(query.page));
   if (query.count !== undefined) searchParams.set("count", String(query.count));
   if (query.query) searchParams.set("query", query.query);
+  if (query.needsCleanup) searchParams.set("needs_cleanup", "true");
 
   query.sort?.forEach((sort, index) => {
     searchParams.set(`sort[${index}][field]`, sort.field);
