@@ -125,7 +125,7 @@
           />
         </div>
 
-        <IzziInput v-model="form.tag" label="Tag" :error="fieldError('tag')" required />
+        <IzziTextArea v-model="form.tag" label="Tag" :error="fieldError('tag')" required />
 
         <IzziInput v-model="form.lead_time" label="Lead time" :error="fieldError('lead_time')" />
 

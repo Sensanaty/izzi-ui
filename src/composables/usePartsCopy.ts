@@ -56,6 +56,7 @@ const quoteExcludedFields = new Set<keyof Part>([
   "internal_note",
   "added",
   "created_at",
+  "updated_at",
 ]);
 
 type CopyType = "quote" | "full";

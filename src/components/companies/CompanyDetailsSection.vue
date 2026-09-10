@@ -45,11 +45,7 @@
           Next
         </IzziButton>
 
-        <IzziButton
-          variant="outline"
-          :disabled="!hasNextPage || isLoading"
-          @click="emit('last')"
-        >
+        <IzziButton variant="outline" :disabled="!hasNextPage || isLoading" @click="emit('last')">
           Last
         </IzziButton>
       </div>
